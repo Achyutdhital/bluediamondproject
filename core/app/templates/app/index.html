@@ -16,7 +16,7 @@
                         <div class="owl-carousel">
                             {% for slide in carousels %}
                             <div class="item">
-                                <div class="slide" style="max-height: 600px; overflow: hidden;">
+                                <div class="slide" >
                                     {% if slide.image %}
                                         <img src="{{ slide.image.url }}" alt="{{ slide.title }}" style="width: 100%; height: 600px; object-fit: cover;">
                                     {% endif %}

@@ -150,22 +150,13 @@
             </div>
         </header>
 
-        <ul class="mobile_menu ">
-            <li><a href="/">Home</a></li>
-            <li>
-                <a href="{%static 'app/about-us.html ' %}">About Us</a>
-            </li>
-            <li>
-                <a href="{% url 'services' %}">Our Services</a>
-                <ul class="submenu">
-                    {% for service in nav_services %}
-                    <li><a href="/services/{{ service.slug }}/">{{ service.name }}</a></li>
-                    {% endfor %}
-                </ul>
-            </li>
-            <li> <a href="/gallery/">Gallery</a></li>
-            <li> <a href="{%static 'app/enquiry-now.html ' %}">Enquiry Now</a></li>
-            <li> <a href="{%static 'app/contact-us.html ' %}">Contact Us</a></li>
+        <ul class="mobile_menu">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'about' %}">About Us</a></li>
+            <li><a href="{% url 'services' %}">Our Services</a></li>
+            <li><a href="{% url 'gallery' %}">Gallery</a></li>
+            <li><a href="{% url 'enquiry' %}">Enquiry Now</a></li>
+            <li><a href="{% url 'contact' %}">Contact Us</a></li>
         </ul>
         <!-- End mobile Menu -->
 

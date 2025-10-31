@@ -46,7 +46,7 @@
 <section class="secptb70 our_about_area">
     <div class="container">
         <div class="row">
-            <div class="col-md-8 col-sm-8">
+            <div class="col-md-8 col-sm-8 col-xs-12">
                 <div class="our_about_left_content">
                     <h2>Welcome to <span class="themetextcolor">{{ company.company_name }}</span></h2>
                     {% if homesection %}
@@ -103,7 +103,7 @@
         </div>
         <div class="row service_item_inner align_item_center justify_content_center">
             {% for svc in services %}
-            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            <div class="col-md-4 col-sm-6 col-xs-12">
                 <div class="service_box_item">
                     <a href="/services/{{ svc.slug }}/" class="service_image">
                         {% if svc.feature_image %}
@@ -266,7 +266,7 @@
             <div class="homefaq-mainpanel">
                 <div class="homefaq-listmain">
                     <div class="row">
-                       <div class="col-lg-6 col-sm-12 col-xs-12">
+                       <div class="col-md-6 col-sm-12 col-xs-12">
                             <div class="panel-group faq_ques" id="accordion" role="tablist" aria-multiselectable="true">
                                 {% for faq in faqs %}
                                 {% if forloop.counter0|divisibleby:2 %}
@@ -289,7 +289,7 @@
                                 {% endfor %}
                             </div>
                     </div>
-                       <div class="col-lg-6 col-sm-12 col-xs-12">
+                       <div class="col-md-6 col-sm-12 col-xs-12">
                             <div class="panel-group faq_ques" id="accordion-2" role="tablist" aria-multiselectable="true">
                                 {% for faq in faqs %}
                                 {% if not forloop.counter0|divisibleby:2 %}

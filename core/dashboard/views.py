@@ -866,7 +866,6 @@ def company_details_edit(request):
         instagram_url = request.POST.get('instagram_url')
         linkedin_url = request.POST.get('linkedin_url')
         logo = request.FILES.get('logo')
-        card_image = request.FILES.get('card_image')
         
         if company:
             company.company_name = company_name
@@ -881,8 +880,6 @@ def company_details_edit(request):
             company.linkedin_url = linkedin_url
             if logo:
                 company.logo = logo
-            if card_image:
-                company.card_image = card_image
             company.save()
             messages.success(request, 'Company details updated successfully!')
         else:
@@ -898,7 +895,6 @@ def company_details_edit(request):
                 instagram_url=instagram_url,
                 linkedin_url=linkedin_url,
                 logo=logo,
-                card_image=card_image
             )
             messages.success(request, 'Company details created successfully!')
         

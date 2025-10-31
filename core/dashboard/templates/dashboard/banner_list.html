@@ -1,0 +1,132 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}
+    Banner List
+{% endblock %}
+{% block body %}
+    <title>Banner List</title>
+
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+
+    <div class="content-page">
+        <div class="content">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <h4 class="page-title">Banner List</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+
+                                <div class="row mb-2">
+                                    <div class="col-sm-5">
+                                           <a href="{%url 'dashboard:banner_add'%}" class="btn btn-danger mb-2"><i class="mdi mdi-plus-circle me-2"></i> Add Banner</a>
+                                       </div> 
+                                   </div>
+                                                   {% if messages %}
+                    {% for msg in messages %}
+                        <div class="alert alert-{{ msg.tags }} alert-dismissible text-bg-{{ msg.tags }} border-0 fade show" role="alert">
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <strong>{% if msg.tags == 'success' %}Success{% elif msg.tags == 'warning' %}Warning{% endif %} - </strong>{{ msg.message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                                <div class="tab-content ">
+                                    {% comment %} <div class="tab-pane show active" id="buttons-table-preview"> {% endcomment %}
+                                        <table id="datatable-buttons" class="table table-striped dt-responsive nowrap w-100 ">
+                                            <thead>
+                                                <tr>
+                                             
+                                                    <th >Id</th>
+                                                    <th >Title</th>
+                                                    <th>Page path</th>
+                                                    <th>Image</th>
+                                                    <th>Is Active</th>
+                                                    <th style="width: 120px;">Action</th>
+                                                </tr>
+                                            </thead>
+                                        
+                                        
+                                            <tbody>
+                                {%for item in banners%}
+                                <!-- Delete modal -->
+                                <div id="delete-modal-{{ item.id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="delete-modalLabel-{{ item.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content modal-filled bg-primary">
+                                            <div class="modal-header bg-info">
+                                                <h4 class="modal-title" id="delete-modalLabel-{{ item.id }}">Confirm Delete?</h4>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                                            </div>
+                                            <div class="modal-body modal-filled bg-info">
+                                               Are you sure you want to delete?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                <form method="post" action="{% url 'dashboard:banner_delete' item.id %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-primary">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div><!-- /.modal-content -->
+                                    </div><!-- /.modal-dialog -->
+                                </div><!-- /.modal -->
+
+                                <tr>
+                                    <td>
+                                        {{forloop.counter}}
+                                    </td>
+                                    <td style="width:auto; text-align:justify;">
+                                        {{item.title}}
+                                    </td>
+                                    <td style="width:auto; text-align:justify;">
+                                        {{item.page_path}}
+                                    </td>
+                                    
+                                    <td>
+                                        <div class="image-gallery">
+                                            <img class="thumbnail" src="{{item.image.url}}" alt="Thumbnail Image">
+                                            <!-- Add more thumbnail images here if you have multiple images in the gallery -->
+                                        </div>
+                                        <div class="modal" id="imageModal">
+                                            <span class="close-btn" onclick="closeModal()">&times;</span>
+                                            <img class="modal-content" id="modalImage">
+                                        </div>
+                                    
+                                        <script src="script.js"></script>
+                                    </td>
+                                    
+                                    <td>
+                                        {{item.is_active}}
+                                    </td>
+                                   
+                                    <td>
+                                        <a href="{%url 'dashboard:banner_edit' item.id%}" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a>
+                                        <a href="#" class="action-icon" data-bs-toggle="modal" data-bs-target="#delete-modal-{{ item.id }}"> <i class="mdi mdi-delete"></i></a>
+                                     </td>
+                                </tr>
+                                {%endfor%}
+                                    </tbody>
+                                </table>                                           
+                                    
+                                </div> <!-- end tab-content-->
+                                
+                            </div> <!-- end card body-->
+                        </div> <!-- end card -->
+                    </div><!-- end col-->
+                </div> <!-- end row-->
+
+                
+            </div> <!-- container -->
+        </div> <!-- content -->
+    </div> <!-- content-page -->
+{% endblock %}

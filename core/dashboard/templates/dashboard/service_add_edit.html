@@ -1,0 +1,97 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}{% if service %}Edit Service{% else %}Add Service{% endif %} - Dashboard{% endblock %}
+
+{% block body %}
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            
+            <!-- Page Title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right">
+                            <a href="{% url 'dashboard:services_list' %}" class="btn btn-secondary">
+                                <i class="mdi mdi-arrow-left me-1"></i> Back to List
+                            </a>
+                        </div>
+                        <h4 class="page-title">{% if service %}Edit Service{% else %}Add New Service{% endif %}</h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label">Service Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="name" name="name" value="{{ service.name|default:'' }}" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="short_description" class="form-label">Short Description <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" id="short_description" name="short_description" rows="3" required>{{ service.short_description|default:'' }}</textarea>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="description" class="form-label">Full Description <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" id="description" name="description" rows="10">{{ service.description|default:'' }}</textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="feature_image" class="form-label">Feature Image</label>
+                                            {% if service.feature_image %}
+                                            <div class="mb-2">
+                                                <img src="{{ service.feature_image.url }}" alt="{{ service.name }}" class="img-fluid rounded">
+                                            </div>
+                                            {% endif %}
+                                            <input type="file" class="form-control" id="feature_image" name="feature_image" accept="image/*">
+                                            <small class="text-muted">Recommended size: 800x600px</small>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if service.is_active or not service %}checked{% endif %}>
+                                                <label class="form-check-label" for="is_active">Active</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="mdi mdi-content-save me-1"></i> Save Service
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#description'), {
+            toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote']
+        })
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+{% endblock %}

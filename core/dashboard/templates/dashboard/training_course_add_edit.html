@@ -1,0 +1,103 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}{% if course %}Edit Course{% else %}Add Course{% endif %} - Dashboard{% endblock %}
+
+{% block body %}
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right">
+                            <a href="{% url 'dashboard:training_courses_list' %}" class="btn btn-secondary">
+                                <i class="mdi mdi-arrow-left me-1"></i> Back
+                            </a>
+                        </div>
+                        <h4 class="page-title">{% if course %}Edit Course{% else %}Add Course{% endif %}</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="mb-3">
+                                            <label for="title" class="form-label">Course Title <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="title" name="title" value="{{ course.title|default:'' }}" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="short_description" class="form-label">Short Description <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" id="short_description" name="short_description" rows="3" required>{{ course.short_description|default:'' }}</textarea>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="description" class="form-label">Full Description</label>
+                                            <textarea class="form-control" id="description" name="description" rows="10">{{ course.description|default:'' }}</textarea>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="duration" class="form-label">Duration <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" id="duration" name="duration" value="{{ course.duration|default:'' }}" placeholder="e.g., 3 months" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="fee" class="form-label">Fee (Rs.)</label>
+                                                    <input type="number" class="form-control" id="fee" name="fee" value="{{ course.fee|default:'' }}" step="0.01" placeholder="Leave blank if free">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="image" class="form-label">Course Image</label>
+                                            {% if course.image %}
+                                            <div class="mb-2">
+                                                <img src="{{ course.image.url }}" alt="{{ course.title }}" class="img-fluid rounded">
+                                            </div>
+                                            {% endif %}
+                                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if course.is_active or not course %}checked{% endif %}>
+                                                <label class="form-check-label" for="is_active">Active</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="mdi mdi-content-save me-1"></i> Save Course
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor.create(document.querySelector('#description')).catch(error => { console.error(error); });
+</script>
+{% endblock %}

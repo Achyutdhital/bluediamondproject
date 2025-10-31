@@ -1,0 +1,85 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Features - Dashboard{% endblock %}
+
+{% block body %}
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right">
+                            <a href="{% url 'dashboard:feature_add' %}" class="btn btn-primary">
+                                <i class="mdi mdi-plus-circle me-1"></i> Add New Feature
+                            </a>
+                        </div>
+                        <h4 class="page-title">Features</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-centered table-striped dt-responsive nowrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th>Icon</th>
+                                            <th>Title</th>
+                                            <th>Description</th>
+                                            <th>Sort Order</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for feature in features %}
+                                        <tr>
+                                            <td>
+                                                {% if feature.icon %}
+                                                <img src="{{ feature.icon.url }}" alt="{{ feature.title }}" style="width: 40px; height: 40px; object-fit: contain;">
+                                                {% else %}
+                                                <span class="badge bg-secondary">No Icon</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ feature.title }}</td>
+                                            <td>{{ feature.description|truncatewords:10 }}</td>
+                                            <td>{{ feature.sort_order }}</td>
+                                            <td>
+                                                {% if feature.is_active %}
+                                                <span class="badge bg-success">Active</span>
+                                                {% else %}
+                                                <span class="badge bg-danger">Inactive</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'dashboard:feature_edit' feature.pk %}" class="btn btn-sm btn-info">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </a>
+                                                <a href="{% url 'dashboard:feature_delete' feature.pk %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
+                                                    <i class="mdi mdi-delete"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="6" class="text-center">No features found.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

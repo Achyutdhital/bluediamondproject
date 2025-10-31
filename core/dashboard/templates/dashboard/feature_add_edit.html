@@ -1,0 +1,85 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}{% if feature %}Edit Feature{% else %}Add Feature{% endif %} - Dashboard{% endblock %}
+
+{% block body %}
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right">
+                            <a href="{% url 'dashboard:features_list' %}" class="btn btn-secondary">
+                                <i class="mdi mdi-arrow-left me-1"></i> Back
+                            </a>
+                        </div>
+                        <h4 class="page-title">{% if feature %}Edit Feature{% else %}Add Feature{% endif %}</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="mb-3">
+                                            <label for="title" class="form-label">Feature Title <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="title" name="title" value="{{ feature.title|default:'' }}" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" id="description" name="description" rows="4" required>{{ feature.description|default:'' }}</textarea>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="sort_order" class="form-label">Sort Order</label>
+                                            <input type="number" class="form-control" id="sort_order" name="sort_order" value="{{ feature.sort_order|default:0 }}">
+                                            <small class="text-muted">Lower numbers appear first</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="icon" class="form-label">Feature Icon</label>
+                                            {% if feature.icon %}
+                                            <div class="mb-2 text-center p-3 border rounded">
+                                                <img src="{{ feature.icon.url }}" alt="{{ feature.title }}" style="max-width: 80px; max-height: 80px;">
+                                            </div>
+                                            {% endif %}
+                                            <input type="file" class="form-control" id="icon" name="icon" accept="image/*">
+                                            <small class="text-muted">SVG or PNG icon recommended</small>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if feature.is_active or not feature %}checked{% endif %}>
+                                                <label class="form-check-label" for="is_active">Active</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="mdi mdi-content-save me-1"></i> Save Feature
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

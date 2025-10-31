@@ -1,0 +1,236 @@
+
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %} 
+Dashboard
+{% endblock %}
+{% block body %}
+<title>Dashboard - Blue Diamond Service Center</title>
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <h4 class="page-title">Dashboard</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Statistics Cards -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card widget-inline">
+                                    <div class="card-body p-0">
+                                        <div class="row g-0">
+                                            <div class="col-sm-6 col-lg-3">
+                                                <a href="{% url 'dashboard:services_list' %}">
+                                                    <div class="card rounded-0 shadow-none m-0">
+                                                        <div class="card-body text-center">
+                                                            <i class="uil-wrench text-primary font-24"></i>
+                                                            <h3><span>{{ services_count }}</span></h3>
+                                                            <p class="text-muted font-15 mb-0">Services</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+
+                                            <div class="col-sm-6 col-lg-3">
+                                                <a href="{% url 'dashboard:training_courses_list' %}">
+                                                    <div class="card rounded-0 shadow-none m-0 border-start border-light">
+                                                        <div class="card-body text-center">
+                                                            <i class="uil-graduation-cap text-success font-24"></i>
+                                                            <h3><span>{{ training_courses_count }}</span></h3>
+                                                            <p class="text-muted font-15 mb-0">Training Courses</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+
+                                            <div class="col-sm-6 col-lg-3">
+                                                <a href="{% url 'dashboard:gallery_list' %}">
+                                                    <div class="card rounded-0 shadow-none m-0 border-start border-light">
+                                                        <div class="card-body text-center">
+                                                            <i class="uil-images text-info font-24"></i>
+                                                            <h3><span>{{ gallery_count }}</span></h3>
+                                                            <p class="text-muted font-15 mb-0">Gallery Images</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+
+                                            <div class="col-sm-6 col-lg-3">
+                                                <a href="{% url 'dashboard:testimonials_list' %}">
+                                                    <div class="card rounded-0 shadow-none m-0 border-start border-light">
+                                                        <div class="card-body text-center">
+                                                            <i class="uil-comment-alt-message text-warning font-24"></i>
+                                                            <h3><span>{{ testimonials_count }}</span></h3>
+                                                            <p class="text-muted font-15 mb-0">Testimonials</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div> <!-- end row -->
+                                    </div>
+                                </div> <!-- end card-box-->
+                            </div> <!-- end col-->
+                        </div>
+                        <!-- end row-->
+
+                        <!-- Second Row Statistics -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card widget-inline">
+                                    <div class="card-body p-0">
+                                        <div class="row g-0">
+                                            <div class="col-sm-6 col-lg-3">
+                                                <a href="{% url 'dashboard:enquiries_list' %}">
+                                                    <div class="card rounded-0 shadow-none m-0">
+                                                        <div class="card-body text-center">
+                                                            <i class="uil-envelope text-danger font-24"></i>
+                                                            <h3><span>{{ enquiries_pending }}</span></h3>
+                                                            <p class="text-muted font-15 mb-0">Pending Enquiries</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+
+                                            <div class="col-sm-6 col-lg-3">
+                                                <a href="{% url 'dashboard:contacts_list' %}">
+                                                    <div class="card rounded-0 shadow-none m-0 border-start border-light">
+                                                        <div class="card-body text-center">
+                                                            <i class="uil-phone text-primary font-24"></i>
+                                                            <h3><span>{{ contacts_count }}</span></h3>
+                                                            <p class="text-muted font-15 mb-0">Contact Messages</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+
+                                            <div class="col-sm-6 col-lg-3">
+                                                <a href="{% url 'dashboard:brands_list' %}">
+                                                    <div class="card rounded-0 shadow-none m-0 border-start border-light">
+                                                        <div class="card-body text-center">
+                                                            <i class="uil-award text-success font-24"></i>
+                                                            <h3><span>{{ brands_count }}</span></h3>
+                                                            <p class="text-muted font-15 mb-0">Brands</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+
+                                            <div class="col-sm-6 col-lg-3">
+                                                <a href="{% url 'dashboard:faqs_list' %}">
+                                                    <div class="card rounded-0 shadow-none m-0 border-start border-light">
+                                                        <div class="card-body text-center">
+                                                            <i class="uil-comment-alt-question text-info font-24"></i>
+                                                            <h3><span>{{ faqs_count }}</span></h3>
+                                                            <p class="text-muted font-15 mb-0">FAQs</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div> <!-- end row -->
+                                    </div>
+                                </div> <!-- end card-box-->
+                            </div> <!-- end col-->
+                        </div>
+                        <!-- end row-->
+
+                        <!-- Recent Activity -->
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <h4 class="header-title">Recent Enquiries</h4>
+                                            <a href="{% url 'dashboard:enquiries_list' %}" class="btn btn-sm btn-link">View All</a>
+                                        </div>
+                                        <div class="mt-3">
+                                            {% if recent_enquiries %}
+                                                {% for enquiry in recent_enquiries %}
+                                                    <div class="d-flex align-items-start mb-3">
+                                                        <div class="w-100">
+                                                            <h5 class="mt-0 mb-1">{{ enquiry.name }}</h5>
+                                                            <p class="mb-0 text-muted"><small>{{ enquiry.email }}</small></p>
+                                                            <p class="mb-0 text-muted"><small>{{ enquiry.created_at|date:"M d, Y" }}</small></p>
+                                                        </div>
+                                                        <span class="badge bg-{{ enquiry.status }} rounded-pill">{{ enquiry.get_status_display }}</span>
+                                                    </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                <p class="text-muted">No recent enquiries.</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <h4 class="header-title">Recent Contacts</h4>
+                                            <a href="{% url 'dashboard:contacts_list' %}" class="btn btn-sm btn-link">View All</a>
+                                        </div>
+                                        <div class="mt-3">
+                                            {% if recent_contacts %}
+                                                {% for contact in recent_contacts %}
+                                                    <div class="d-flex align-items-start mb-3">
+                                                        <div class="w-100">
+                                                            <h5 class="mt-0 mb-1">{{ contact.name }}</h5>
+                                                            <p class="mb-0 text-muted"><small>{{ contact.email }}</small></p>
+                                                            <p class="mb-0 text-muted"><small>{{ contact.created_at|date:"M d, Y" }}</small></p>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                <p class="text-muted">No recent contacts.</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <h4 class="header-title">Recent Testimonials</h4>
+                                            <a href="{% url 'dashboard:testimonials_list' %}" class="btn btn-sm btn-link">View All</a>
+                                        </div>
+                                        <div class="mt-3">
+                                            {% if recent_testimonials %}
+                                                {% for testimonial in recent_testimonials %}
+                                                    <div class="d-flex align-items-start mb-3">
+                                                        <div class="w-100">
+                                                            <h5 class="mt-0 mb-1">{{ testimonial.name }}</h5>
+                                                            <p class="mb-0 text-muted"><small>{{ testimonial.location }}</small></p>
+                                                            <p class="mb-0 text-muted"><small>Rating: {{ testimonial.rating }}/5</small></p>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                <p class="text-muted">No recent testimonials.</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end row -->
+
+                    </div>
+                    <!-- container -->
+
+                </div>
+                <!-- content -->
+
+             {%endblock%}

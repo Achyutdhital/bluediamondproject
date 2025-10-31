@@ -1,0 +1,123 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}{{ service.name }} - {{ company.company_name|default:'Blue Diamond Service Center' }}{% endblock %}
+
+{% block meta_description %}{{ service.content|truncatewords:25 }} - Professional {{ service.name }} services by {{ company.company_name|default:'Blue Diamond Service Center' }}.{% endblock %}
+
+{% block content %}
+
+<!-- Banner Section -->
+<section class="banner inner-page" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% if service.feature_image %}{{ service.feature_image.url }}{% else %}{% static 'app/bluediamondservicecenter/home/image1.jpg' %}{% endif %}'); background-size: cover; background-position: center; padding: 100px 0 80px 0; margin-top: 70px;">
+    <div class="container">
+        <div class="banner-wrap" style="text-align: center;">
+            <h1 style="color: #fff; font-size: 42px; margin-bottom: 20px;">{{ service.name }}</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb" style="background: transparent; justify-content: center; margin: 0;">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color: #fff;">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'services' %}" style="color: #fff;">Services</a></li>
+                    <li class="breadcrumb-item active" aria-current="page" style="color: #ddd;">{{ service.name }}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<!-- Service Detail Section -->
+<section class="secptb70">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-7">
+                <div class="service-detail-content">
+                    {% if service.feature_image %}
+                    <div class="service-image" style="margin-bottom: 30px;">
+                        <img src="{{ service.feature_image.url }}" alt="{{ service.name }}" style="width: 100%; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    </div>
+                    {% endif %}
+                    
+                    <div class="service-content">
+                        <h2 style="color: #1e3c72; font-size: 32px; font-weight: 700; margin-bottom: 20px;">{{ service.name }}</h2>
+                        <p style="color: #666; font-size: 18px; line-height: 1.8; margin-bottom: 25px;">{{ service.content }}</p>
+                        
+                        <div class="service-description" style="color: #555; line-height: 1.7;">
+                            {{ service.description|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-5">
+                <div class="service-sidebar">
+                    <!-- Quick Contact -->
+                    <div class="sidebar-widget" style="background: linear-gradient(135deg, #1e3c72, #2a5298); padding: 30px; border-radius: 15px; margin-bottom: 30px; color: white; text-align: center;">
+                        <h3 style="color: white; margin-bottom: 20px;">Need This Service?</h3>
+                        <p style="margin-bottom: 25px; opacity: 0.9;">Get professional {{ service.name }} service today!</p>
+                        <a href="{% url 'enquiry' %}?service={{ service.slug }}" style="background: white; color: #1e3c72; padding: 15px 25px; border-radius: 50px; text-decoration: none; font-weight: 700; display: inline-block; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(255,255,255,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i class="fas fa-phone" style="margin-right: 8px;"></i>
+                            Get Quote Now
+                        </a>
+                    </div>
+                    
+                    <!-- Other Services -->
+                    <div class="sidebar-widget" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                        <h3 style="color: #1e3c72; margin-bottom: 20px; font-size: 22px;">Other Services</h3>
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            {% for other_service in other_services %}
+                            <li style="margin-bottom: 12px;">
+                                <a href="/services/{{ other_service.slug }}/" style="color: #666; text-decoration: none; display: block; padding: 10px 0; border-bottom: 1px solid #f0f0f0; transition: color 0.3s ease;" onmouseover="this.style.color='#1e3c72'" onmouseout="this.style.color='#666'">
+                                    <i class="fas fa-chevron-right" style="margin-right: 8px; color: #1e3c72;"></i>
+                                    {{ other_service.name }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <!-- Contact Info -->
+                    <div class="sidebar-widget" style="background: #f8f9fa; padding: 25px; border-radius: 15px; margin-top: 30px;">
+                        <h3 style="color: #1e3c72; margin-bottom: 20px; font-size: 22px;">Contact Info</h3>
+                        <div style="margin-bottom: 15px;">
+                            <i class="fas fa-phone" style="color: #1e3c72; margin-right: 10px;"></i>
+                            <a href="tel:{{ company.phone_number }}" style="color: #666; text-decoration: none;">{{ company.phone_number|default:'+977-1-XXXXXXX' }}</a>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <i class="fas fa-envelope" style="color: #1e3c72; margin-right: 10px;"></i>
+                            <a href="mailto:{{ company.email }}" style="color: #666; text-decoration: none;">{{ company.email|default:'info@bluediamond.com' }}</a>
+                        </div>
+                        <div>
+                            <i class="fas fa-map-marker-alt" style="color: #1e3c72; margin-right: 10px;"></i>
+                            <span style="color: #666;">{{ company.address|default:'Kathmandu, Nepal' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Services -->
+{% if related_services %}
+<section style="background: #f8f9fa; padding: 60px 0;">
+    <div class="container">
+        <h2 style="text-align: center; color: #1e3c72; font-size: 32px; font-weight: 700; margin-bottom: 40px;">Related Services</h2>
+        <div class="row">
+            {% for related in related_services %}
+            <div class="col-md-4" style="margin-bottom: 30px;">
+                <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                    {% if related.feature_image %}
+                    <img src="{{ related.feature_image.url }}" alt="{{ related.name }}" style="width: 100%; height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div style="padding: 20px;">
+                        <h4 style="color: #1e3c72; margin-bottom: 10px;">{{ related.name }}</h4>
+                        <p style="color: #666; font-size: 14px; margin-bottom: 15px;">{{ related.content|truncatewords:15 }}</p>
+                        <a href="/services/{{ related.slug }}/" style="color: #1e3c72; text-decoration: none; font-weight: 600;">Learn More <i class="fas fa-arrow-right" style="margin-left: 5px;"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

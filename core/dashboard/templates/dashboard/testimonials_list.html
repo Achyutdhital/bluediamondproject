@@ -1,0 +1,109 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Testimonials - Dashboard{% endblock %}
+
+{% block body %}
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right">
+                            <a href="{% url 'dashboard:testimonial_add' %}" class="btn btn-primary">
+                                <i class="mdi mdi-plus-circle me-1"></i> Add New Testimonial
+                            </a>
+                        </div>
+                        <h4 class="page-title">Testimonials</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-centered table-striped dt-responsive nowrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th>Photo</th>
+                                            <th>Name</th>
+                                            <th>Location</th>
+                                            <th>Rating</th>
+                                            <th>Message</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for testimonial in testimonials %}
+                                        <tr>
+                                            <td>
+                                                {% if testimonial.photo %}
+                                                <img src="{{ testimonial.photo.url }}" alt="{{ testimonial.name }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                                {% else %}
+                                                <span class="badge bg-secondary">No Photo</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ testimonial.name }}</td>
+                                            <td>{{ testimonial.location }}</td>
+                                            <td>
+                                                <span class="badge bg-warning">
+                                                    <i class="mdi mdi-star"></i> {{ testimonial.rating }}/5
+                                                </span>
+                                            </td>
+                                            <td>{{ testimonial.message|truncatewords:10 }}</td>
+                                            <td>
+                                                {% if testimonial.is_active %}
+                                                <span class="badge bg-success">Active</span>
+                                                {% else %}
+                                                <span class="badge bg-danger">Inactive</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'dashboard:testimonial_edit' testimonial.pk %}" class="btn btn-sm btn-info">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </a>
+                                                <a href="{% url 'dashboard:testimonial_delete' testimonial.pk %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
+                                                    <i class="mdi mdi-delete"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="7" class="text-center">No testimonials found.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {% if testimonials.has_other_pages %}
+                            <div class="mt-3">
+                                <ul class="pagination pagination-rounded justify-content-end">
+                                    {% if testimonials.has_previous %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ testimonials.previous_page_number }}">Previous</a></li>
+                                    {% endif %}
+                                    {% for num in testimonials.paginator.page_range %}
+                                    <li class="page-item {% if testimonials.number == num %}active{% endif %}">
+                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                    </li>
+                                    {% endfor %}
+                                    {% if testimonials.has_next %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ testimonials.next_page_number }}">Next</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

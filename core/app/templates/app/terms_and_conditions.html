@@ -1,0 +1,121 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}{% if terms %}{{ terms.page_title }}{% else %}Terms and Conditions{% endif %} - {{ company.company_name|default:'Blue Diamond Service Center' }}{% endblock %}
+
+{% block meta_description %}Read our terms and conditions to understand the rules and regulations for using {{ company.company_name|default:'Blue Diamond Service Center' }} services.{% endblock %}
+
+{% block content %}
+
+<!-- Banner Section -->
+<section class="banner inner-page" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% static 'app/bluediamondservicecenter/home/image1.jpg' %}'); background-size: cover; background-position: center; padding: 100px 0 80px 0; margin-top: 70px;">
+    <div class="container">
+        <div class="banner-wrap" style="text-align: center;">
+            <h1 style="color: #fff; font-size: 42px; margin-bottom: 20px;">{% if terms %}{{ terms.page_title }}{% else %}Terms and Conditions{% endif %}</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb" style="background: transparent; justify-content: center; margin: 0;">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color: #fff;">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page" style="color: #ddd;">{% if terms %}{{ terms.page_title }}{% else %}Terms and Conditions{% endif %}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+<!-- Banner End -->
+
+{% if terms %}
+<!-- Terms and Conditions Content -->
+<section class="secptb70 legal-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="content-box" style="background: #fff; padding: 40px; box-shadow: 0 0 20px rgba(0,0,0,0.1); border-radius: 5px;">
+                    <div class="legal-content" style="color: #666; line-height: 1.9;">
+                        {{ terms.content|safe }}
+                    </div>
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #999; font-size: 14px;">
+                        <p>Last updated: {{ terms.updated_at|date:"F d, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% else %}
+<!-- Fallback if no content -->
+<section class="secptb70">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="content-box" style="background: #fff; padding: 40px; box-shadow: 0 0 20px rgba(0,0,0,0.1); border-radius: 5px; text-align: center;">
+                    <h2 style="color: #333; margin-bottom: 25px;">Terms and Conditions</h2>
+                    <p style="color: #999;">Terms and Conditions content is not yet available. Please check back later.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Custom Styles -->
+<style>
+/* Wider container and tighter side padding */
+.legal-page .container {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+@media (min-width: 1200px) {
+    .legal-page .container {
+        width: 1320px;
+    }
+}
+
+.legal-content {
+    font-size: 16px;
+    line-height: 1.9;
+    color: #666;
+}
+.legal-content p {
+    margin-bottom: 20px;
+}
+.legal-content h2, .legal-content h3 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: #333;
+    font-weight: 600;
+}
+.legal-content h2 {
+    font-size: 28px;
+}
+.legal-content h3 {
+    font-size: 24px;
+}
+.legal-content h4 {
+    margin-top: 25px;
+    margin-bottom: 12px;
+    color: #444;
+    font-size: 20px;
+    font-weight: 600;
+}
+.legal-content ul, .legal-content ol {
+    margin-bottom: 20px;
+    padding-left: 30px;
+}
+.legal-content ul li, .legal-content ol li {
+    margin-bottom: 10px;
+    color: #666;
+}
+.legal-content strong {
+    color: #333;
+    font-weight: 600;
+}
+.legal-content a {
+    color: #007bff;
+    text-decoration: none;
+}
+.legal-content a:hover {
+    text-decoration: underline;
+}
+</style>
+
+{% endblock %}

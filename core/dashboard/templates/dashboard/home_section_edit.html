@@ -1,0 +1,106 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Home Sections - Dashboard{% endblock %}
+
+{% block body %}
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <h4 class="page-title">Home Page Sections</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h5 class="mb-3">Section 1</h5>
+                                        
+                                        <div class="mb-3">
+                                            <label for="subtitle1" class="form-label">Subtitle 1</label>
+                                            <input type="text" class="form-control" id="subtitle1" name="subtitle1" value="{{ home_section.subtitle1|default:'' }}">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="subcontent1" class="form-label">Content 1</label>
+                                            <textarea class="form-control" id="subcontent1" name="subcontent1" rows="4">{{ home_section.subcontent1|default:'' }}</textarea>
+                                        </div>
+
+                                        <hr class="my-4">
+
+                                        <h5 class="mb-3">Section 2</h5>
+                                        
+                                        <div class="mb-3">
+                                            <label for="subtitle2" class="form-label">Subtitle 2</label>
+                                            <input type="text" class="form-control" id="subtitle2" name="subtitle2" value="{{ home_section.subtitle2|default:'' }}">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="subcontent2" class="form-label">Content 2</label>
+                                            <textarea class="form-control" id="subcontent2" name="subcontent2" rows="4">{{ home_section.subcontent2|default:'' }}</textarea>
+                                        </div>
+
+                                        <hr class="my-4">
+
+                                        <h5 class="mb-3">Section 3</h5>
+                                        
+                                        <div class="mb-3">
+                                            <label for="subtitle3" class="form-label">Subtitle 3</label>
+                                            <input type="text" class="form-control" id="subtitle3" name="subtitle3" value="{{ home_section.subtitle3|default:'' }}">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="subcontent3" class="form-label">Content 3</label>
+                                            <textarea class="form-control" id="subcontent3" name="subcontent3" rows="4">{{ home_section.subcontent3|default:'' }}</textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <h5 class="mb-3">Featured Image</h5>
+                                        
+                                        <div class="mb-3">
+                                            <label for="picture1" class="form-label">Picture</label>
+                                            {% if home_section.picture1 %}
+                                            <div class="mb-2">
+                                                <img src="{{ home_section.picture1.url }}" alt="Home Section" class="img-fluid rounded">
+                                            </div>
+                                            {% endif %}
+                                            <input type="file" class="form-control" id="picture1" name="picture1" accept="image/*">
+                                            <small class="text-muted">This image will be displayed in the home section</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="mdi mdi-content-save me-1"></i> Save Home Sections
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor.create(document.querySelector('#subcontent1')).catch(error => { console.error(error); });
+    ClassicEditor.create(document.querySelector('#subcontent2')).catch(error => { console.error(error); });
+    ClassicEditor.create(document.querySelector('#subcontent3')).catch(error => { console.error(error); });
+</script>
+{% endblock %}

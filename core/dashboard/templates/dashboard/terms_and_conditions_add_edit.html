@@ -1,0 +1,62 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Edit Terms and Conditions - Dashboard{% endblock %}
+
+{% block body %}
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <h4 class="page-title">Edit Terms and Conditions</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                
+                                <div class="mb-3">
+                                    <label for="page_title" class="form-label">Page Title <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="page_title" name="page_title" value="{{ terms.page_title|default:'Terms and Conditions' }}" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="content" class="form-label">Content <span class="text-danger">*</span></label>
+                                    <textarea class="form-control" id="content" name="content" rows="15">{{ terms.content|default:'' }}</textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if terms.is_active or not terms %}checked{% endif %}>
+                                        <label class="form-check-label" for="is_active">Active</label>
+                                    </div>
+                                </div>
+
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="mdi mdi-content-save me-1"></i> Save Terms and Conditions
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor.create(document.querySelector('#content')).catch(error => { console.error(error); });
+</script>
+{% endblock %}

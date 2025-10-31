@@ -1,0 +1,88 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}{% if faq %}Edit FAQ{% else %}Add FAQ{% endif %} - Dashboard{% endblock %}
+
+{% block body %}
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right">
+                            <a href="{% url 'dashboard:faqs_list' %}" class="btn btn-secondary">
+                                <i class="mdi mdi-arrow-left me-1"></i> Back
+                            </a>
+                        </div>
+                        <h4 class="page-title">{% if faq %}Edit FAQ{% else %}Add FAQ{% endif %}</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="mb-3">
+                                            <label for="question" class="form-label">Question <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="question" name="question" value="{{ faq.question|default:'' }}" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="answer" class="form-label">Answer <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" id="answer" name="answer" rows="8">{{ faq.answer|default:'' }}</textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="category" name="category" required>
+                                                {% for choice in categories %}
+                                                <option value="{{ choice.0 }}" {% if faq.category == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="sort_order" class="form-label">Sort Order</label>
+                                            <input type="number" class="form-control" id="sort_order" name="sort_order" value="{{ faq.sort_order|default:0 }}">
+                                            <small class="text-muted">Lower numbers appear first</small>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if faq.is_active or not faq %}checked{% endif %}>
+                                                <label class="form-check-label" for="is_active">Active</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="mdi mdi-content-save me-1"></i> Save FAQ
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor.create(document.querySelector('#answer')).catch(error => { console.error(error); });
+</script>
+{% endblock %}

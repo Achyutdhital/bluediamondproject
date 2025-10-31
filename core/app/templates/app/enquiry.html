@@ -1,0 +1,349 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}Enquiry - {{ company.company_name|default:'Blue Diamond Service Center' }}{% endblock %}
+
+{% block meta_description %}Get in touch with {{ company.company_name|default:'Blue Diamond Service Center' }} for services and training courses. Send us your enquiry today.{% endblock %}
+
+{% block content %}
+
+<!-- Banner Section -->
+<section class="banner inner-page" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% static 'app/bluediamondservicecenter/home/image1.jpg' %}'); background-size: cover; background-position: center; padding: 100px 0 80px 0; margin-top: 70px;">
+    <div class="container">
+        <div class="banner-wrap" style="text-align: center;">
+            <h1 style="color: #fff; font-size: 42px; margin-bottom: 20px;">Send Enquiry</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb" style="background: transparent; justify-content: center; margin: 0;">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color: #fff;">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page" style="color: #ddd;">Enquiry</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<!-- Enquiry Section -->
+<section class="secptb70">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-7">
+                <div class="enquiry-form-wrapper">
+                    <div class="form-header">
+                        <h2>Get In Touch</h2>
+                        <p>Have questions about our services or training courses? Send us your enquiry and we'll get back to you shortly.</p>
+                    </div>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post" class="enquiry-form">
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                            <label for="{{ form.enquiry_type.id_for_label }}">{{ form.enquiry_type.label }}</label>
+                            {{ form.enquiry_type }}
+                            {% if form.enquiry_type.errors %}
+                                <div class="error-message">{{ form.enquiry_type.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.name.id_for_label }}">Full Name *</label>
+                                    {{ form.name }}
+                                    {% if form.name.errors %}
+                                        <div class="error-message">{{ form.name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.phone_number.id_for_label }}">Phone Number *</label>
+                                    {{ form.phone_number }}
+                                    {% if form.phone_number.errors %}
+                                        <div class="error-message">{{ form.phone_number.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.email.id_for_label }}">Email Address</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="error-message">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.message.id_for_label }}">Message</label>
+                            {{ form.message }}
+                            {% if form.message.errors %}
+                                <div class="error-message">{{ form.message.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-paper-plane"></i>
+                                Send Enquiry
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-5">
+                <div class="contact-info-sidebar">
+                    <h3>Get In Touch With Us</h3>
+                    <div class="contact-info-card">
+                        <div class="icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <h4>Call Us</h4>
+                        <p>{{ company.phone_number|default:'+977-1-XXXXXXX' }}</p>
+                    </div>
+                    <div class="contact-info-card">
+                        <div class="icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h4>Email Us</h4>
+                        <p>{{ company.email|default:'info@bluediamond.com' }}</p>
+                    </div>
+                    <div class="contact-info-card">
+                        <div class="icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h4>Visit Us</h4>
+                        <p>{{ company.address|default:'Kathmandu, Nepal' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Enquiry Form Styles */
+.enquiry-form-wrapper {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    margin-bottom: 50px;
+    position: relative;
+}
+
+.enquiry-form-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.05);
+    border-radius: 15px;
+    z-index: 1;
+}
+
+.enquiry-form-wrapper > * {
+    position: relative;
+    z-index: 2;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.form-header h2 {
+    color: #fff;
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.form-header p {
+    color: rgba(255,255,255,0.9);
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.enquiry-form .form-group {
+    margin-bottom: 25px;
+}
+
+.enquiry-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #fff;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.enquiry-form input,
+.enquiry-form select,
+.enquiry-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: #fff;
+    min-height: 45px;
+}
+
+.enquiry-form input:focus,
+.enquiry-form select:focus,
+.enquiry-form textarea:focus {
+    outline: none;
+    border-color: #1e3c72;
+    box-shadow: 0 0 0 3px rgba(30,60,114,0.1);
+}
+
+.enquiry-form textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(30,60,114,0.3);
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30,60,114,0.4);
+    background: linear-gradient(135deg, #2a5298, #1e3c72);
+}
+
+.btn-submit i {
+    margin-right: 8px;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.alert {
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+/* Contact Info Sidebar */
+.contact-info-sidebar {
+    padding: 30px 0;
+}
+
+.contact-info-sidebar h3 {
+    color: #1e3c72;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.contact-info-card {
+    text-align: center;
+    padding: 25px 20px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
+    transition: all 0.3s ease;
+    border: 1px solid #e1e5e9;
+}
+
+.contact-info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(30,60,114,0.2);
+    border-color: #1e3c72;
+}
+
+.contact-info-card .icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    box-shadow: 0 5px 15px rgba(30,60,114,0.3);
+}
+
+.contact-info-card .icon i {
+    color: #fff;
+    font-size: 24px;
+}
+
+.contact-info-card h4 {
+    color: #1e3c72;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.contact-info-card p {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+    font-weight: 400;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .enquiry-form-wrapper {
+        padding: 30px 20px;
+        margin-bottom: 30px;
+    }
+    
+    .form-header h2 {
+        font-size: 28px;
+    }
+    
+    .btn-submit {
+        width: 100%;
+        padding: 15px;
+    }
+    
+    .contact-info-sidebar {
+        padding: 20px 0;
+    }
+    
+    .contact-info-sidebar h3 {
+        font-size: 22px;
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .enquiry-form-wrapper {
+        padding: 25px 15px;
+    }
+    
+    .form-header h2 {
+        font-size: 24px;
+    }
+}
+</style>
+
+{% endblock %}

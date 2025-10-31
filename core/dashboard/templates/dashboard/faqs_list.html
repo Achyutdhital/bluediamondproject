@@ -1,0 +1,91 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}FAQs - Dashboard{% endblock %}
+
+{% block body %}
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right">
+                            <a href="{% url 'dashboard:faq_add' %}" class="btn btn-primary">
+                                <i class="mdi mdi-plus-circle me-1"></i> Add New FAQ
+                            </a>
+                        </div>
+                        <h4 class="page-title">FAQs</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="get" class="row mb-3">
+                                <div class="col-md-10">
+                                    <select name="category" class="form-select" onchange="this.form.submit()">
+                                        <option value="">All Categories</option>
+                                        {% for choice in categories %}
+                                        <option value="{{ choice.0 }}" {% if category == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <a href="{% url 'dashboard:faqs_list' %}" class="btn btn-secondary w-100">Clear</a>
+                                </div>
+                            </form>
+
+                            <div class="table-responsive">
+                                <table class="table table-centered table-striped dt-responsive nowrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th>Question</th>
+                                            <th>Category</th>
+                                            <th>Sort Order</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for faq in faqs %}
+                                        <tr>
+                                            <td>{{ faq.question|truncatewords:15 }}</td>
+                                            <td><span class="badge bg-info">{{ faq.get_category_display }}</span></td>
+                                            <td>{{ faq.sort_order }}</td>
+                                            <td>
+                                                {% if faq.is_active %}
+                                                <span class="badge bg-success">Active</span>
+                                                {% else %}
+                                                <span class="badge bg-danger">Inactive</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'dashboard:faq_edit' faq.pk %}" class="btn btn-sm btn-info">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </a>
+                                                <a href="{% url 'dashboard:faq_delete' faq.pk %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
+                                                    <i class="mdi mdi-delete"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="5" class="text-center">No FAQs found.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

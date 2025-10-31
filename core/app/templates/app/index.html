@@ -1,0 +1,387 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}{{ company.company_name|default:'Blue Diamond Service Center' }} - Home | Professional Appliance Repair Services{% endblock %}
+
+{% block meta_description %}Professional appliance repair and training services in Nepal. Expert AC, refrigerator, washing machine, geyser repair with CTVT certified technicians and genuine parts.{% endblock %}
+
+{% block meta_keywords %}appliance repair Nepal, AC repair Kathmandu, refrigerator repair, washing machine service, geyser installation, appliance training courses, {{ company.company_name }}{% endblock %}
+
+{% block content %}
+        <!--================Slider Area =================-->
+        <section class="slider_area mr_top">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="owl-carousel">
+                            {% for slide in carousels %}
+                            <div class="item">
+                                <div class="slide" style="max-height: 600px; overflow: hidden;">
+                                    {% if slide.image %}
+                                        <img src="{{ slide.image.url }}" alt="{{ slide.title }}" style="width: 100%; height: 600px; object-fit: cover;">
+                                    {% endif %}
+                                    <div class="slide-overlay"></div>
+                                </div>
+                                {% if slide.title or slide.description %}
+                                <div class="container">
+                                    <div class="carousel-captions caption-align-center">
+                                        <div class="caption-align-center-wrap">
+                                            {% if slide.title %}<h2 class="heading color">{{ slide.title }}</h2>{% endif %}
+                                            {% if slide.description %}<p class="sliderpara">{{ slide.description }}</p>{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--================End Slider Area =================-->
+        
+        <!--================welcome-section-Start=================-->
+
+<section class="secptb70 our_about_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-sm-8">
+                <div class="our_about_left_content">
+                    <h2>Welcome to <span class="themetextcolor">{{ company.company_name }}</span></h2>
+                    {% if homesection %}
+                        <p>{{ homesection.subcontent1|linebreaks }}</p>
+                        {% comment %} <p class="mb_3">{{ homesection.subcontent1|default:homesection.subcontent1 }}</p> {% endcomment %}
+                        <a href="#" class="readM">Read More</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-4 hidden-xs">
+                <div class="image_thumb ">
+                    {% if homesection.picture1 %}
+                        <img src="{{ homesection.picture1.url }}" alt="image">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================welcome-section-End=================-->
+
+<!--================Popular Brands Section Start=================-->
+{% if brands %}
+<section class="secptb70 bgcolor">
+    <div class="container">
+        <div class="page-heading">
+            <h2>Popular Brands We Service</h2>
+            <p>We repair all major brands with genuine parts and expert care</p>
+        </div>
+        <div class="row">
+            {% for brand in brands %}
+            <div class="col-md-2 col-sm-4 col-xs-6">
+                <div class="brand-item">
+                    {% if brand.logo %}
+                    <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" class="img-responsive">
+                    {% else %}
+                    <span>{{ brand.name }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+<!--================Popular Brands Section End=================-->
+
+<!--================our-services-section-Start=================-->
+{% if services %}
+<section class="secptb70 service_page">
+    <div class="container">
+        <div class="page-heading">
+            <h2>Our Services</h2>
+        </div>
+        <div class="row service_item_inner align_item_center justify_content_center">
+            {% for svc in services %}
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <div class="service_box_item">
+                    <a href="/services/{{ svc.slug }}/" class="service_image">
+                        {% if svc.feature_image %}
+                        <img src="{{ svc.feature_image.url }}" alt="{{ svc.name }}">
+                        {% endif %}
+                    </a>
+                    <div class="service_text">
+                        <a href="/services/{{ svc.slug }}/"><h4>{{ svc.name }}</h4></a>
+                        <p>{{ svc.short_description|truncatewords:20 }}</p>
+                        <a href="/services/{{ svc.slug }}/" class="theme-btn btn-lg">Read More</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+<!--================our-services-section-End=================-->
+
+
+<!--================training-courses-section-Start=================-->
+{% if training_courses %}
+<section class="secptb70 service_page bgcolor">
+    <div class="container">
+        <div class="page-heading">
+            <h2>Our Training Courses</h2>
+        </div>
+        <div class="row service_item_inner align_item_center justify_content_center">
+            {% for course in training_courses %}
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="service_box_item">
+                    <a href="#" class="service_image">
+                        {% if course.image %}
+                        <img src="{{ course.image.url }}" alt="{{ course.title }}">
+                        {% endif %}
+                    </a>
+                    <div class="service_text">
+                        <a href="#"><h4>{{ course.title }}</h4></a>
+                        <p>{{ course.short_description|default:course.description|striptags|truncatewords:25 }}</p>
+                        <a href="#" class="theme-btn btn-lg">Read More</a>
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+<!--================training-courses-section-End=================-->
+
+<!--================Testimonials Section Start=================-->
+{% if testimonials %}
+<section class="secptb70">
+    <div class="container">
+        <div class="page-heading">
+            <h2>Customer Reviews</h2>
+            <p>What our customers say about our services</p>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="testimonial-carousel owl-carousel">
+                    {% for t in testimonials %}
+                    <div class="testimonial-item">
+                        <div class="testimonial-author">
+                            {% if t.photo %}
+                            <img src="{{ t.photo.url }}" alt="{{ t.name }}">
+                            {% endif %}
+                            <h4>{{ t.name }}</h4>
+                            {% if t.location %}<span>{{ t.location }}</span>{% endif %}
+                             <div class="testimonial-rating">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="testimonial-content">
+                    
+                            <p>{{ t.message }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+<!--================Testimonials Section End=================-->
+<!--================membership-section-Start=================-->
+<section>
+    <div class="membership-section">
+        <div class="container">
+            <div class="becomember-main">
+                <h2>{{homesection.subtitle2}}</h2>
+                <p>{{ homesection.subcontent2 }}</p>
+                <div class="commonbtn-parent">
+                    <a href="#" class="common-btn">Contact Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================membership-section-End=================-->
+
+<!--================whychooseus-section-Start=================-->
+<section>
+    <div class="whychooseus-section">
+        <div class="container">
+            <div class="whychooseus-main">
+                <div class="ourcompany-panel">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12">
+                            <h2>
+                                <span>OUR COMPANY</span>
+                                {{homesection.subtitle3}}
+                            </h2>
+                        </div>
+                         <div class="col-md-8 col-sm-12">
+                            <p>{{ homesection.subcontent3 }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="whychooseus-gridmain">
+                    <div class="row">
+                        {% for feature in features %}
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="whychooseus-panel">
+                                <span>
+                                    {% if feature.icon %}
+                                        <img src="{{ feature.icon.url }}" alt="{{ feature.title }}">
+                                    {% endif %}
+                                </span>
+                                <h3>{{ feature.title }}</h3>
+                                <p>{{ feature.description }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================whychooseus-section-End=================-->
+
+
+<!--================homefaq-section-Start=================-->
+{% if faqs %}
+<section>
+    <div class="homefaq-section">
+        <div class="container">
+            <div class="page-heading">
+                <!-- <h5>Faq</h5> -->
+                <h2>Frequently Asked Question</h2>
+            </div>
+            <div class="homefaq-mainpanel">
+                <div class="homefaq-listmain">
+                    <div class="row">
+                       <div class="col-lg-6 col-sm-12 col-xs-12">
+                            <div class="panel-group faq_ques" id="accordion" role="tablist" aria-multiselectable="true">
+                                {% for faq in faqs %}
+                                {% if forloop.counter0|divisibleby:2 %}
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="faq{{ forloop.counter }}">
+                                        <h4 class="panel-title">
+                                            <a {% if forloop.first %}role="button"{% else %}class="collapsed" role="button"{% endif %} data-toggle="collapse" data-parent="#accordion" href="#faq_c{{ forloop.counter }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="faq_c{{ forloop.counter }}">
+                                                <strong>Q: {{ faq.question }}</strong>
+                                                <span><i class="fa fa-angle-down" aria-hidden="true"></i><i class="fa fa-angle-up" aria-hidden="true"></i></span>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="faq_c{{ forloop.counter }}" class="panel-collapse collapse {% if forloop.first %}in{% endif %}" role="tabpanel" aria-labelledby="faq{{ forloop.counter }}">
+                                        <div class="panel-body">
+                                            {{ faq.answer|safe }}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                    </div>
+                       <div class="col-lg-6 col-sm-12 col-xs-12">
+                            <div class="panel-group faq_ques" id="accordion-2" role="tablist" aria-multiselectable="true">
+                                {% for faq in faqs %}
+                                {% if not forloop.counter0|divisibleby:2 %}
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="faq{{ forloop.counter }}">
+                                        <h4 class="panel-title">
+                                            <a {% if forloop.counter == 2 %}role="button"{% else %}class="collapsed" role="button"{% endif %} data-toggle="collapse" data-parent="#accordion-2" href="#faq_c{{ forloop.counter }}" aria-expanded="{% if forloop.counter == 2 %}true{% else %}false{% endif %}" aria-controls="faq_c{{ forloop.counter }}">
+                                                <strong>Q: {{ faq.question }}</strong>
+                                                <span><i class="fa fa-angle-down" aria-hidden="true"></i><i class="fa fa-angle-up" aria-hidden="true"></i></span>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="faq_c{{ forloop.counter }}" class="panel-collapse collapse {% if forloop.counter == 2 %}in{% endif %}" role="tabpanel" aria-labelledby="faq{{ forloop.counter }}">
+                                        <div class="panel-body">
+                                            {{ faq.answer|safe }}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+<!--================homefaq-section-End=================-->
+
+<!--================ourmission-section-Start=================-->
+<section>
+    <div class="ourmission-section">
+        <div class="ourmission-main">
+            <div class="ourmission-group">
+                <div class="ourmission-imgpanel">
+                    <img src="{% static 'app/bluediamondservicecenter/home/image3.jpg' %}" alt="Fridge Repair" data-pagespeed-url-hash="2437150113" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+                </div>
+                <div class="ourmission-contents">
+                    <h2 class="wow fadeIn animated mb_3" data-wow-delay="100ms">Need Appliance Repair? Reach Out to Us Today!</h2>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                   <form action="" method="post" class="homeForm">
+    {% csrf_token %}
+    <div class="row">
+        <!-- Enquiry Type First -->
+        <div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 15px;">
+            <label style="color: white; font-weight: 600; margin-bottom: 8px; display: block;">{{ enquiry_form.enquiry_type.label }}</label>
+            {{ enquiry_form.enquiry_type }}
+        </div>
+        
+        <!-- Name Field -->
+        <div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 15px;">
+            {{ enquiry_form.name }}
+        </div>
+        
+        <!-- Email and Phone -->
+        <div class="col-lg-6 col-md-6 col-sm-12" style="margin-bottom: 15px;">
+            {{ enquiry_form.email }}
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12" style="margin-bottom: 15px;">
+            {{ enquiry_form.phone_number }}
+        </div>
+        
+        <!-- Message -->
+        <div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 20px;">
+            {{ enquiry_form.message }}
+        </div>
+        
+        <!-- Submit Button -->
+        <div class="col-lg-12 col-md-12 col-sm-12" style="text-align: center;">
+            <button type="submit" style="background: linear-gradient(135deg, #fff, #f8f9fa); color: #1e3c72; padding: 15px 40px; border: none; border-radius: 50px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 5px 15px rgba(255,255,255,0.3); transition: all 0.3s ease; min-width: 180px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(255,255,255,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(255,255,255,0.3)'">
+                <i class="fas fa-paper-plane" style="margin-right: 8px;"></i>
+                Send Enquiry
+            </button>
+        </div>
+    </div>
+</form>
+
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</section>
+<!--================ourmission-section-End=================-->
+<section class="google-map">
+    <iframe src="{{ company.map_location|default:'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d47170.487043645524!2d85.28493283697097!3d27.709030242079724!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb198a307baabf%3A0xb5137c1bf18db1ea!2sKathmandu%2044600!5e1!3m2!1sen!2snp!4v1754385426513!5m2!1sen!2snp' }}" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    
+</section>
+{% endblock %}

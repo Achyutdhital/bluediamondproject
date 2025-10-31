@@ -1,0 +1,213 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}{% if aboutus %}{{ aboutus.page_title }}{% else %}About Us{% endif %} - {{ company.company_name|default:'Blue Diamond Service Center' }}{% endblock %}
+
+{% block meta_description %}Learn more about {{ company.company_name|default:'Blue Diamond Service Center' }} - Your trusted partner for appliance repair and training services in Nepal.{% endblock %}
+
+{% block content %}
+
+<!-- Banner Section -->
+<section class="banner inner-page" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% static 'app/bluediamondservicecenter/home/image1.jpg' %}'); background-size: cover; background-position: center; padding: 100px 0 80px 0; margin-top: 70px;">
+    <div class="container">
+        <div class="banner-wrap" style="text-align: center;">
+            <h1 style="color: #fff; font-size: 42px; margin-bottom: 20px;">{% if aboutus %}{{ aboutus.page_title }}{% else %}About Us{% endif %}</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb" style="background: transparent; justify-content: center; margin: 0;">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color: #fff;">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page" style="color: #ddd;">{% if aboutus %}{{ aboutus.page_title }}{% else %}About Us{% endif %}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+<!-- Banner End -->
+
+{% if aboutus %}
+<!-- Main About Us Content -->
+<section class="secptb70 about-us">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-{% if aboutus.main_image %}7{% else %}12{% endif %}">
+                <div class="content-box" style="background: #fff; padding: 24px; box-shadow: 0 0 20px rgba(0,0,0,0.1); border-radius: 5px;">
+                    {% if aboutus.main_heading %}
+                    <h2 style="color: #333; margin-bottom: 25px; font-size: 32px; font-weight: 600;">{{ aboutus.main_heading }}</h2>
+                    {% endif %}
+                    <div class="about-content" style="color: #666; line-height: 1.9;">
+                        {{ aboutus.content|safe }}
+                    </div>
+                </div>
+            </div>
+            {% if aboutus.main_image %}
+            <div class="col-md-5">
+                <div class="image-box" style="background: #fff; padding: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); border-radius: 5px; height: 100%;">
+                    <img src="{{ aboutus.main_image.url }}" class="img-responsive" alt="{{ aboutus.main_heading }}" loading="lazy" style="width: 100%; border-radius: 5px;">
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Section 2 (Optional) - Reversed Layout -->
+{% if aboutus.section_2_content %}
+<section class="secptb70 bgcolor">
+    <div class="container">
+        <div class="row">
+            {% if aboutus.side_image %}
+            <div class="col-md-5">
+                <div class="image-box" style="background: #fff; padding: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); border-radius: 5px; height: 100%;">
+                    <img src="{{ aboutus.side_image.url }}" class="img-responsive" alt="{{ aboutus.section_2_title }}" loading="lazy" style="width: 100%; border-radius: 5px;">
+                </div>
+            </div>
+            {% endif %}
+            <div class="col-md-{% if aboutus.side_image %}7{% else %}12{% endif %}">
+                <div class="content-box" style="background: #fff; padding: 24px; box-shadow: 0 0 20px rgba(0,0,0,0.1); border-radius: 5px;">
+                    {% if aboutus.section_2_title %}
+                    <h2 style="color: #333; margin-bottom: 25px; font-size: 32px; font-weight: 600;">{{ aboutus.section_2_title }}</h2>
+                    {% endif %}
+                    <div class="section-content" style="color: #666; line-height: 1.9;">
+                        {{ aboutus.section_2_content|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Section 3 (Optional) - Full Width -->
+{% if aboutus.section_3_content %}
+<section class="secptb70">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="content-box" style="background: #fff; padding: 24px; box-shadow: 0 0 20px rgba(0,0,0,0.1); border-radius: 5px;">
+                    {% if aboutus.section_3_title %}
+                    <h2 style="color: #333; margin-bottom: 25px; font-size: 32px; font-weight: 600; text-align: center;">{{ aboutus.section_3_title }}</h2>
+                    {% endif %}
+                    <div class="section-content" style="color: #666; line-height: 1.9;">
+                        {{ aboutus.section_3_content|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% else %}
+<!-- Fallback if no About Us content -->
+<section class="banner inner-page" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% static 'app/bluediamondservicecenter/home/image1.jpg' %}'); background-size: cover; background-position: center; padding: 100px 0 80px 0; margin-top: 70px;">
+    <div class="container">
+        <div class="banner-wrap" style="text-align: center;">
+            <h1 style="color: #fff; font-size: 42px; margin-bottom: 20px;">About Us</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb" style="background: transparent; justify-content: center; margin: 0;">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color: #fff;">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page" style="color: #ddd;">About Us</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+    
+<section class="secptb70">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="content-box" style="background: #fff; padding: 23px; box-shadow: 0 0 20px rgba(0,0,0,0.1); border-radius: 5px; text-align: center;">
+                    <h2 style="color: #333; margin-bottom: 25px;">About {{ company.company_name }}</h2>
+                    {% if company.description %}
+                    <p style="text-align: left; color: #666; line-height: 1.9;">{{ company.description|linebreaks }}</p>
+                    {% else %}
+                    <p style="color: #999;">Please add About Us content from the admin panel.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Custom Styles -->
+<style>
+/* Wider container and tighter side padding for about sections only */
+section.secptb70 .container {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+@media (min-width: 1200px) {
+    section.secptb70 .container {
+        width: 1320px; /* widen from default 1170 for larger content area */
+    }
+}
+
+.about-content, .section-content {
+    font-size: 16px;
+    line-height: 1.9;
+    color: #666;
+}
+.about-content p, .section-content p {
+    margin-bottom: 20px;
+}
+.about-content h3, .section-content h3 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 24px;
+    font-weight: 600;
+}
+.about-content h4, .section-content h4 {
+    margin-top: 25px;
+    margin-bottom: 12px;
+    color: #444;
+    font-size: 20px;
+    font-weight: 600;
+}
+.about-content ul, .section-content ul {
+    margin-bottom: 20px;
+    padding-left: 30px;
+}
+.about-content ul li, .section-content ul li {
+    margin-bottom: 10px;
+    color: #666;
+}
+.about-content ol, .section-content ol {
+    margin-bottom: 20px;
+    padding-left: 30px;
+}
+.about-content ol li, .section-content ol li {
+    margin-bottom: 10px;
+    color: #666;
+}
+.about-content strong, .section-content strong {
+    color: #333;
+    font-weight: 600;
+}
+.about-content a, .section-content a {
+    color: #007bff;
+    text-decoration: none;
+}
+.about-content a:hover, .section-content a:hover {
+    text-decoration: underline;
+}
+.content-box {
+    transition: transform 0.3s ease;
+}
+.content-box:hover {
+    transform: translateY(-5px);
+}
+.image-box {
+    overflow: hidden;
+}
+.image-box img {
+    transition: transform 0.3s ease;
+}
+.image-box:hover img {
+    transform: scale(1.05);
+}
+</style>
+
+{% endblock %}
+

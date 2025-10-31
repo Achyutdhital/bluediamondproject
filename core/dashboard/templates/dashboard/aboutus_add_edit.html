@@ -1,0 +1,124 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Edit About Us Page - Dashboard{% endblock %}
+
+{% block body %}
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <h4 class="page-title">Edit About Us Page</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h5 class="mb-3">Basic Information</h5>
+                                        
+                                        <div class="mb-3">
+                                            <label for="page_title" class="form-label">Page Title <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="page_title" name="page_title" value="{{ about_page.page_title|default:'About Us' }}" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="main_heading" class="form-label">Main Heading <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="main_heading" name="main_heading" value="{{ about_page.main_heading|default:'' }}" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="content" class="form-label">Main Content <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" id="content" name="content" rows="8">{{ about_page.content|default:'' }}</textarea>
+                                        </div>
+
+                                        <hr class="my-4">
+                                        <h5 class="mb-3">Additional Sections (Optional)</h5>
+
+                                        <div class="mb-3">
+                                            <label for="section_2_title" class="form-label">Section 2 Title</label>
+                                            <input type="text" class="form-control" id="section_2_title" name="section_2_title" value="{{ about_page.section_2_title|default:'' }}">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="section_2_content" class="form-label">Section 2 Content</label>
+                                            <textarea class="form-control" id="section_2_content" name="section_2_content" rows="5">{{ about_page.section_2_content|default:'' }}</textarea>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="section_3_title" class="form-label">Section 3 Title</label>
+                                            <input type="text" class="form-control" id="section_3_title" name="section_3_title" value="{{ about_page.section_3_title|default:'' }}">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="section_3_content" class="form-label">Section 3 Content</label>
+                                            <textarea class="form-control" id="section_3_content" name="section_3_content" rows="5">{{ about_page.section_3_content|default:'' }}</textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <h5 class="mb-3">Images</h5>
+                                        
+                                        <div class="mb-3">
+                                            <label for="main_image" class="form-label">Main Image</label>
+                                            {% if about_page and about_page.main_image %}
+                                            <div class="mb-2">
+                                                <img src="{{ about_page.main_image.url }}" alt="Main Image" class="img-fluid rounded">
+                                            </div>
+                                            {% endif %}
+                                            <input type="file" class="form-control" id="main_image" name="main_image" accept="image/*">
+                                            <small class="text-muted">Main about us image</small>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="side_image" class="form-label">Side Image</label>
+                                            {% if about_page and about_page.side_image %}
+                                            <div class="mb-2">
+                                                <img src="{{ about_page.side_image.url }}" alt="Side Image" class="img-fluid rounded">
+                                            </div>
+                                            {% endif %}
+                                            <input type="file" class="form-control" id="side_image" name="side_image" accept="image/*">
+                                            <small class="text-muted">Side/secondary image</small>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if about_page.is_active or not about_page %}checked{% endif %}>
+                                                <label class="form-check-label" for="is_active">Active</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="mdi mdi-content-save me-1"></i> Save About Us Page
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor.create(document.querySelector('#content')).catch(error => { console.error(error); });
+    ClassicEditor.create(document.querySelector('#section_2_content')).catch(error => { console.error(error); });
+    ClassicEditor.create(document.querySelector('#section_3_content')).catch(error => { console.error(error); });
+</script>
+{% endblock %}

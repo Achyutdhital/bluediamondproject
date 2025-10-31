@@ -1,0 +1,112 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Training Courses - Dashboard{% endblock %}
+
+{% block body %}
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right">
+                            <a href="{% url 'dashboard:training_course_add' %}" class="btn btn-primary">
+                                <i class="mdi mdi-plus-circle me-1"></i> Add New Course
+                            </a>
+                        </div>
+                        <h4 class="page-title">Training Courses</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="get" class="row mb-3">
+                                <div class="col-md-10">
+                                    <input type="text" name="search" class="form-control" placeholder="Search courses..." value="{{ search }}">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                                </div>
+                            </form>
+
+                            <div class="table-responsive">
+                                <table class="table table-centered table-striped dt-responsive nowrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th>Image</th>
+                                            <th>Title</th>
+                                            <th>Duration</th>
+                                            <th>Fee</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for course in courses %}
+                                        <tr>
+                                            <td>
+                                                {% if course.image %}
+                                                <img src="{{ course.image.url }}" alt="{{ course.title }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                                                {% else %}
+                                                <span class="badge bg-secondary">No Image</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ course.title }}</td>
+                                            <td>{{ course.duration }}</td>
+                                            <td>{% if course.fee %}Rs. {{ course.fee }}{% else %}Free{% endif %}</td>
+                                            <td>
+                                                {% if course.is_active %}
+                                                <span class="badge bg-success">Active</span>
+                                                {% else %}
+                                                <span class="badge bg-danger">Inactive</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'dashboard:training_course_edit' course.pk %}" class="btn btn-sm btn-info">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </a>
+                                                <a href="{% url 'dashboard:training_course_delete' course.pk %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
+                                                    <i class="mdi mdi-delete"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="6" class="text-center">No courses found.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {% if courses.has_other_pages %}
+                            <div class="mt-3">
+                                <ul class="pagination pagination-rounded justify-content-end">
+                                    {% if courses.has_previous %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ courses.previous_page_number }}{% if search %}&search={{ search }}{% endif %}">Previous</a></li>
+                                    {% endif %}
+                                    {% for num in courses.paginator.page_range %}
+                                    <li class="page-item {% if courses.number == num %}active{% endif %}">
+                                        <a class="page-link" href="?page={{ num }}{% if search %}&search={{ search }}{% endif %}">{{ num }}</a>
+                                    </li>
+                                    {% endfor %}
+                                    {% if courses.has_next %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ courses.next_page_number }}{% if search %}&search={{ search }}{% endif %}">Next</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

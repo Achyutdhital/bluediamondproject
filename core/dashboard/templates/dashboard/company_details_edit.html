@@ -1,0 +1,165 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Company Details - Dashboard{% endblock %}
+
+{% block body %}
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <h4 class="page-title">Company Details</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h5 class="mb-3">Basic Information</h5>
+                                        
+                                        <div class="mb-3">
+                                            <label for="company_name" class="form-label">Company Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="company_name" name="company_name" value="{{ company.company_name|default:'' }}" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="address" class="form-label">Address <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" id="address" name="address" rows="2" required>{{ company.address|default:'' }}</textarea>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                                                    <input type="email" class="form-control" id="email" name="email" value="{{ company.email|default:'' }}" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="phone_number" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ company.phone_number|default:'' }}" required>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="description" class="form-label">Description</label>
+                                            <textarea class="form-control" id="description" name="description" rows="5">{{ company.description|default:'' }}</textarea>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="map_location" class="form-label">Map Location (Embed URL)</label>
+                                            <input type="text" class="form-control" id="map_location" name="map_location" value="{{ company.map_location|default:'' }}" placeholder="Google Maps embed URL">
+                                        </div>
+
+                                        <h5 class="mb-3 mt-4">Social Media Links</h5>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="facebook_url" class="form-label">Facebook URL</label>
+                                                    <input type="url" class="form-control" id="facebook_url" name="facebook_url" value="{{ company.facebook_url|default:'' }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="twitter_url" class="form-label">Twitter URL</label>
+                                                    <input type="url" class="form-control" id="twitter_url" name="twitter_url" value="{{ company.twitter_url|default:'' }}">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="instagram_url" class="form-label">Instagram URL</label>
+                                                    <input type="url" class="form-control" id="instagram_url" name="instagram_url" value="{{ company.instagram_url|default:'' }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="linkedin_url" class="form-label">LinkedIn URL</label>
+                                                    <input type="url" class="form-control" id="linkedin_url" name="linkedin_url" value="{{ company.linkedin_url|default:'' }}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <h5 class="mb-3">Images</h5>
+                                        
+                                        <div class="mb-3">
+                                            <label for="logo" class="form-label">Company Logo</label>
+                                            <input type="file" name="logo" id="logo" class="form-control" accept="image/*" onchange="showPreview(this, 'logoPreview');">
+                                            <small class="text-muted">Recommended: Square logo (e.g., 200x200px)</small>
+                                            <div id="logoContainer" style="width:auto; margin-top: 10px;">
+                                                {% if company and company.logo %}
+                                                <div class="border rounded p-2 bg-light">
+                                                    <img class="img-fluid" id="logoPreview" src="{{ company.logo.url }}" alt="Logo Preview" style="max-height: 150px;">
+                                                    <small class="d-block text-muted mt-1">Current: {{ company.logo.name }}</small>
+                                                </div>
+                                                {% else %}
+                                                <div class="border rounded p-3 bg-light text-center">
+                                                    <img class="img-fluid" id="logoPreview" src="" alt="Logo Preview" style="max-height: 150px; display: none;">
+                                                    <span class="text-muted">No logo uploaded yet</span>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="mdi mdi-content-save me-1"></i> Save Company Details
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor.create(document.querySelector('#description')).catch(error => { console.error(error); });
+    
+    function showPreview(input, previewId) {
+        const preview = document.getElementById(previewId);
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                
+                // Hide "No image" text if exists
+                const container = preview.closest('div');
+                const noImageText = container.querySelector('span.text-muted');
+                if (noImageText) {
+                    noImageText.style.display = 'none';
+                }
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+{% endblock %}

@@ -331,10 +331,10 @@
                 </div>
                 <div class="ourmission-contents">
                     <h2 class="wow fadeIn animated mb_3" data-wow-delay="100ms">Need Appliance Repair? Reach Out to Us Today!</h2>
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                        {% endfor %}
+                    {% if form_message %}
+                        <div class="alert alert-{{ form_message.type }}" style="margin-bottom: 20px; padding: 15px; border-radius: 8px; {% if form_message.type == 'success' %}background: rgba(40, 167, 69, 0.1); border: 1px solid rgba(40, 167, 69, 0.3); color: #28a745;{% else %}background: rgba(220, 53, 69, 0.1); border: 1px solid rgba(220, 53, 69, 0.3); color: #dc3545;{% endif %}">
+                            {{ form_message.text }}
+                        </div>
                     {% endif %}
                    <form action="" method="post" class="homeForm">
     {% csrf_token %}

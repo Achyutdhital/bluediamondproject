@@ -33,12 +33,15 @@ def index(request):
         form = EnquiryForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Thank you! We\'ll contact you shortly.')
+            request.session['home_form_message'] = {'type': 'success', 'text': 'Thank you! We\'ll contact you shortly.'}
             return redirect('home')
         else:
-            messages.error(request, 'Please correct the errors below.')
+            request.session['home_form_message'] = {'type': 'error', 'text': 'Please correct the errors below.'}
     else:
         form = EnquiryForm()
+    
+    # Get form-specific message
+    form_message = request.session.pop('home_form_message', None)
 
     context = {
         'carousels': Carousel.objects.filter(is_active=True)[:10],
@@ -50,6 +53,7 @@ def index(request):
         'features': Feature.objects.filter(is_active=True).order_by('sort_order')[:3],
         'enquiry_form': form,
         'homesection': homesection.objects.first(),
+        'form_message': form_message,
         **get_common_context(),
     }
     return render(request, 'app/index.html', context)

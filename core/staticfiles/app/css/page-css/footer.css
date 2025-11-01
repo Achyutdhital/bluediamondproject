@@ -1,0 +1,302 @@
+/* Footer Area css
+
+============================================================================================ */
+.footer-section {
+    width: 100%;
+    float: left;
+    background: url(../../bluediamondservicecenter/banner/bg1.jpg) left top no-repeat;
+    background-size: cover;
+}
+.footer_area {
+    width: 100%;
+    float: left;
+    padding-top:80px;
+}
+.footer-about {
+    width: 100%;
+    float: left;
+}
+.footer-about p {
+   padding-top: 5px;
+   font-size: 15px;
+   color: #fff;
+   line-height: 24px;
+}
+.footer-widget {
+   width: 100%;
+   float: left; 
+}
+.footer-link {
+   width: 100%;
+   float: left;
+}
+.footer-link ul {
+    list-style: none;
+}
+.footer-link ul li {
+    padding:7px 0px;
+}
+.footer-link ul li a {
+    font-size: 16px;
+   color: #fff;
+   transition: all 0.5s ease;
+}
+.footer-link ul li a:hover, .footer-link ul li a:focus {
+     color: #EF2F25;
+     padding-left: 2px;
+}
+.footer_widget {
+    padding-bottom: 50px;
+}
+
+.padd-l-70{
+    padding-left: 70px;
+}
+.f_title {
+    padding-bottom: 25px;
+}
+.f_title h3 {
+    display: inline-block;
+    font-size: 16px;
+    color: #fff;
+    font-weight: bold;
+    /*opacity: .6;*/
+    letter-spacing: .32px;
+    text-transform: uppercase;
+    position: relative;
+    padding-bottom: 12px;
+}
+.f_title h3:before {
+    content: "";
+    width: 55%;
+    height: 2px;
+    background: #cdcdcb;
+    position: absolute;
+    left:-1px;
+    bottom: 0px;
+}
+.about_widget img {
+    max-width: 100%;
+}
+.about_widget p {
+    font-size: 16px;
+    line-height: 24px;
+    color: #c5c5c5;
+    font-family: 'Open Sans', sans-serif;
+    letter-spacing: .48px;
+    padding: 25px 0px 15px 0px;
+}
+.about_widget .f_r_link {
+    font-size: 15px;
+    color: #ffce30;
+}
+.about_widget .f_r_link:hover {
+    text-decoration: underline;
+}
+.f_social {
+    margin-top: 25px;
+}
+.f_social li {
+    display: inline-block;
+    margin-right: 10px;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: 1px solid #FFF;
+    border-radius: 70px;
+    text-align: center;
+    line-height: 36px !important;
+}
+.f_social li a {
+    color: #fff;
+    font-size: 16px;
+    -webkit-transition: all 400ms linear 0s;
+    -o-transition: all 400ms linear 0s;
+    transition: all 400ms linear 0s;
+}
+.f_social li:last-child {
+    margin-right: 0px;
+}
+.f_social li a:hover  {
+    color: #FFF;
+    width: 36px;
+    height: 36px;
+    border-radius: 70px;
+}
+.f_social li:hover {
+    background: #2957a9;
+    border: 1px solid #2957a9;
+}
+.contact_widget .contact_inner .media {
+    margin-top: 15px;
+}
+.contact_widget .contact_inner .media:first-child {
+    margin-top: 0px;
+}
+.contact_widget .contact_inner .media .media-left {
+    padding-right: 20px;
+}
+.contact_widget .contact_inner .media .media-left i {
+    font-size: 22px;
+    color: #fdcc2f;
+}
+.contact_widget .contact_inner .media .media-body h4 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #757575;
+    text-transform: uppercase;
+    letter-spacing: .32px;
+}
+.contact_widget .contact_inner .media .media-body p {
+    font-size: 16px;
+    font-family: 'Open Sans', sans-serif;
+    color: #c5c5c5;
+    letter-spacing: .32px;
+    line-height: 24px;
+}
+.contact_widget .contact_inner .media .media-body a {
+    font-size: 16px;
+    font-family: 'Open Sans', sans-serif;
+    color: #c5c5c5;
+    letter-spacing: .32px;
+    line-height: 24px;
+}
+.contact_widget .contact_inner .media:nth-child(2) .media-body a {
+    color: #c5c5c5;
+    font-size: 18px;
+    /*font-weight: bold;*/
+}
+.footer-address {
+    width: 100%;
+    float: left;
+}
+.footer-address h4 {
+    padding-top: 5px;
+    color: #fff;
+    font-size: 16px;
+    line-height: 26px;
+}
+.subscribe-panel {
+    width: 100%;
+    float: left;
+    padding-top:30px;
+}
+.subscribe-panel input {
+    height: 55px;
+    padding: 12px 25px;
+    background: #fff;
+    color: #505050;
+    font-size: 15px;
+    border-radius: 0px;
+}
+.subscribe-panel button {
+    width: 100%;
+    height: 55px;
+    padding: 14px 30px;
+    margin: 0px;
+    background: #008cee;
+    font-size: 16px;
+    border-radius: 0px;
+    font-weight: 500;
+}
+.subscribe-panel button:hover, .subscribe-panel button:focus {
+     background: #008cee;
+}
+.footer_copyright{
+    border-top: solid 1px #444742;
+    padding: 15px 0;
+    text-align: center;
+}
+.footer_copyright .footer_copyright_inner {
+    overflow: hidden;
+    clear: both;
+}
+.footer_copyright .footer_copyright_inner p {
+    color: #fff;
+    font-size: 15px;
+}
+.footer_copyright .footer_copyright_inner p a{
+    color: #fff;
+}
+.footer_copyright .footer_copyright_inner:hover p a{
+    color: #EF2F25;
+}
+.footer_copyright .footer_copyright_inner .pull-left {
+    padding-left: 0px;
+}
+.footer_copyright .footer_copyright_inner .pull-left p {
+    font-size: 16px;
+    color: #FFF;
+    letter-spacing: .32px;
+}
+.footer_copyright .footer_copyright_inner .pull-right {
+    padding-right: 0px;
+}
+.footer_copyright .footer_copyright_inner .pull-right p {
+    font-size: 16px;
+    color: #FFF;
+    letter-spacing: .32px;
+    font-weight: normal;
+}
+.footer_copyright .footer_copyright_inner .pull-right p a {
+    font-size: 16px;
+    color: #FFF;
+    letter-spacing: .32px;
+    font-weight: normal;
+    -webkit-transition: all 400ms linear 0s;
+    -o-transition: all 400ms linear 0s;
+    transition: all 400ms linear 0s;
+}
+.footer_copyright .footer_copyright_inner .pull-right p:hover a {
+    color: #fdcc2f;
+}
+
+@media (max-width:992px){
+    .footer_area {
+        padding-top: 50px;
+    }
+    .footer-about {
+            padding-bottom: 40px;
+    }
+    .footer-widget {
+        padding: 0px 15px !important;
+    }
+    .padd-l-70 {
+    padding-left: 0px;
+    }
+    .footer-address {
+        padding:0px 15px;
+    }
+
+}
+
+@media (max-width:992px){
+    .footer_area {
+        padding-top: 40px;
+    }
+    .footer_widget {
+     padding-bottom: 40px;
+    }
+    .footer-about p {
+    padding-top: 0px;
+    font-size: 14px;
+    }
+    .f_social {
+        margin-top: 30px;
+    }
+    .footer-address {
+        padding: 30px 15px 0px 15px;
+    }
+    .footer-widget {
+       padding: 0px 5px !important;
+    }
+    .footer-link ul li a {
+        font-size: 14px;
+    }
+    .footer_copyright {
+        padding: 10px 0;
+    }
+    .footer_copyright .footer_copyright_inner p {
+        font-size: 12px;
+    }
+}

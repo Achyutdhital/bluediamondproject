@@ -8,10 +8,10 @@
 {% block content %}
 
 <!-- Banner Section -->
-<section class="banner inner-page" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% static 'app/bluediamondservicecenter/home/image1.jpg' %}'); background-size: cover; background-position: center; padding: 100px 0 80px 0; margin-top: 70px;">
+<section class="banner inner-page" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% if banner and banner.image %}{{ banner.image.url }}{% else %}{% static 'app/bluediamondservicecenter/home/image1.jpg' %}{% endif %}'); background-size: cover; background-position: center; padding: 100px 0 80px 0; margin-top: 70px;">
     <div class="container">
         <div class="banner-wrap" style="text-align: center;">
-            <h1 style="color: #fff; font-size: 42px; margin-bottom: 20px;">Contact Us</h1>
+            <h1 style="color: #fff; font-size: 42px; margin-bottom: 20px;">{% if banner %}{{ banner.title }}{% else %}Contact Us{% endif %}</h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb" style="background: transparent; justify-content: center; margin: 0;">
                     <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color: #fff;">Home</a></li>

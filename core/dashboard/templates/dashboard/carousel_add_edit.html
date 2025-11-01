@@ -1,79 +1,108 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
-
-{% block title %}{% if carousel %}Edit Carousel{% else %}Add Carousel{% endif %} - Dashboard{% endblock %}
-
+{% block title %}
+    {% if instance %}Edit Carousel{% else %}Add Carousel{% endif %}
+{% endblock %}
 {% block body %}
-<div class="content-page">
-    <div class="content">
-        <div class="container-fluid">
-            
-            <div class="row">
-                <div class="col-12">
-                    <div class="page-title-box">
-                        <div class="page-title-right">
-                            <a href="{% url 'dashboard:carousels_list' %}" class="btn btn-secondary">
-                                <i class="mdi mdi-arrow-left me-1"></i> Back
-                            </a>
-                        </div>
-                        <h4 class="page-title">{% if carousel %}Edit Carousel{% else %}Add Carousel{% endif %}</h4>
-                    </div>
-                </div>
-            </div>
+    <title>{% if instance %}Edit Carousel{% else %}Add Carousel{% endif %}</title>
 
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <form method="post" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <div class="mb-3">
-                                            <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="title" name="title" value="{{ carousel.title|default:'' }}" required>
-                                        </div>
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
 
-                                        <div class="mb-3">
-                                            <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
-                                            <textarea class="form-control" id="description" name="description" rows="3" required>{{ carousel.description|default:'' }}</textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="image" class="form-label">Carousel Image {% if not carousel %}<span class="text-danger">*</span>{% endif %}</label>
-                                            {% if carousel.image %}
-                                            <div class="mb-2">
-                                                <img src="{{ carousel.image.url }}" alt="{{ carousel.title }}" class="img-fluid rounded">
-                                            </div>
-                                            {% endif %}
-                                            <input type="file" class="form-control" id="image" name="image" accept="image/*" {% if not carousel %}required{% endif %}>
-                                            <small class="text-muted">Recommended size: 1920x800px</small>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if carousel.is_active or not carousel %}checked{% endif %}>
-                                                <label class="form-check-label" for="is_active">Active</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="text-end">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="mdi mdi-content-save me-1"></i> Save Carousel
-                                    </button>
-                                </div>
-                            </form>
+    <div class="content-page">
+        <div class="content">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <h4 class="page-title">{% if instance %}Edit Carousel{% else %}Add Carousel{% endif %}</h4>
                         </div>
                     </div>
                 </div>
-            </div>
+                <!-- end page title -->
 
-        </div>
-    </div>
-</div>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% if messages %}
+                        {% for msg in messages %}
+                            <div class="alert alert-{{ msg.tags }} alert-dismissible text-bg-{{ msg.tags }} border-0 fade show" role="alert">
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <strong>{% if msg.tags == 'success' %}Success{% elif msg.tags == 'warning' %}Warning{% endif %} - </strong>{{ msg.message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-xl-6">
+                                            <div class="mb-3">
+                                                <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
+                                                <input type="text" name="{{ form.title.name }}" id="{{ form.title.id_for_label }}" class="form-control {% if form.title.errors %}is-invalid{% endif %}" 
+                                                       value="{{ form.title.value|default_if_none:'' }}" placeholder="Enter title">
+                                                {% if form.title.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.title.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                                                <textarea name="{{ form.description.name }}" id="{{ form.description.id_for_label }}" class="form-control {% if form.description.errors %}is-invalid{% endif %}" 
+                                                          placeholder="Enter description">{{ form.description.value|default_if_none:'' }}</textarea>
+                                                {% if form.description.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.description.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <input type="checkbox" class="form-check-input" name="{{ form.is_active.name }}" id="{{ form.is_active.id_for_label }}" {% if form.is_active.value %}checked{% endif %} >
+                                                <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Is Active</label>
+                                            </div>
+                                            
+                                        </div> <!-- end col-->
+
+                                        <div class="col-xl-6">
+                                            <div class="mb-3">
+                                                <label for="{{ form.image.id_for_label }}" class="form-label">Carousel Image</label>
+                                                <input type="file" name="{{ form.image.name }}" id="{{ form.image.id_for_label }}" class="form-control {% if form.image.errors %}is-invalid{% endif %}" 
+                                                       {% if not instance %}required{% endif %} onchange="showPreview(this);">
+                                                {% if form.image.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.image.errors }}
+                                                    </div>
+                                                {% endif %}
+                                                <div id="imageContainer" style="width:auto">
+                                                    <img class="img-fluid" id="imagePreview" src="{% if instance %}{{ instance.image.url }}{% endif %}" alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a href="{% url 'dashboard:carousels_list' %}" class="btn btn-danger"><i class=""></i>Back to Table</a>
+                                            <button type="submit" class="btn btn-danger chat-send waves-effect waves-light">
+                                                {% if instance %}Update Carousel{% else %}Add Carousel{% endif %}
+                                            </button>
+                                        </div>
+                                    </div> <!-- end row -->
+                                </div> <!-- end card-body -->
+                            </div> <!-- end card -->
+                        </div> <!-- end col -->
+                    </div> <!-- end row -->
+                </form>
+            </div> <!-- container -->
+        </div> <!-- content -->
+    </div> <!-- content-page -->
+
+    <!-- ============================================================== -->
+    <!-- End Page Content -->
+    <!-- ============================================================== -->
+
 {% endblock %}

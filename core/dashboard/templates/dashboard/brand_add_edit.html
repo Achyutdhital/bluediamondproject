@@ -1,85 +1,141 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
-
-{% block title %}{% if brand %}Edit Brand{% else %}Add Brand{% endif %} - Dashboard{% endblock %}
-
+{% block title %}
+    {% if instance %}Edit Brand{% else %}Add Brand{% endif %}
+{% endblock %}
+{% block css %}
+    <!-- Bootstrap Touchspin css -->
+    <link href="{% static 'dashboard/assets/vendor/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
 {% block body %}
-<div class="content-page">
-    <div class="content">
-        <div class="container-fluid">
-            
-            <div class="row">
-                <div class="col-12">
-                    <div class="page-title-box">
-                        <div class="page-title-right">
-                            <a href="{% url 'dashboard:brands_list' %}" class="btn btn-secondary">
-                                <i class="mdi mdi-arrow-left me-1"></i> Back
-                            </a>
-                        </div>
-                        <h4 class="page-title">{% if brand %}Edit Brand{% else %}Add Brand{% endif %}</h4>
-                    </div>
-                </div>
-            </div>
+    <title>{% if instance %}Edit Brand{% else %}Add Brand{% endif %}</title>
 
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <form method="post" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <div class="mb-3">
-                                            <label for="name" class="form-label">Brand Name <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="name" name="name" value="{{ brand.name|default:'' }}" required>
-                                        </div>
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
 
-                                        <div class="mb-3">
-                                            <label for="website" class="form-label">Website URL</label>
-                                            <input type="url" class="form-control" id="website" name="website" value="{{ brand.website|default:'' }}" placeholder="https://example.com">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="sort_order" class="form-label">Sort Order</label>
-                                            <input type="number" class="form-control" id="sort_order" name="sort_order" value="{{ brand.sort_order|default:0 }}">
-                                            <small class="text-muted">Lower numbers appear first</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="logo" class="form-label">Brand Logo</label>
-                                            {% if brand.logo %}
-                                            <div class="mb-2 text-center p-3 border rounded">
-                                                <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" class="img-fluid" style="max-height: 150px;">
-                                            </div>
-                                            {% endif %}
-                                            <input type="file" class="form-control" id="logo" name="logo" accept="image/*">
-                                            <small class="text-muted">PNG or SVG recommended</small>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if brand.is_active or not brand %}checked{% endif %}>
-                                                <label class="form-check-label" for="is_active">Active</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="text-end">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="mdi mdi-content-save me-1"></i> Save Brand
-                                    </button>
-                                </div>
-                            </form>
+    <div class="content-page">
+        <div class="content">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <h4 class="page-title">{% if instance %}Edit Brand{% else %}Add Brand{% endif %}</h4>
                         </div>
                     </div>
                 </div>
-            </div>
+                <!-- end page title -->
 
-        </div>
-    </div>
-</div>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.media }}
+                    {% if messages %}
+                        {% for msg in messages %}
+                            <div class="alert alert-{{ msg.tags }} alert-dismissible text-bg-{{ msg.tags }} border-0 fade show" role="alert">
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <strong>{% if msg.tags == 'success' %}Success{% elif msg.tags == 'warning' %}Warning{% endif %} - </strong>{{ msg.message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-xl-6">
+                                            <div class="mb-3">
+                                                <label for="{{ form.name.id_for_label }}" class="form-label">Brand Name</label>
+                                                <input type="text" name="{{ form.name.name }}" data-toggle="maxlength" maxlength="150" id="{{ form.name.id_for_label }}" class="form-control {% if form.name.errors %}is-invalid{% endif %}" 
+                                                       value="{% if instance %}{{ instance.name }}{% endif %}" placeholder="Enter brand name">
+                                                {% if form.name.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.name.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="{{ form.website.id_for_label }}" class="form-label">Website URL</label>
+                                                <input type="url" name="{{ form.website.name }}" id="{{ form.website.id_for_label }}" class="form-control {% if form.website.errors %}is-invalid{% endif %}" 
+                                                       value="{% if instance %}{{ instance.website }}{% endif %}" placeholder="https://example.com">
+                                                <small class="text-muted">Optional - Brand website URL</small>
+                                                {% if form.website.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.website.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="{{ form.sort_order.id_for_label }}" class="form-label">Sort Order</label>
+                                                <input type="number" name="{{ form.sort_order.name }}" id="{{ form.sort_order.id_for_label }}" class="form-control {% if form.sort_order.errors %}is-invalid{% endif %}" 
+                                                       value="{% if instance %}{{ instance.sort_order }}{% else %}0{% endif %}" placeholder="Enter sort order" min="0">
+                                                <small class="text-muted">Lower numbers appear first</small>
+                                                {% if form.sort_order.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.sort_order.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" name="{{ form.is_active.name }}" id="{{ form.is_active.id_for_label }}" {% if instance.is_active or not instance %}checked{% endif %}>
+                                                    <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Is Active</label>
+                                                </div>
+                                            </div>
+                                            
+                                        </div> <!-- end col-->
+
+                                        <div class="col-xl-6">
+                                            <div class="mb-3">
+                                                <label for="{{ form.logo.id_for_label }}" class="form-label">Brand Logo</label>
+                                                <input type="file" name="{{ form.logo.name }}" id="{{ form.logo.id_for_label }}" class="form-control {% if form.logo.errors %}is-invalid{% endif %}" 
+                                                       onchange="showPreview(this);" accept="image/*">
+                                                <small class="text-muted">Recommended: Square image, 200x200px or larger</small>
+                                                {% if form.logo.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.logo.errors }}
+                                                    </div>
+                                                {% endif %}
+                                                <div id="imageContainer" style="width:auto; margin-top: 10px;">
+                                                    <img class="img-fluid" id="imagePreview" src="{% if instance and instance.logo %}{{ instance.logo.url }}{% endif %}" alt="" style="max-height: 200px; object-fit: contain; border: 1px solid #dee2e6; padding: 10px; border-radius: 4px;">
+                                                </div>
+                                            </div>
+                                        </div> <!-- end col-->
+
+                                        <div class="col-auto">
+                                            <a href="{% url 'dashboard:brands_list' %}" class="btn btn-danger"><i class="mdi mdi-arrow-left me-1"></i>Back to Table</a>
+                                            <button type="submit" class="btn btn-danger chat-send waves-effect waves-light">
+                                                <i class="mdi mdi-content-save me-1"></i>{% if instance %}Update Brand{% else %}Add Brand{% endif %}
+                                            </button>
+                                        </div>
+                                    </div> <!-- end row -->
+                                </div> <!-- end card-body -->
+                            </div> <!-- end card -->
+                        </div> <!-- end col -->
+                    </div> <!-- end row -->
+                </form>
+            </div> <!-- container -->
+        </div> <!-- content -->
+    </div> <!-- content-page -->
+
+    <!-- ============================================================== -->
+    <!-- End Page Content -->
+    <!-- ============================================================== -->
+
+{% endblock %}
+
+{% block js %}
+<!-- Bootstrap Maxlength Plugin js -->
+<script src="{% static 'dashboard/assets/vendor/bootstrap-maxlength/bootstrap-maxlength.min.js' %}"></script>
+
+<!-- Bootstrap Touchspin Plugin js -->
+<script src="{% static 'dashboard/assets/vendor/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js' %}"></script>
+
+<!-- App js -->
+<script src="{% static 'dashboard/assets/js/app.min.js' %}"></script>
 {% endblock %}

@@ -1,85 +1,119 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
-
-{% block title %}{% if feature %}Edit Feature{% else %}Add Feature{% endif %} - Dashboard{% endblock %}
-
+{% block title %}
+    {% if instance %}Edit Feature{% else %}Add Feature{% endif %}
+{% endblock %}
 {% block body %}
-<div class="content-page">
-    <div class="content">
-        <div class="container-fluid">
-            
-            <div class="row">
-                <div class="col-12">
-                    <div class="page-title-box">
-                        <div class="page-title-right">
-                            <a href="{% url 'dashboard:features_list' %}" class="btn btn-secondary">
-                                <i class="mdi mdi-arrow-left me-1"></i> Back
-                            </a>
-                        </div>
-                        <h4 class="page-title">{% if feature %}Edit Feature{% else %}Add Feature{% endif %}</h4>
-                    </div>
-                </div>
-            </div>
+    <title>{% if instance %}Edit Feature{% else %}Add Feature{% endif %}</title>
 
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <form method="post" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <div class="mb-3">
-                                            <label for="title" class="form-label">Feature Title <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="title" name="title" value="{{ feature.title|default:'' }}" required>
-                                        </div>
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
 
-                                        <div class="mb-3">
-                                            <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
-                                            <textarea class="form-control" id="description" name="description" rows="4" required>{{ feature.description|default:'' }}</textarea>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="sort_order" class="form-label">Sort Order</label>
-                                            <input type="number" class="form-control" id="sort_order" name="sort_order" value="{{ feature.sort_order|default:0 }}">
-                                            <small class="text-muted">Lower numbers appear first</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="icon" class="form-label">Feature Icon</label>
-                                            {% if feature.icon %}
-                                            <div class="mb-2 text-center p-3 border rounded">
-                                                <img src="{{ feature.icon.url }}" alt="{{ feature.title }}" style="max-width: 80px; max-height: 80px;">
-                                            </div>
-                                            {% endif %}
-                                            <input type="file" class="form-control" id="icon" name="icon" accept="image/*">
-                                            <small class="text-muted">SVG or PNG icon recommended</small>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if feature.is_active or not feature %}checked{% endif %}>
-                                                <label class="form-check-label" for="is_active">Active</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="text-end">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="mdi mdi-content-save me-1"></i> Save Feature
-                                    </button>
-                                </div>
-                            </form>
+    <div class="content-page">
+        <div class="content">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <h4 class="page-title">{% if instance %}Edit Feature{% else %}Add Feature{% endif %}</h4>
                         </div>
                     </div>
                 </div>
-            </div>
+                <!-- end page title -->
 
-        </div>
-    </div>
-</div>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% if messages %}
+                        {% for msg in messages %}
+                            <div class="alert alert-{{ msg.tags }} alert-dismissible text-bg-{{ msg.tags }} border-0 fade show" role="alert">
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <strong>{% if msg.tags == 'success' %}Success{% elif msg.tags == 'warning' %}Warning{% endif %} - </strong>{{ msg.message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-xl-6">
+                                            <div class="mb-3">
+                                                <label for="{{ form.title.id_for_label }}" class="form-label">Feature Title</label>
+                                                <input type="text" name="{{ form.title.name }}" id="{{ form.title.id_for_label }}" class="form-control {% if form.title.errors %}is-invalid{% endif %}" 
+                                                       value="{{ form.title.value|default_if_none:'' }}" placeholder="Enter feature title">
+                                                {% if form.title.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.title.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                                                <textarea name="{{ form.description.name }}" id="{{ form.description.id_for_label }}" class="form-control {% if form.description.errors %}is-invalid{% endif %}" 
+                                                          placeholder="Enter description" rows="4">{{ form.description.value|default_if_none:'' }}</textarea>
+                                                {% if form.description.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.description.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="{{ form.sort_order.id_for_label }}" class="form-label">Sort Order</label>
+                                                <input type="number" name="{{ form.sort_order.name }}" id="{{ form.sort_order.id_for_label }}" class="form-control {% if form.sort_order.errors %}is-invalid{% endif %}" 
+                                                       value="{{ form.sort_order.value|default_if_none:0 }}" placeholder="Enter sort order">
+                                                {% if form.sort_order.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.sort_order.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <input type="checkbox" class="form-check-input" name="{{ form.is_active.name }}" id="{{ form.is_active.id_for_label }}" {% if form.is_active.value %}checked{% endif %} >
+                                                <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Is Active</label>
+                                            </div>
+                                            
+                                        </div> <!-- end col-->
+
+                                        <div class="col-xl-6">
+                                            <div class="mb-3">
+                                                <label for="{{ form.icon.id_for_label }}" class="form-label">Feature Icon</label>
+                                                <input type="file" name="{{ form.icon.name }}" id="{{ form.icon.id_for_label }}" class="form-control {% if form.icon.errors %}is-invalid{% endif %}" 
+                                                       {% if not instance %}required{% endif %} onchange="showPreview(this);">
+                                                {% if form.icon.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.icon.errors }}
+                                                    </div>
+                                                {% endif %}
+                                                <div id="imageContainer" style="width:auto">
+                                                    <img class="img-fluid" id="imagePreview" src="{% if instance %}{{ instance.icon.url }}{% endif %}" alt="" style="max-width: 80px; max-height: 80px; object-fit: contain;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a href="{% url 'dashboard:features_list' %}" class="btn btn-danger"><i class=""></i>Back to Table</a>
+                                            <button type="submit" class="btn btn-danger chat-send waves-effect waves-light">
+                                                {% if instance %}Update Feature{% else %}Add Feature{% endif %}
+                                            </button>
+                                        </div>
+                                    </div> <!-- end row -->
+                                </div> <!-- end card-body -->
+                            </div> <!-- end card -->
+                        </div> <!-- end col -->
+                    </div> <!-- end row -->
+                </form>
+            </div> <!-- container -->
+        </div> <!-- content -->
+    </div> <!-- content-page -->
+
+    <!-- ============================================================== -->
+    <!-- End Page Content -->
+    <!-- ============================================================== -->
+
 {% endblock %}

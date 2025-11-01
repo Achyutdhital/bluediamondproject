@@ -3,6 +3,11 @@
 
 {% block title %}Company Details - Dashboard{% endblock %}
 
+{% block css %}
+    <!-- Bootstrap Maxlength css -->
+    <link href="{% static 'dashboard/assets/vendor/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
 {% block body %}
 <div class="content-page">
     <div class="content">
@@ -15,6 +20,15 @@
                     </div>
                 </div>
             </div>
+
+            {% if messages %}
+                {% for msg in messages %}
+                    <div class="alert alert-{{ msg.tags }} alert-dismissible text-bg-{{ msg.tags }} border-0 fade show" role="alert">
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <strong>{% if msg.tags == 'success' %}Success{% elif msg.tags == 'warning' %}Warning{% endif %} - </strong>{{ msg.message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
 
             <div class="row">
                 <div class="col-12">
@@ -29,37 +43,38 @@
                                         
                                         <div class="mb-3">
                                             <label for="company_name" class="form-label">Company Name <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="company_name" name="company_name" value="{{ company.company_name|default:'' }}" required>
+                                            <input type="text" class="form-control" id="company_name" name="company_name" data-toggle="maxlength" maxlength="255" value="{% if instance %}{{ instance.company_name }}{% endif %}" required>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="address" class="form-label">Address <span class="text-danger">*</span></label>
-                                            <textarea class="form-control" id="address" name="address" rows="2" required>{{ company.address|default:'' }}</textarea>
+                                            <textarea class="form-control" id="address" name="address" data-toggle="maxlength" maxlength="500" rows="2" required>{% if instance %}{{ instance.address }}{% endif %}</textarea>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                                                    <input type="email" class="form-control" id="email" name="email" value="{{ company.email|default:'' }}" required>
+                                                    <input type="email" class="form-control" id="email" name="email" value="{% if instance %}{{ instance.email }}{% endif %}" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="phone_number" class="form-label">Phone Number <span class="text-danger">*</span></label>
-                                                    <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ company.phone_number|default:'' }}" required>
+                                                    <input type="text" class="form-control" id="phone_number" name="phone_number" data-toggle="maxlength" maxlength="20" value="{% if instance %}{{ instance.phone_number }}{% endif %}" required>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="description" class="form-label">Description</label>
-                                            <textarea class="form-control" id="description" name="description" rows="5">{{ company.description|default:'' }}</textarea>
+                                            <textarea class="form-control" id="description" name="description" rows="5">{% if instance %}{{ instance.description }}{% endif %}</textarea>
+
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="map_location" class="form-label">Map Location (Embed URL)</label>
-                                            <input type="text" class="form-control" id="map_location" name="map_location" value="{{ company.map_location|default:'' }}" placeholder="Google Maps embed URL">
+                                            <input type="text" class="form-control" id="map_location" name="map_location" value="{% if instance %}{{ instance.map_location }}{% endif %}" placeholder="Google Maps embed URL">
                                         </div>
 
                                         <h5 class="mb-3 mt-4">Social Media Links</h5>
@@ -68,13 +83,13 @@
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="facebook_url" class="form-label">Facebook URL</label>
-                                                    <input type="url" class="form-control" id="facebook_url" name="facebook_url" value="{{ company.facebook_url|default:'' }}">
+                                                    <input type="url" class="form-control" id="facebook_url" name="facebook_url" value="{% if instance %}{{ instance.facebook_url }}{% endif %}">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="twitter_url" class="form-label">Twitter URL</label>
-                                                    <input type="url" class="form-control" id="twitter_url" name="twitter_url" value="{{ company.twitter_url|default:'' }}">
+                                                    <input type="url" class="form-control" id="twitter_url" name="twitter_url" value="{% if instance %}{{ instance.twitter_url }}{% endif %}">
                                                 </div>
                                             </div>
                                         </div>
@@ -83,13 +98,13 @@
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="instagram_url" class="form-label">Instagram URL</label>
-                                                    <input type="url" class="form-control" id="instagram_url" name="instagram_url" value="{{ company.instagram_url|default:'' }}">
+                                                    <input type="url" class="form-control" id="instagram_url" name="instagram_url" value="{% if instance %}{{ instance.instagram_url }}{% endif %}">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="linkedin_url" class="form-label">LinkedIn URL</label>
-                                                    <input type="url" class="form-control" id="linkedin_url" name="linkedin_url" value="{{ company.linkedin_url|default:'' }}">
+                                                    <input type="url" class="form-control" id="linkedin_url" name="linkedin_url" value="{% if instance %}{{ instance.linkedin_url }}{% endif %}">
                                                 </div>
                                             </div>
                                         </div>
@@ -100,19 +115,13 @@
                                         
                                         <div class="mb-3">
                                             <label for="logo" class="form-label">Company Logo</label>
-                                            <input type="file" name="logo" id="logo" class="form-control" accept="image/*" onchange="showPreview(this, 'logoPreview');">
+                                            <input type="file" name="logo" id="logo" class="form-control" accept="image/*" onchange="showPreview(this);">
                                             <small class="text-muted">Recommended: Square logo (e.g., 200x200px)</small>
-                                            <div id="logoContainer" style="width:auto; margin-top: 10px;">
-                                                {% if company and company.logo %}
-                                                <div class="border rounded p-2 bg-light">
-                                                    <img class="img-fluid" id="logoPreview" src="{{ company.logo.url }}" alt="Logo Preview" style="max-height: 150px;">
-                                                    <small class="d-block text-muted mt-1">Current: {{ company.logo.name }}</small>
-                                                </div>
+                                            <div id="imageContainer" style="width:auto; margin-top: 10px;">
+                                                {% if instance and instance.logo %}
+                                                <img class="img-fluid" id="imagePreview" src="{{ instance.logo.url }}" alt="Logo Preview" style="max-height: 200px; object-fit: contain; border: 1px solid #dee2e6; padding: 10px; border-radius: 4px;">
                                                 {% else %}
-                                                <div class="border rounded p-3 bg-light text-center">
-                                                    <img class="img-fluid" id="logoPreview" src="" alt="Logo Preview" style="max-height: 150px; display: none;">
-                                                    <span class="text-muted">No logo uploaded yet</span>
-                                                </div>
+                                                <img class="img-fluid" id="imagePreview" src="" alt="Logo Preview" style="max-height: 200px; object-fit: contain; border: 1px solid #dee2e6; padding: 10px; border-radius: 4px; display: none;">
                                                 {% endif %}
                                             </div>
                                         </div>
@@ -121,10 +130,12 @@
                                     </div>
                                 </div>
 
-                                <div class="text-end">
-                                    <button type="submit" class="btn btn-primary btn-lg">
-                                        <i class="mdi mdi-content-save me-1"></i> Save Company Details
-                                    </button>
+                                <div class="row">
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-danger waves-effect waves-light">
+                                            <i class="mdi mdi-content-save me-1"></i>{% if instance %}Update Company Details{% else %}Save Company Details{% endif %}
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -136,30 +147,15 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block js %}
+<!-- Bootstrap Maxlength Plugin js -->
+<script src="{% static 'dashboard/assets/vendor/bootstrap-maxlength/bootstrap-maxlength.min.js' %}"></script>
+
+<!-- CKEditor -->
 <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
 <script>
     ClassicEditor.create(document.querySelector('#description')).catch(error => { console.error(error); });
-    
-    function showPreview(input, previewId) {
-        const preview = document.getElementById(previewId);
-        
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-                
-                // Hide "No image" text if exists
-                const container = preview.closest('div');
-                const noImageText = container.querySelector('span.text-muted');
-                if (noImageText) {
-                    noImageText.style.display = 'none';
-                }
-            }
-            
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
 </script>
 {% endblock %}

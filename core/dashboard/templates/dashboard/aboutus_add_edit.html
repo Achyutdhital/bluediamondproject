@@ -3,11 +3,29 @@
 
 {% block title %}Edit About Us Page - Dashboard{% endblock %}
 
+{% block css %}
+<!-- Plugins css -->
+<link href="{% static 'dashboard/assets/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
 {% block body %}
 <div class="content-page">
     <div class="content">
         <div class="container-fluid">
             
+            {% if messages %}
+                <div class="row">
+                    <div class="col-12">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box">
@@ -22,6 +40,7 @@
                         <div class="card-body">
                             <form method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
+                                {{ form.media }}
                                 
                                 <div class="row">
                                     <div class="col-md-8">
@@ -29,17 +48,26 @@
                                         
                                         <div class="mb-3">
                                             <label for="page_title" class="form-label">Page Title <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="page_title" name="page_title" value="{{ about_page.page_title|default:'About Us' }}" required>
+                                            <input type="text" class="form-control" id="page_title" name="page_title" 
+                                                   value="{% if instance %}{{ instance.page_title }}{% else %}About Us{% endif %}" 
+                                                   required data-toggle="maxlength" maxlength="200">
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="main_heading" class="form-label">Main Heading <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="main_heading" name="main_heading" value="{{ about_page.main_heading|default:'' }}" required>
+                                            <input type="text" class="form-control" id="main_heading" name="main_heading" 
+                                                   value="{% if instance %}{{ instance.main_heading }}{% endif %}" 
+                                                   required data-toggle="maxlength" maxlength="200">
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="content" class="form-label">Main Content <span class="text-danger">*</span></label>
-                                            <textarea class="form-control" id="content" name="content" rows="8">{{ about_page.content|default:'' }}</textarea>
+                                            {{ form.content }}
+                                                {% if form.content.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.content.errors }}
+                                                    </div>
+                                                {% endif %}
                                         </div>
 
                                         <hr class="my-4">
@@ -47,22 +75,26 @@
 
                                         <div class="mb-3">
                                             <label for="section_2_title" class="form-label">Section 2 Title</label>
-                                            <input type="text" class="form-control" id="section_2_title" name="section_2_title" value="{{ about_page.section_2_title|default:'' }}">
+                                            <input type="text" class="form-control" id="section_2_title" name="section_2_title" 
+                                                   value="{% if instance %}{{ instance.section_2_title }}{% endif %}"
+                                                   data-toggle="maxlength" maxlength="200">
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="section_2_content" class="form-label">Section 2 Content</label>
-                                            <textarea class="form-control" id="section_2_content" name="section_2_content" rows="5">{{ about_page.section_2_content|default:'' }}</textarea>
+                                            <textarea class="form-control" id="section_2_content" name="section_2_content" rows="5">{% if instance %}{{ instance.section_2_content }}{% endif %}</textarea>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="section_3_title" class="form-label">Section 3 Title</label>
-                                            <input type="text" class="form-control" id="section_3_title" name="section_3_title" value="{{ about_page.section_3_title|default:'' }}">
+                                            <input type="text" class="form-control" id="section_3_title" name="section_3_title" 
+                                                   value="{% if instance %}{{ instance.section_3_title }}{% endif %}"
+                                                   data-toggle="maxlength" maxlength="200">
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="section_3_content" class="form-label">Section 3 Content</label>
-                                            <textarea class="form-control" id="section_3_content" name="section_3_content" rows="5">{{ about_page.section_3_content|default:'' }}</textarea>
+                                            <textarea class="form-control" id="section_3_content" name="section_3_content" rows="5">{% if instance %}{{ instance.section_3_content }}{% endif %}</textarea>
                                         </div>
                                     </div>
 
@@ -71,29 +103,36 @@
                                         
                                         <div class="mb-3">
                                             <label for="main_image" class="form-label">Main Image</label>
-                                            {% if about_page and about_page.main_image %}
-                                            <div class="mb-2">
-                                                <img src="{{ about_page.main_image.url }}" alt="Main Image" class="img-fluid rounded">
-                                            </div>
-                                            {% endif %}
-                                            <input type="file" class="form-control" id="main_image" name="main_image" accept="image/*">
+                                            <input type="file" class="form-control" id="main_image" name="main_image" 
+                                                   accept="image/*" onchange="showPreview(this)">
                                             <small class="text-muted">Main about us image</small>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <img id="preview-main_image" 
+                                                 src="{% if instance.main_image %}{{ instance.main_image.url }}{% endif %}" 
+                                                 alt="Main Image Preview" 
+                                                 style="{% if not instance.main_image %}display: none;{% endif %} max-height: 200px; object-fit: contain; border: 1px solid #ddd; border-radius: 4px; padding: 5px;">
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="side_image" class="form-label">Side Image</label>
-                                            {% if about_page and about_page.side_image %}
-                                            <div class="mb-2">
-                                                <img src="{{ about_page.side_image.url }}" alt="Side Image" class="img-fluid rounded">
-                                            </div>
-                                            {% endif %}
-                                            <input type="file" class="form-control" id="side_image" name="side_image" accept="image/*">
+                                            <input type="file" class="form-control" id="side_image" name="side_image" 
+                                                   accept="image/*" onchange="showPreview(this)">
                                             <small class="text-muted">Side/secondary image</small>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <img id="preview-side_image" 
+                                                 src="{% if instance.side_image %}{{ instance.side_image.url }}{% endif %}" 
+                                                 alt="Side Image Preview" 
+                                                 style="{% if not instance.side_image %}display: none;{% endif %} max-height: 200px; object-fit: contain; border: 1px solid #ddd; border-radius: 4px; padding: 5px;">
                                         </div>
 
                                         <div class="mb-3">
                                             <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if about_page.is_active or not about_page %}checked{% endif %}>
+                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" 
+                                                       {% if not instance or instance.is_active %}checked{% endif %}>
                                                 <label class="form-check-label" for="is_active">Active</label>
                                             </div>
                                         </div>
@@ -101,8 +140,9 @@
                                 </div>
 
                                 <div class="text-end">
-                                    <button type="submit" class="btn btn-primary btn-lg">
-                                        <i class="mdi mdi-content-save me-1"></i> Save About Us Page
+                                    <button type="submit" class="btn btn-danger btn-lg">
+                                        <i class="mdi mdi-content-save me-1"></i>
+                                        {% if instance %}Update About Us Page{% else %}Save About Us Page{% endif %}
                                     </button>
                                 </div>
                             </form>
@@ -115,10 +155,37 @@
     </div>
 </div>
 
-<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+{% endblock %}
+
+{% block js %}
+<!-- Plugins js -->
+<script src="{% static 'dashboard/assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js' %}"></script>
+
 <script>
+    // Initialize plugins
+    $('[data-toggle="maxlength"]').maxlength({
+        warningClass: "badge bg-success",
+        limitReachedClass: "badge bg-danger"
+    });
+    
+    // CKEditor initialization
     ClassicEditor.create(document.querySelector('#content')).catch(error => { console.error(error); });
     ClassicEditor.create(document.querySelector('#section_2_content')).catch(error => { console.error(error); });
     ClassicEditor.create(document.querySelector('#section_3_content')).catch(error => { console.error(error); });
+    
+    // Image preview function
+    function showPreview(input) {
+        const fieldName = input.id;
+        const preview = document.getElementById('preview-' + fieldName);
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 </script>
 {% endblock %}

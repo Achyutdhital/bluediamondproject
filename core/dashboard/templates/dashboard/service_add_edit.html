@@ -1,97 +1,147 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
-
-{% block title %}{% if service %}Edit Service{% else %}Add Service{% endif %} - Dashboard{% endblock %}
-
+{% block title %}
+    {% if instance %}Edit Service{% else %}Add Service{% endif %}
+{% endblock %}
+{% block css %}
+    <!-- Select2 css -->
+    <link href="{% static 'dashboard/assets/vendor/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
+    
+    <!-- Bootstrap Datepicker css -->
+    <link href="{% static 'dashboard/assets/vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
 {% block body %}
-<div class="content-page">
-    <div class="content">
-        <div class="container-fluid">
-            
-            <!-- Page Title -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="page-title-box">
-                        <div class="page-title-right">
-                            <a href="{% url 'dashboard:services_list' %}" class="btn btn-secondary">
-                                <i class="mdi mdi-arrow-left me-1"></i> Back to List
-                            </a>
-                        </div>
-                        <h4 class="page-title">{% if service %}Edit Service{% else %}Add New Service{% endif %}</h4>
-                    </div>
-                </div>
-            </div>
+    <title>{% if instance %}Edit Service{% else %}Add Service{% endif %}</title>
 
-            <!-- Form -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <form method="post" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <div class="mb-3">
-                                            <label for="name" class="form-label">Service Name <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="name" name="name" value="{{ service.name|default:'' }}" required>
-                                        </div>
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
 
-                                        <div class="mb-3">
-                                            <label for="short_description" class="form-label">Short Description <span class="text-danger">*</span></label>
-                                            <textarea class="form-control" id="short_description" name="short_description" rows="3" required>{{ service.short_description|default:'' }}</textarea>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="description" class="form-label">Full Description <span class="text-danger">*</span></label>
-                                            <textarea class="form-control" id="description" name="description" rows="10">{{ service.description|default:'' }}</textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="feature_image" class="form-label">Feature Image</label>
-                                            {% if service.feature_image %}
-                                            <div class="mb-2">
-                                                <img src="{{ service.feature_image.url }}" alt="{{ service.name }}" class="img-fluid rounded">
-                                            </div>
-                                            {% endif %}
-                                            <input type="file" class="form-control" id="feature_image" name="feature_image" accept="image/*">
-                                            <small class="text-muted">Recommended size: 800x600px</small>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if service.is_active or not service %}checked{% endif %}>
-                                                <label class="form-check-label" for="is_active">Active</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="text-end">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="mdi mdi-content-save me-1"></i> Save Service
-                                    </button>
-                                </div>
-                            </form>
+    <div class="content-page">
+        <div class="content">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <h4 class="page-title">{% if instance %}Edit Service{% else %}Add Service{% endif %}</h4>
                         </div>
                     </div>
                 </div>
-            </div>
+                <!-- end page title -->
 
-        </div>
-    </div>
-</div>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.media }}
+                    {% if messages %}
+                        {% for msg in messages %}
+                            <div class="alert alert-{{ msg.tags }} alert-dismissible text-bg-{{ msg.tags }} border-0 fade show" role="alert">
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <strong>{% if msg.tags == 'success' %}Success{% elif msg.tags == 'warning' %}Warning{% endif %} - </strong>{{ msg.message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
 
-<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
-<script>
-    ClassicEditor
-        .create(document.querySelector('#description'), {
-            toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote']
-        })
-        .catch(error => {
-            console.error(error);
-        });
-</script>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-xl-6">
+                                            <div class="mb-3">
+                                                <label for="{{ form.name.id_for_label }}" class="form-label">Service Name</label>
+                                                <input type="text" name="{{ form.name.name }}" data-toggle="maxlength" maxlength="255" id="{{ form.name.id_for_label }}" class="form-control {% if form.name.errors %}is-invalid{% endif %}" 
+                                                       value="{% if instance %}{{ instance.name }}{% endif %}" placeholder="Enter service name">
+                                                {% if form.name.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.name.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="{{ form.short_description.id_for_label }}" class="form-label">Short Description</label>
+                                                <textarea name="{{ form.short_description.name }}" data-toggle="maxlength" maxlength="900" id="{{ form.short_description.id_for_label }}" class="form-control {% if form.short_description.errors %}is-invalid{% endif %}" 
+                                                          placeholder="Enter short description" rows="3">{% if instance %}{{ instance.short_description }}{% endif %}</textarea>
+                                                {% if form.short_description.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.short_description.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+
+                                            
+                                            
+                                        </div> <!-- end col-->
+
+                                        <div class="col-xl-6">
+
+                                            <div class="mb-3">
+                                                <label for="{{ form.feature_image.id_for_label }}" class="form-label">Feature Image</label>
+                                                <input type="file" name="{{ form.feature_image.name }}" id="{{ form.feature_image.id_for_label }}" class="form-control {% if form.feature_image.errors %}is-invalid{% endif %}" 
+                                                       {% if not instance %}required{% endif %} onchange="showPreview(this);">
+                                                {% if form.feature_image.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.feature_image.errors }}
+                                                    </div>
+                                                {% endif %}
+                                                <div id="imageContainer" style="width:auto; margin-top: 10px;">
+                                                    <img class="img-fluid" id="imagePreview" src="{% if instance %}{{ instance.feature_image.url }}{% endif %}" alt="">
+                                                </div>
+                                            </div>
+                                        </div> <!-- end col-->
+                                        <div class="row">
+                                        <div class="col-12">
+                                            <label for="{{ form.description.id_for_label }}" class="form-label">Full Description</label><br>
+                                            {{ form.description }}
+                                                {% if form.description.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.description.errors }}
+                                                    </div>
+                                                {% endif %}
+                        
+                                        </div>
+                                        <div class="mb-3">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" name="{{ form.is_active.name }}" id="{{ form.is_active.id_for_label }}" {% if instance.is_active or not instance %}checked{% endif %}>
+                                                    <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Is Active</label>
+                                                </div>
+                                            </div>
+                                    </div> <!-- end row -->
+                                        <div class="col-auto">
+                                            <a href="{% url 'dashboard:services_list' %}" class="btn btn-danger"><i class="mdi mdi-arrow-left me-1"></i>Back to Table</a>
+                                            <button type="submit" class="btn btn-danger chat-send waves-effect waves-light">
+                                                <i class="mdi mdi-content-save me-1"></i>{% if instance %}Update Service{% else %}Add Service{% endif %}
+                                            </button>
+                                        </div>
+                                    </div> <!-- end row -->
+                                    
+                                </div> <!-- end card-body -->
+                            </div> <!-- end card -->
+                        </div> <!-- end col -->
+                    </div> <!-- end row -->
+                </form>
+            </div> <!-- container -->
+        </div> <!-- content -->
+    </div> <!-- content-page -->
+
+    <!-- ============================================================== -->
+    <!-- End Page Content -->
+    <!-- ============================================================== -->
+
+{% endblock %}
+
+{% block js %}
+<!-- Bootstrap Maxlength Plugin js -->
+<script src="{% static 'dashboard/assets/vendor/bootstrap-maxlength/bootstrap-maxlength.min.js' %}"></script>
+
+<!-- Select2 Plugin js -->
+<script src="{% static 'dashboard/assets/vendor/select2/js/select2.min.js' %}"></script>
+
+<!-- Bootstrap Datepicker Plugin js -->
+<script src="{% static 'dashboard/assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js' %}"></script>
+
+<!-- App js -->
+<script src="{% static 'dashboard/assets/js/app.min.js' %}"></script>
 {% endblock %}

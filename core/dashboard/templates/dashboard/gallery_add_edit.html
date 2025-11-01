@@ -3,6 +3,12 @@
 
 {% block title %}{% if gallery_image %}Edit Image{% else %}Add Image{% endif %} - Dashboard{% endblock %}
 
+{% block css %}
+<!-- Plugins css -->
+<link href="{% static 'dashboard/assets/libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'dashboard/assets/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
 {% block body %}
 <div class="content-page">
     <div class="content">
@@ -21,6 +27,19 @@
                 </div>
             </div>
 
+            {% if messages %}
+                <div class="row">
+                    <div class="col-12">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
             <div class="row">
                 <div class="col-12">
                     <div class="card">
@@ -32,15 +51,17 @@
                                     <div class="col-md-8">
                                         <div class="mb-3">
                                             <label for="title" class="form-label">Image Title <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="title" name="title" value="{{ gallery_image.title|default:'' }}" required>
+                                            <input type="text" class="form-control" id="title" name="title" 
+                                                   value="{% if gallery_image %}{{ gallery_image.title }}{% endif %}" 
+                                                   required data-toggle="maxlength" maxlength="255">
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="service" class="form-label">Related Service</label>
-                                            <select class="form-select" id="service" name="service">
+                                            <select class="form-select select2" id="service" name="service" data-toggle="select2">
                                                 <option value="">-- No Service --</option>
                                                 {% for service in services %}
-                                                <option value="{{ service.id }}" {% if gallery_image.service.id == service.id %}selected{% endif %}>{{ service.name }}</option>
+                                                <option value="{{ service.id }}" {% if gallery_image and gallery_image.service.id == service.id %}selected{% endif %}>{{ service.name }}</option>
                                                 {% endfor %}
                                             </select>
                                             <small class="text-muted">Optional: Link this image to a specific service</small>
@@ -48,20 +69,25 @@
 
                                         <div class="mb-3">
                                             <label for="image" class="form-label">Image {% if not gallery_image %}<span class="text-danger">*</span>{% endif %}</label>
-                                            {% if gallery_image.image %}
-                                            <div class="mb-2">
-                                                <img src="{{ gallery_image.image.url }}" alt="{{ gallery_image.title }}" class="img-fluid rounded" style="max-height: 300px;">
-                                            </div>
-                                            {% endif %}
-                                            <input type="file" class="form-control" id="image" name="image" accept="image/*" {% if not gallery_image %}required{% endif %}>
+                                            <input type="file" class="form-control" id="image" name="image" 
+                                                   accept="image/*" onchange="showPreview(this)" 
+                                                   {% if not gallery_image %}required{% endif %}>
                                             <small class="text-muted">Recommended size: 1200x800px</small>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <img id="preview-image" 
+                                                 src="{% if gallery_image.image %}{{ gallery_image.image.url }}{% endif %}" 
+                                                 alt="Image Preview" 
+                                                 style="{% if not gallery_image.image %}display: none;{% endif %} max-height: 300px; object-fit: contain; border: 1px solid #ddd; border-radius: 4px; padding: 5px;">
                                         </div>
                                     </div>
 
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if gallery_image.is_active or not gallery_image %}checked{% endif %}>
+                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" 
+                                                       {% if not gallery_image or gallery_image.is_active %}checked{% endif %}>
                                                 <label class="form-check-label" for="is_active">Active</label>
                                             </div>
                                         </div>
@@ -69,8 +95,9 @@
                                 </div>
 
                                 <div class="text-end">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="mdi mdi-content-save me-1"></i> Save Image
+                                    <button type="submit" class="btn btn-danger btn-lg">
+                                        <i class="mdi mdi-content-save me-1"></i>
+                                        {% if gallery_image %}Update Image{% else %}Save Image{% endif %}
                                     </button>
                                 </div>
                             </form>
@@ -82,4 +109,35 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block js %}
+<!-- Plugins js -->
+<script src="{% static 'dashboard/assets/libs/select2/js/select2.min.js' %}"></script>
+<script src="{% static 'dashboard/assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js' %}"></script>
+
+<script>
+    // Initialize plugins
+    $('[data-toggle="select2"]').select2();
+    
+    $('[data-toggle="maxlength"]').maxlength({
+        warningClass: "badge bg-success",
+        limitReachedClass: "badge bg-danger"
+    });
+    
+    // Image preview function
+    function showPreview(input) {
+        const fieldName = input.id;
+        const preview = document.getElementById('preview-' + fieldName);
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
 {% endblock %}

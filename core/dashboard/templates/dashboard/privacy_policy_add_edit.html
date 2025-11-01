@@ -3,11 +3,29 @@
 
 {% block title %}Edit Privacy Policy - Dashboard{% endblock %}
 
+{% block css %}
+<!-- Plugins css -->
+<link href="{% static 'dashboard/assets/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
 {% block body %}
 <div class="content-page">
     <div class="content">
         <div class="container-fluid">
             
+            {% if messages %}
+                <div class="row">
+                    <div class="col-12">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box">
@@ -22,27 +40,37 @@
                         <div class="card-body">
                             <form method="post">
                                 {% csrf_token %}
+                                {{ form.media }}
                                 
                                 <div class="mb-3">
                                     <label for="page_title" class="form-label">Page Title <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="page_title" name="page_title" value="{{ privacy.page_title|default:'Privacy Policy' }}" required>
+                                    <input type="text" class="form-control" id="page_title" name="page_title" 
+                                           value="{% if instance %}{{ instance.page_title }}{% else %}Privacy Policy{% endif %}" 
+                                           required data-toggle="maxlength" maxlength="200">
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="content" class="form-label">Content <span class="text-danger">*</span></label>
-                                    <textarea class="form-control" id="content" name="content" rows="15">{{ privacy.content|default:'' }}</textarea>
+                                    <label for="content" class="form-label">Content <span class="text-danger">*</span></label><br>
+                                    {{ form.content }}
+                                        {% if form.content.errors %}
+                                            <div class="invalid-feedback">
+                                                {{ form.content.errors }}
+                                            </div>
+                                        {% endif %}
                                 </div>
 
                                 <div class="mb-3">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if privacy.is_active or not privacy %}checked{% endif %}>
+                                        <input class="form-check-input" type="checkbox" id="is_active" name="is_active" 
+                                               {% if not instance or instance.is_active %}checked{% endif %}>
                                         <label class="form-check-label" for="is_active">Active</label>
                                     </div>
                                 </div>
 
                                 <div class="text-end">
-                                    <button type="submit" class="btn btn-primary btn-lg">
-                                        <i class="mdi mdi-content-save me-1"></i> Save Privacy Policy
+                                    <button type="submit" class="btn btn-danger btn-lg">
+                                        <i class="mdi mdi-content-save me-1"></i>
+                                        {% if instance %}Update Privacy Policy{% else %}Save Privacy Policy{% endif %}
                                     </button>
                                 </div>
                             </form>
@@ -55,8 +83,20 @@
     </div>
 </div>
 
-<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+{% endblock %}
+
+{% block js %}
+<!-- Plugins js -->
+<script src="{% static 'dashboard/assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js' %}"></script>
+
 <script>
+    // Initialize plugins
+    $('[data-toggle="maxlength"]').maxlength({
+        warningClass: "badge bg-success",
+        limitReachedClass: "badge bg-danger"
+    });
+    
+    // CKEditor initialization
     ClassicEditor.create(document.querySelector('#content')).catch(error => { console.error(error); });
 </script>
 {% endblock %}

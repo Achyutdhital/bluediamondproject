@@ -79,14 +79,12 @@
                                                     <td>{{ item.email }}</td>
                                                     <td>{{ item.phone_number }}</td>
                                                     <td> {{item.message}}</td>
-                                                    <td>responded remaining</td>
-                                                    <td>mode remaining</td>
+                                                    <td>N/A</td>
+                                                    <td>N/A</td>
 
                                                     <td>
-                                                        <a href="{% url 'dashboard:send_manual_response' 'contact' item.id %}" class="btn btn-primary">Respond</a>
-
-                                                        <a href="#" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a>
-                                                        <a href="#" class="action-icon" data-bs-toggle="modal" data-bs-target="#delete-modal-{{ item.id }}"> <i class="mdi mdi-delete"></i></a>
+                                                        <a href="{% url 'dashboard:contact_detail' item.id %}" class="action-icon" title="View"> <i class="mdi mdi-eye"></i></a>
+                                                        <a href="#" class="action-icon" data-bs-toggle="modal" data-bs-target="#delete-modal-{{ item.id }}" title="Delete"> <i class="mdi mdi-delete"></i></a>
                                                     </td>
                                                 </tr>
                                             {% endfor %}

@@ -1,88 +1,119 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
-
-{% block title %}{% if faq %}Edit FAQ{% else %}Add FAQ{% endif %} - Dashboard{% endblock %}
-
+{% block title %}
+    {% if instance %}Edit FAQ{% else %}Add FAQ{% endif %}
+{% endblock %}
 {% block body %}
-<div class="content-page">
-    <div class="content">
-        <div class="container-fluid">
-            
-            <div class="row">
-                <div class="col-12">
-                    <div class="page-title-box">
-                        <div class="page-title-right">
-                            <a href="{% url 'dashboard:faqs_list' %}" class="btn btn-secondary">
-                                <i class="mdi mdi-arrow-left me-1"></i> Back
-                            </a>
+    <title>{% if instance %}Edit FAQ{% else %}Add FAQ{% endif %}</title>
+
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+
+    <div class="content-page">
+        <div class="content">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <h4 class="page-title">{% if instance %}Edit FAQ{% else %}Add FAQ{% endif %}</h4>
                         </div>
-                        <h4 class="page-title">{% if faq %}Edit FAQ{% else %}Add FAQ{% endif %}</h4>
                     </div>
                 </div>
-            </div>
+                <!-- end page title -->
 
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <form method="post">
-                                {% csrf_token %}
-                                
-                                <div class="row">
-                                    <div class="col-md-9">
-                                        <div class="mb-3">
-                                            <label for="question" class="form-label">Question <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="question" name="question" value="{{ faq.question|default:'' }}" required>
-                                        </div>
+                <form method="post">
+                    {% csrf_token %}
+                    {% if messages %}
+                        {% for msg in messages %}
+                            <div class="alert alert-{{ msg.tags }} alert-dismissible text-bg-{{ msg.tags }} border-0 fade show" role="alert">
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <strong>{% if msg.tags == 'success' %}Success{% elif msg.tags == 'warning' %}Warning{% endif %} - </strong>{{ msg.message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
 
-                                        <div class="mb-3">
-                                            <label for="answer" class="form-label">Answer <span class="text-danger">*</span></label>
-                                            <textarea class="form-control" id="answer" name="answer" rows="8">{{ faq.answer|default:'' }}</textarea>
-                                        </div>
-                                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-xl-6">
+                                            <div class="mb-3">
+                                                <label for="{{ form.question.id_for_label }}" class="form-label">Question</label>
+                                                <input type="text" name="{{ form.question.name }}" id="{{ form.question.id_for_label }}" class="form-control {% if form.question.errors %}is-invalid{% endif %}" 
+                                                       value="{{ form.question.value|default_if_none:'' }}" placeholder="Enter question">
+                                                {% if form.question.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.question.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
 
-                                    <div class="col-md-3">
-                                        <div class="mb-3">
-                                            <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="category" name="category" required>
-                                                {% for choice in categories %}
-                                                <option value="{{ choice.0 }}" {% if faq.category == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
+                                            <div class="mb-3">
+                                                <label for="{{ form.answer.id_for_label }}" class="form-label">Answer</label>
+                                                <textarea name="{{ form.answer.name }}" id="{{ form.answer.id_for_label }}" class="form-control {% if form.answer.errors %}is-invalid{% endif %}" 
+                                                          placeholder="Enter answer" rows="8">{{ form.answer.value|default_if_none:'' }}</textarea>
+                                                {% if form.answer.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.answer.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            
+                                        </div> <!-- end col-->
 
-                                        <div class="mb-3">
-                                            <label for="sort_order" class="form-label">Sort Order</label>
-                                            <input type="number" class="form-control" id="sort_order" name="sort_order" value="{{ faq.sort_order|default:0 }}">
-                                            <small class="text-muted">Lower numbers appear first</small>
-                                        </div>
+                                        <div class="col-xl-6">
+                                            <div class="mb-3">
+                                                <label for="{{ form.category.id_for_label }}" class="form-label">Category</label>
+                                                <select name="{{ form.category.name }}" id="{{ form.category.id_for_label }}" class="form-select {% if form.category.errors %}is-invalid{% endif %}">
+                                                    {% for choice in categories %}
+                                                    <option value="{{ choice.0 }}" {% if form.category.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                {% if form.category.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.category.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
 
-                                        <div class="mb-3">
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if faq.is_active or not faq %}checked{% endif %}>
-                                                <label class="form-check-label" for="is_active">Active</label>
+                                            <div class="mb-3">
+                                                <label for="{{ form.sort_order.id_for_label }}" class="form-label">Sort Order</label>
+                                                <input type="number" name="{{ form.sort_order.name }}" id="{{ form.sort_order.id_for_label }}" class="form-control {% if form.sort_order.errors %}is-invalid{% endif %}" 
+                                                       value="{{ form.sort_order.value|default_if_none:0 }}" placeholder="Enter sort order">
+                                                {% if form.sort_order.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.sort_order.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <input type="checkbox" class="form-check-input" name="{{ form.is_active.name }}" id="{{ form.is_active.id_for_label }}" {% if form.is_active.value %}checked{% endif %} >
+                                                <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Is Active</label>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
+                                        <div class="col-auto">
+                                            <a href="{% url 'dashboard:faqs_list' %}" class="btn btn-danger"><i class=""></i>Back to Table</a>
+                                            <button type="submit" class="btn btn-danger chat-send waves-effect waves-light">
+                                                {% if instance %}Update FAQ{% else %}Add FAQ{% endif %}
+                                            </button>
+                                        </div>
+                                    </div> <!-- end row -->
+                                </div> <!-- end card-body -->
+                            </div> <!-- end card -->
+                        </div> <!-- end col -->
+                    </div> <!-- end row -->
+                </form>
+            </div> <!-- container -->
+        </div> <!-- content -->
+    </div> <!-- content-page -->
 
-                                <div class="text-end">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="mdi mdi-content-save me-1"></i> Save FAQ
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- ============================================================== -->
+    <!-- End Page Content -->
+    <!-- ============================================================== -->
 
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
-<script>
-    ClassicEditor.create(document.querySelector('#answer')).catch(error => { console.error(error); });
-</script>
 {% endblock %}

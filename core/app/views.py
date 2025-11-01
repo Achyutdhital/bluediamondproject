@@ -62,8 +62,10 @@ def index(request):
 def about(request):
     """About Us page"""
     aboutus = AboutUsPage.objects.filter(is_active=True).first()
+    banner = Banner.objects.filter(page_path='/about/', is_active=True).first()
     context = {
         'aboutus': aboutus,
+        'banner': banner,
         **get_common_context(),
     }
     return render(request, 'app/aboutus.html', context)
@@ -113,8 +115,10 @@ def enquiry(request):
     else:
         form = EnquiryForm()
 
+    banner = Banner.objects.filter(page_path='/enquiry/', is_active=True).first()
     context = {
         'form': form,
+        'banner': banner,
         **get_common_context(),
     }
     return render(request, 'app/enquiry.html', context)
@@ -142,15 +146,22 @@ def contact(request):
         else:
             messages.error(request, 'Please fill in all required fields.')
     
-    return render(request, 'app/contact.html', get_common_context())
+    banner = Banner.objects.filter(page_path='/contact/', is_active=True).first()
+    context = {
+        'banner': banner,
+        **get_common_context(),
+    }
+    return render(request, 'app/contact.html', context)
 
 
 def services(request):
     """Services page displaying all active services"""
     services = Services.objects.filter(is_active=True).order_by('name')
+    banner = Banner.objects.filter(page_path='/services/', is_active=True).first()
     
     context = {
         'services': services,
+        'banner': banner,
         **get_common_context(),
     }
     return render(request, 'app/services.html', context)
@@ -176,8 +187,10 @@ def service_detail(request, slug):
 def privacy_policy(request):
     """Privacy Policy page"""
     privacy = PrivacyPolicy.objects.filter(is_active=True).first()
+    banner = Banner.objects.filter(page_path='/privacy-policy/', is_active=True).first()
     context = {
         'privacy': privacy,
+        'banner': banner,
         **get_common_context(),
     }
     return render(request, 'app/privacy_policy.html', context)
@@ -186,8 +199,10 @@ def privacy_policy(request):
 def terms_and_conditions(request):
     """Terms and Conditions page"""
     terms = TermsAndConditions.objects.filter(is_active=True).first()
+    banner = Banner.objects.filter(page_path='/terms-and-conditions/', is_active=True).first()
     context = {
         'terms': terms,
+        'banner': banner,
         **get_common_context(),
     }
     return render(request, 'app/terms_and_conditions.html', context)

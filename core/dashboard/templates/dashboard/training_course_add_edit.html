@@ -1,103 +1,160 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
-
-{% block title %}{% if course %}Edit Course{% else %}Add Course{% endif %} - Dashboard{% endblock %}
-
+{% block title %}
+    {% if instance %}Edit Training Course{% else %}Add Training Course{% endif %}
+{% endblock %}
+{% block css %}
+    <!-- Bootstrap Maxlength css -->
+    <link href="{% static 'dashboard/assets/vendor/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
 {% block body %}
-<div class="content-page">
-    <div class="content">
-        <div class="container-fluid">
-            
-            <div class="row">
-                <div class="col-12">
-                    <div class="page-title-box">
-                        <div class="page-title-right">
-                            <a href="{% url 'dashboard:training_courses_list' %}" class="btn btn-secondary">
-                                <i class="mdi mdi-arrow-left me-1"></i> Back
-                            </a>
-                        </div>
-                        <h4 class="page-title">{% if course %}Edit Course{% else %}Add Course{% endif %}</h4>
-                    </div>
-                </div>
-            </div>
+    <title>{% if instance %}Edit Training Course{% else %}Add Training Course{% endif %}</title>
 
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <form method="post" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <div class="mb-3">
-                                            <label for="title" class="form-label">Course Title <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="title" name="title" value="{{ course.title|default:'' }}" required>
-                                        </div>
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
 
-                                        <div class="mb-3">
-                                            <label for="short_description" class="form-label">Short Description <span class="text-danger">*</span></label>
-                                            <textarea class="form-control" id="short_description" name="short_description" rows="3" required>{{ course.short_description|default:'' }}</textarea>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="description" class="form-label">Full Description</label>
-                                            <textarea class="form-control" id="description" name="description" rows="10">{{ course.description|default:'' }}</textarea>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label for="duration" class="form-label">Duration <span class="text-danger">*</span></label>
-                                                    <input type="text" class="form-control" id="duration" name="duration" value="{{ course.duration|default:'' }}" placeholder="e.g., 3 months" required>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label for="fee" class="form-label">Fee (Rs.)</label>
-                                                    <input type="number" class="form-control" id="fee" name="fee" value="{{ course.fee|default:'' }}" step="0.01" placeholder="Leave blank if free">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="image" class="form-label">Course Image</label>
-                                            {% if course.image %}
-                                            <div class="mb-2">
-                                                <img src="{{ course.image.url }}" alt="{{ course.title }}" class="img-fluid rounded">
-                                            </div>
-                                            {% endif %}
-                                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if course.is_active or not course %}checked{% endif %}>
-                                                <label class="form-check-label" for="is_active">Active</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="text-end">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="mdi mdi-content-save me-1"></i> Save Course
-                                    </button>
-                                </div>
-                            </form>
+    <div class="content-page">
+        <div class="content">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <h4 class="page-title">{% if instance %}Edit Training Course{% else %}Add Training Course{% endif %}</h4>
                         </div>
                     </div>
                 </div>
-            </div>
+                <!-- end page title -->
 
-        </div>
-    </div>
-</div>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.media }}
+                    {% if messages %}
+                        {% for msg in messages %}
+                            <div class="alert alert-{{ msg.tags }} alert-dismissible text-bg-{{ msg.tags }} border-0 fade show" role="alert">
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <strong>{% if msg.tags == 'success' %}Success{% elif msg.tags == 'warning' %}Warning{% endif %} - </strong>{{ msg.message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
 
-<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
-<script>
-    ClassicEditor.create(document.querySelector('#description')).catch(error => { console.error(error); });
-</script>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-xl-6">
+                                            <div class="mb-3">
+                                                <label for="{{ form.title.id_for_label }}" class="form-label">Course Title</label>
+                                                <input type="text" name="{{ form.title.name }}" data-toggle="maxlength" maxlength="200" id="{{ form.title.id_for_label }}" class="form-control {% if form.title.errors %}is-invalid{% endif %}" 
+                                                       value="{% if instance %}{{ instance.title }}{% endif %}" placeholder="Enter course title">
+                                                {% if form.title.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.title.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="{{ form.short_description.id_for_label }}" class="form-label">Short Description</label>
+                                                <textarea name="{{ form.short_description.name }}" data-toggle="maxlength" maxlength="500" id="{{ form.short_description.id_for_label }}" class="form-control {% if form.short_description.errors %}is-invalid{% endif %}" 
+                                                          placeholder="Enter short description" rows="3">{% if instance %}{{ instance.short_description }}{% endif %}</textarea>
+                                                {% if form.short_description.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.short_description.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="{{ form.duration.id_for_label }}" class="form-label">Duration</label>
+                                                <input type="text" name="{{ form.duration.name }}" data-toggle="maxlength" maxlength="100" id="{{ form.duration.id_for_label }}" class="form-control {% if form.duration.errors %}is-invalid{% endif %}" 
+                                                       value="{% if instance %}{{ instance.duration }}{% endif %}" placeholder="e.g., 3 months">
+                                                {% if form.duration.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.duration.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="{{ form.fee.id_for_label }}" class="form-label">Fee (Rs.)</label>
+                                                <input type="number" name="{{ form.fee.name }}" id="{{ form.fee.id_for_label }}" class="form-control {% if form.fee.errors %}is-invalid{% endif %}" 
+                                                       value="{% if instance %}{{ instance.fee }}{% endif %}" placeholder="Leave blank if free" step="0.01">
+                                                {% if form.fee.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.fee.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+
+                                            
+                                            
+                                        </div> <!-- end col-->
+
+                                        <div class="col-xl-6">
+
+                                            <div class="mb-3">
+                                                <label for="{{ form.image.id_for_label }}" class="form-label">Course Image</label>
+                                                <input type="file" name="{{ form.image.name }}" id="{{ form.image.id_for_label }}" class="form-control {% if form.image.errors %}is-invalid{% endif %}" 
+                                                       onchange="showPreview(this);">
+                                                {% if form.image.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.image.errors }}
+                                                    </div>
+                                                {% endif %}
+                                                <div id="imageContainer" style="width:auto; margin-top: 10px;">
+                                                    <img class="img-fluid" id="imagePreview" src="{% if instance and instance.image %}{{ instance.image.url }}{% endif %}" alt="">
+                                                </div>
+                                            </div>
+                                        </div> <!-- end col-->
+                                        <div class="mb-3">
+                                                <label for="{{ form.description.id_for_label }}" class="form-label">Full Description</label><br>
+                                                {{ form.description }}
+                                                {% if form.description.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ form.description.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="mb-3">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" name="{{ form.is_active.name }}" id="{{ form.is_active.id_for_label }}" {% if instance.is_active or not instance %}checked{% endif %}>
+                                                    <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Is Active</label>
+                                                </div>
+                                            </div>
+
+                                        <div class="col-auto">
+                                            <a href="{% url 'dashboard:training_courses_list' %}" class="btn btn-danger"><i class="mdi mdi-arrow-left me-1"></i>Back to Table</a>
+                                            <button type="submit" class="btn btn-danger chat-send waves-effect waves-light">
+                                                <i class="mdi mdi-content-save me-1"></i>{% if instance %}Update Training Course{% else %}Add Training Course{% endif %}
+                                            </button>
+                                        </div>
+                                    </div> <!-- end row -->
+                                </div> <!-- end card-body -->
+                            </div> <!-- end card -->
+                        </div> <!-- end col -->
+                    </div> <!-- end row -->
+                </form>
+            </div> <!-- container -->
+        </div> <!-- content -->
+    </div> <!-- content-page -->
+
+    <!-- ============================================================== -->
+    <!-- End Page Content -->
+    <!-- ============================================================== -->
+
+{% endblock %}
+
+{% block js %}
+<!-- Bootstrap Maxlength Plugin js -->
+<script src="{% static 'dashboard/assets/vendor/bootstrap-maxlength/bootstrap-maxlength.min.js' %}"></script>
+
+<!-- Bootstrap Touchspin Plugin js -->
+<script src="{% static 'dashboard/assets/vendor/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js' %}"></script>
+
+<!-- App js -->
+<script src="{% static 'dashboard/assets/js/app.min.js' %}"></script>
 {% endblock %}

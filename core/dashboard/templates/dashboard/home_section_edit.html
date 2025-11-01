@@ -3,11 +3,29 @@
 
 {% block title %}Home Sections - Dashboard{% endblock %}
 
+{% block css %}
+<!-- Plugins css -->
+<link href="{% static 'dashboard/assets/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
 {% block body %}
 <div class="content-page">
     <div class="content">
         <div class="container-fluid">
             
+            {% if messages %}
+                <div class="row">
+                    <div class="col-12">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box">
@@ -22,6 +40,7 @@
                         <div class="card-body">
                             <form method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
+                                {{ form.media }}
                                 
                                 <div class="row">
                                     <div class="col-md-8">
@@ -29,12 +48,14 @@
                                         
                                         <div class="mb-3">
                                             <label for="subtitle1" class="form-label">Subtitle 1</label>
-                                            <input type="text" class="form-control" id="subtitle1" name="subtitle1" value="{{ home_section.subtitle1|default:'' }}">
+                                            <input type="text" class="form-control" id="subtitle1" name="subtitle1" 
+                                                   value="{% if instance %}{{ instance.subtitle1 }}{% endif %}"
+                                                   data-toggle="maxlength" maxlength="255">
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="subcontent1" class="form-label">Content 1</label>
-                                            <textarea class="form-control" id="subcontent1" name="subcontent1" rows="4">{{ home_section.subcontent1|default:'' }}</textarea>
+                                            <textarea class="form-control" id="subcontent1" name="subcontent1" rows="4">{% if instance %}{{ instance.subcontent1 }}{% endif %}</textarea>
                                         </div>
 
                                         <hr class="my-4">
@@ -43,12 +64,14 @@
                                         
                                         <div class="mb-3">
                                             <label for="subtitle2" class="form-label">Subtitle 2</label>
-                                            <input type="text" class="form-control" id="subtitle2" name="subtitle2" value="{{ home_section.subtitle2|default:'' }}">
+                                            <input type="text" class="form-control" id="subtitle2" name="subtitle2" 
+                                                   value="{% if instance %}{{ instance.subtitle2 }}{% endif %}"
+                                                   data-toggle="maxlength" maxlength="255">
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="subcontent2" class="form-label">Content 2</label>
-                                            <textarea class="form-control" id="subcontent2" name="subcontent2" rows="4">{{ home_section.subcontent2|default:'' }}</textarea>
+                                            <textarea class="form-control" id="subcontent2" name="subcontent2" rows="4">{% if instance %}{{ instance.subcontent2 }}{% endif %}</textarea>
                                         </div>
 
                                         <hr class="my-4">
@@ -57,13 +80,16 @@
                                         
                                         <div class="mb-3">
                                             <label for="subtitle3" class="form-label">Subtitle 3</label>
-                                            <input type="text" class="form-control" id="subtitle3" name="subtitle3" value="{{ home_section.subtitle3|default:'' }}">
+                                            <input type="text" class="form-control" id="subtitle3" name="subtitle3" 
+                                                   value="{% if instance %}{{ instance.subtitle3 }}{% endif %}"
+                                                   data-toggle="maxlength" maxlength="255">
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="subcontent3" class="form-label">Content 3</label>
-                                            <textarea class="form-control" id="subcontent3" name="subcontent3" rows="4">{{ home_section.subcontent3|default:'' }}</textarea>
+                                            <textarea class="form-control" id="subcontent3" name="subcontent3" rows="4">{% if instance %}{{ instance.subcontent3 }}{% endif %}</textarea>
                                         </div>
+                                        
                                     </div>
 
                                     <div class="col-md-4">
@@ -71,20 +97,24 @@
                                         
                                         <div class="mb-3">
                                             <label for="picture1" class="form-label">Picture</label>
-                                            {% if home_section.picture1 %}
-                                            <div class="mb-2">
-                                                <img src="{{ home_section.picture1.url }}" alt="Home Section" class="img-fluid rounded">
-                                            </div>
-                                            {% endif %}
-                                            <input type="file" class="form-control" id="picture1" name="picture1" accept="image/*">
-                                            <small class="text-muted">This image will be displayed in the home section</small>
+                                            <input type="file" class="form-control" id="picture1" name="picture1" 
+                                                   accept="image/*" onchange="showPreview(this)">
+                                            <small class="text-muted">Upload an image for the home section</small>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <img id="preview-picture1" 
+                                                 src="{% if instance.picture1 %}{{ instance.picture1.url }}{% endif %}" 
+                                                 alt="Preview" 
+                                                 style="{% if not instance.picture1 %}display: none;{% endif %} max-height: 200px; object-fit: contain; border: 1px solid #ddd; border-radius: 4px; padding: 5px;">
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="text-end">
-                                    <button type="submit" class="btn btn-primary btn-lg">
-                                        <i class="mdi mdi-content-save me-1"></i> Save Home Sections
+                                    <button type="submit" class="btn btn-danger btn-lg">
+                                        <i class="mdi mdi-content-save me-1"></i>
+                                        {% if instance %}Update Home Sections{% else %}Save Home Sections{% endif %}
                                     </button>
                                 </div>
                             </form>
@@ -97,10 +127,37 @@
     </div>
 </div>
 
-<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+{% endblock %}
+
+{% block js %}
+<!-- Plugins js -->
+<script src="{% static 'dashboard/assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js' %}"></script>
+
 <script>
+    // Initialize plugins
+    $('[data-toggle="maxlength"]').maxlength({
+        warningClass: "badge bg-success",
+        limitReachedClass: "badge bg-danger"
+    });
+    
+    // CKEditor initialization
     ClassicEditor.create(document.querySelector('#subcontent1')).catch(error => { console.error(error); });
     ClassicEditor.create(document.querySelector('#subcontent2')).catch(error => { console.error(error); });
     ClassicEditor.create(document.querySelector('#subcontent3')).catch(error => { console.error(error); });
+    
+    // Image preview function
+    function showPreview(input) {
+        const fieldName = input.id;
+        const preview = document.getElementById('preview-' + fieldName);
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 </script>
 {% endblock %}

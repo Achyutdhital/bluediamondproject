@@ -181,13 +181,8 @@
                                 <h3>ABOUT US</h3>
                             </div>
                             {% if company %}
-                                {% if company.logo %}
-                                <div class="footer-logo" style="margin-bottom: 15px;">
-                                    <img src="{{ company.logo.url }}" alt="{{ company.company_name }}" style="max-width: 150px;">
-                                </div>
-                                {% endif %}
                                 {% if company.description %}
-                                <p>{{ company.description|truncatewords:40 |safe}}</p>
+                                <p>{{ company.description|truncatewords:80 |safe}}</p>
                                 {% endif %}
                             {% endif %}
                         </div>

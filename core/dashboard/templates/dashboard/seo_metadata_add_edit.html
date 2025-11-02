@@ -1,10 +1,8 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
-{% block title %}
-    {% if instance %}Edit SEO Metadata{% else %}Add SEO Metadata{% endif %}
-{% endblock %}
+{% block title %}{% if instance %}Edit SEO{% else %}Add SEO{% endif %}{% endblock %}
 {% block body %}
-    <title>{% if instance %}Edit SEO Metadata{% else %}Add SEO Metadata{% endif %}</title>
+    <title>{% if instance %}Edit SEO{% else %}Add SEO{% endif %}</title>
 
     <div class="content-page">
         <div class="content">
@@ -17,7 +15,7 @@
                     </div>
                 </div>
 
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form.media }}
                         {% if messages %}
@@ -33,71 +31,13 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-xl-6">
-                                            <div class="mb-3">
-                                                <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
-                                                <input type="text" name="{{ form.title.name }}" id="{{ form.title.id_for_label }}" class="form-control {% if form.title.errors %}is-invalid{% endif %}" 
-                                                       value="{{ form.title.value|default_if_none:'' }}" placeholder="Enter title"   data-toggle="maxlength" maxlength="255">
-                                                {% if form.title.errors %}
-                                                    <div class="invalid-feedback">
-                                                        {{ form.title.errors }}
-                                                    </div>
-                                                {% endif %}
-                                            </div>
+                                    {% include 'dashboard/_seo_accordion.html' with seo_form=form %}
 
-                                            <div class="mb-3">
-                                                <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
-                                                <textarea name="{{ form.description.name }}" id="{{ form.description.id_for_label }}" class="form-control {% if form.description.errors %}is-invalid{% endif %}" 
-                                                            placeholder="Enter description" data-toggle="maxlength" maxlength="160">{% if instance %}{{ instance.description }}{% endif %}</textarea>
-                                                {% if form.description.errors %}
-                                                    <div class="invalid-feedback">
-                                                        {{ form.description.errors }}
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label for="{{ form.object_id.id_for_label }}" class="form-label">Object ID</label>
-                                                <input type="number" name="{{ form.object_id.name }}" id="{{ form.object_id.id_for_label }}" class="form-control {% if form.object_id.errors %}is-invalid{% endif %}" 
-                                                       value="{{ form.object_id.value|default_if_none:'1' }}" placeholder="Enter object ID">
-                                                {% if form.object_id.errors %}
-                                                    <div class="invalid-feedback">
-                                                        {{ form.object_id.errors }}
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-                                            
-                                        </div>
-                                        <div class="col-xl-6">
-                                            <div class="mb-3">
-                                                <label for="{{ form.keywords.id_for_label }}" class="form-label">Keywords</label>
-                                                <textarea name="{{ form.keywords.name }}" id="{{ form.keywords.id_for_label }}" class="form-control {% if form.keywords.errors %}is-invalid{% endif %}" 
-                                                          placeholder="Enter keywords" data-toggle="maxlength" maxlength="255">{% if instance %}{{ instance.keywords }}{% endif %}</textarea>
-                                                {% if form.keywords.errors %}
-                                                    <div class="invalid-feedback">
-                                                        {{ form.keywords.errors }}
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label for="{{ form.content_type.id_for_label }}" class="form-label">Content Type</label>
-                                                {{ form.content_type }}
-                                                {% if form.content_type.errors %}
-                                                    <div class="invalid-feedback">
-                                                        {{ form.content_type.errors }}
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-
-                                        </div>
-                                        <div class="col-auto">
-                                            <a href="{% url 'dashboard:seo_metadata_list' %}" class="btn btn-danger"><i class=""></i>Back to Table</a>
-                                            <button type="submit" class="btn btn-danger chat-send waves-effect waves-light">
-                                                {% if instance %}Update SEO Metadata{% else %}Add SEO Metadata{% endif %}
-                                            </button>
-                                        </div>
+                                    <div class="text-end">
+                                        <a href="{% url 'dashboard:seo_metadata_list' %}" class="btn btn-secondary"><i class="mdi mdi-arrow-left me-1"></i>Back to List</a>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="mdi mdi-content-save me-1"></i>{% if instance %}Update SEO{% else %}Add SEO{% endif %}
+                                        </button>
                                     </div>
                                 </div>
                             </div>

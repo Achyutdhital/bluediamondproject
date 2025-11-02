@@ -1,0 +1,181 @@
+{# SEO Settings Accordion - Include in forms #}
+<div class="row mt-3">
+    <div class="col-12">
+        <div class="accordion" id="seoAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="seoHeading">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#seoCollapse" aria-expanded="false" aria-controls="seoCollapse">
+                        <i class="mdi mdi-search-web me-2"></i> SEO Settings (Optional)
+                    </button>
+                </h2>
+                <div id="seoCollapse" class="accordion-collapse collapse" aria-labelledby="seoHeading" data-bs-parent="#seoAccordion">
+                    <div class="accordion-body">
+                        <div class="alert alert-info">
+                            <i class="mdi mdi-information-outline me-1"></i>
+                            <strong>Note:</strong> If left empty, SEO fields will auto-generate from the content.
+                        </div>
+                        
+                        <h5 class="mb-3">Basic SEO</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ seo_form.meta_title.id_for_label }}" class="form-label">
+                                        SEO Title <small class="text-muted">(50-60 chars recommended)</small>
+                                    </label>
+                                    {{ seo_form.meta_title }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ seo_form.focus_keyword.id_for_label }}" class="form-label">
+                                        Focus Keyword
+                                    </label>
+                                    {{ seo_form.focus_keyword }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="{{ seo_form.meta_description.id_for_label }}" class="form-label">
+                                        Meta Description <small class="text-muted">(150-160 chars recommended)</small>
+                                    </label>
+                                    {{ seo_form.meta_description }}
+                                    <div class="form-text" id="descCounter">0 / 160 characters</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="{{ seo_form.meta_keywords.id_for_label }}" class="form-label">
+                                        Meta Keywords <small class="text-muted">(comma-separated)</small>
+                                    </label>
+                                    {{ seo_form.meta_keywords }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-3">
+                        <h5 class="mb-3">Open Graph (Facebook/LinkedIn)</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ seo_form.og_title.id_for_label }}" class="form-label">
+                                        OG Title <small class="text-muted">(optional)</small>
+                                    </label>
+                                    {{ seo_form.og_title }}
+                                    <small class="text-muted d-block">Defaults to SEO Title if empty</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ seo_form.og_type.id_for_label }}" class="form-label">
+                                        OG Type
+                                    </label>
+                                    {{ seo_form.og_type }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="{{ seo_form.og_description.id_for_label }}" class="form-label">
+                                        OG Description <small class="text-muted">(optional)</small>
+                                    </label>
+                                    {{ seo_form.og_description }}
+                                    <small class="text-muted d-block">Defaults to Meta Description if empty</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ seo_form.og_image.id_for_label }}" class="form-label">
+                                        OG Image <small class="text-muted">(1200x630px recommended)</small>
+                                    </label>
+                                    {{ seo_form.og_image }}
+                                    <small class="text-muted d-block">Will use main image if empty</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ seo_form.schema_type.id_for_label }}" class="form-label">
+                                        Schema.org Type
+                                    </label>
+                                    {{ seo_form.schema_type }}
+                                    <small class="text-muted d-block">For structured data</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-3">
+                        <h5 class="mb-3">Twitter Card</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ seo_form.twitter_card.id_for_label }}" class="form-label">
+                                        Twitter Card Type
+                                    </label>
+                                    {{ seo_form.twitter_card }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ seo_form.twitter_image.id_for_label }}" class="form-label">
+                                        Twitter Image <small class="text-muted">(optional)</small>
+                                    </label>
+                                    {{ seo_form.twitter_image }}
+                                    <small class="text-muted d-block">Defaults to OG Image if empty</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-3">
+                        <h5 class="mb-3">Advanced</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ seo_form.canonical_url.id_for_label }}" class="form-label">
+                                        Canonical URL <small class="text-muted">(optional)</small>
+                                    </label>
+                                    {{ seo_form.canonical_url }}
+                                    <small class="text-muted d-block">Auto-generated if empty</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ seo_form.robots.id_for_label }}" class="form-label">
+                                        Robots Meta Tag
+                                    </label>
+                                    {{ seo_form.robots }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Character counter for meta description
+document.addEventListener('DOMContentLoaded', function() {
+    const metaDesc = document.querySelector('textarea[name*="meta_description"]');
+    if (metaDesc) {
+        const counter = document.getElementById('descCounter');
+        const updateCounter = () => {
+            const length = metaDesc.value.length;
+            counter.textContent = `${length} / 160 characters`;
+            if (length > 160) {
+                counter.classList.add('text-warning');
+            } else {
+                counter.classList.remove('text-warning');
+            }
+        };
+        metaDesc.addEventListener('input', updateCounter);
+        updateCounter();
+    }
+});
+</script>

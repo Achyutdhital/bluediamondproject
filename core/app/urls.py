@@ -19,10 +19,14 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='home'),
+    path('blog/', views.blog_list, name='blog_list'),
+    path('blog/<slug:slug>/', views.blog_detail, name='blog_detail'),
     path('about/', views.about, name='about'),
     path('gallery/', views.gallery, name='gallery'),
     path('services/', views.services, name='services'),
     path('services/<slug:slug>/', views.service_detail, name='service_detail'),
+    path('training-courses/', views.training_courses, name='training_courses'),
+    path('training-courses/<slug:slug>/', views.training_course_detail, name='training_course_detail'),
     path('enquiry/', views.enquiry, name='enquiry'),
     path('contact/', views.contact, name='contact'),
     path('privacy-policy/', views.privacy_policy, name='privacy_policy'),

@@ -1,0 +1,86 @@
+{% load static %}
+{# Basic Meta Tags #}
+{% if page_seo %}
+<title>{{ page_seo.meta_title }}</title>
+<meta name="description" content="{{ page_seo.meta_description }}">
+{% if page_seo.meta_keywords %}<meta name="keywords" content="{{ page_seo.meta_keywords }}">{% endif %}
+<meta name="robots" content="{{ page_seo.robots|default:'index, follow' }}">
+{% else %}
+<title>{{ default_seo.default_title|default:'Blue Diamond Service Center' }}</title>
+<meta name="description" content="{{ default_seo.default_description|default:'Professional appliance repair services in Nepal' }}">
+{% if default_seo.default_keywords %}<meta name="keywords" content="{{ default_seo.default_keywords }}">{% endif %}
+<meta name="robots" content="index, follow">
+{% endif %}
+
+{# Canonical URL #}
+{% if page_seo.canonical_url %}
+<link rel="canonical" href="{{ page_seo.canonical_url }}">
+{% elif absolute_url %}
+<link rel="canonical" href="{{ absolute_url }}">
+{% endif %}
+
+{# Open Graph Tags (Facebook, LinkedIn, etc.) #}
+<meta property="og:type" content="{{ page_seo.og_type|default:'website' }}">
+<meta property="og:title" content="{{ page_seo.get_og_title|default:page_seo.meta_title|default:default_seo.site_name }}">
+<meta property="og:description" content="{{ page_seo.get_og_description|default:page_seo.meta_description|default:default_seo.default_description }}">
+{% if absolute_url %}<meta property="og:url" content="{{ absolute_url }}">{% endif %}
+<meta property="og:site_name" content="{{ default_seo.site_name|default:'Blue Diamond Service Center' }}">
+
+{% if page_seo.og_image %}
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ page_seo.og_image.url }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+{% elif default_seo.default_og_image %}
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ default_seo.default_og_image.url }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+{% endif %}
+
+{# Twitter Card Tags #}
+<meta name="twitter:card" content="{{ page_seo.twitter_card|default:'summary_large_image' }}">
+<meta name="twitter:title" content="{{ page_seo.get_twitter_title|default:page_seo.meta_title|default:default_seo.site_name }}">
+<meta name="twitter:description" content="{{ page_seo.get_twitter_description|default:page_seo.meta_description|default:default_seo.default_description }}">
+{% if default_seo.twitter_handle %}<meta name="twitter:site" content="@{{ default_seo.twitter_handle }}">{% endif %}
+{% if default_seo.twitter_handle %}<meta name="twitter:creator" content="@{{ default_seo.twitter_handle }}">{% endif %}
+
+{% if page_seo.twitter_image %}
+<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ page_seo.twitter_image.url }}">
+{% elif page_seo.og_image %}
+<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ page_seo.og_image.url }}">
+{% elif default_seo.default_og_image %}
+<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ default_seo.default_og_image.url }}">
+{% endif %}
+
+{# Facebook App ID #}
+{% if default_seo.facebook_app_id %}
+<meta property="fb:app_id" content="{{ default_seo.facebook_app_id }}">
+{% endif %}
+
+{# Verification Tags #}
+{% if default_seo.google_search_console_id %}
+<meta name="google-site-verification" content="{{ default_seo.google_search_console_id }}">
+{% endif %}
+{% if default_seo.bing_webmaster_id %}
+<meta name="msvalidate.01" content="{{ default_seo.bing_webmaster_id }}">
+{% endif %}
+
+{# Analytics #}
+{% if default_seo.google_analytics_id %}
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ default_seo.google_analytics_id }}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '{{ default_seo.google_analytics_id }}');
+</script>
+{% endif %}
+
+{% if default_seo.google_tag_manager_id %}
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','{{ default_seo.google_tag_manager_id }}');</script>
+{% endif %}

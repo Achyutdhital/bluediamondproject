@@ -139,13 +139,18 @@
                                     </div>
                                 </div>
 
-                                <div class="text-end">
+                                <!-- SEO Settings -->
+                                {% include 'dashboard/_seo_accordion.html' with seo_form=seo_form %}
+
+                                <!-- Submit Button -->
+                                <div class="text-end mt-3">
                                     <button type="submit" class="btn btn-danger btn-lg">
                                         <i class="mdi mdi-content-save me-1"></i>
                                         {% if instance %}Update About Us Page{% else %}Save About Us Page{% endif %}
                                     </button>
                                 </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

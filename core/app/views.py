@@ -15,8 +15,11 @@ from .models import (
     CompanyDetails,
     PrivacyPolicy,
     TermsAndConditions,
+    BlogPost,
+    Video,
 )
 from .forms import EnquiryForm
+from .seo_utils import SEOHelper
 
 
 def get_common_context():
@@ -42,6 +45,9 @@ def index(request):
     
     # Get form-specific message
     form_message = request.session.pop('home_form_message', None)
+    
+    # SEO data
+    seo_data = SEOHelper.get_page_seo_data(page_type='home')
 
     context = {
         'carousels': Carousel.objects.filter(is_active=True)[:10],
@@ -51,22 +57,102 @@ def index(request):
         'testimonials': Testimonial.objects.filter(is_active=True)[:12],
         'faqs': FAQ.objects.filter(is_active=True).order_by('sort_order', 'id')[:12],
         'features': Feature.objects.filter(is_active=True).order_by('sort_order')[:3],
+        'latest_blogs': BlogPost.objects.filter(is_published=True).order_by('-published_at')[:3],
+        'featured_video': Video.objects.filter(is_active=True).first(),
         'enquiry_form': form,
         'homesection': homesection.objects.first(),
         'form_message': form_message,
         **get_common_context(),
+        **seo_data,
     }
     return render(request, 'app/index.html', context)
+
+
+def blog_list(request):
+    """Public blog listing page"""
+    from django.core.paginator import Paginator
+    posts_qs = BlogPost.objects.filter(is_published=True).order_by('-published_at')
+    paginator = Paginator(posts_qs, 20)  # ~10 rows per page on desktop (≈3 columns)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Build a small window of page numbers around the current page to simplify template logic
+    current = page_obj.number
+    total = paginator.num_pages
+    start = max(1, current - 2)
+    end = min(total, current + 2)
+    page_numbers = list(range(start, end + 1))
+    show_first = 1 not in page_numbers
+    show_last = total not in page_numbers
+
+    banner = Banner.objects.filter(page_path='/blog/', is_active=True).first()
+    recent_posts = posts_qs[:5]
+    
+    # SEO data
+    seo_data = SEOHelper.get_page_seo_data(page_type='blog', request=request)
+    
+    context = {
+        'posts': page_obj.object_list,
+        'page_obj': page_obj,
+        'banner': banner,
+        'recent_posts': recent_posts,
+        'page_numbers': page_numbers,
+        'show_first': show_first,
+        'show_last': show_last,
+        'total_pages': total,
+        **get_common_context(),
+        **seo_data,
+    }
+    return render(request, 'app/blog_list.html', context)
+
+
+def blog_detail(request, slug):
+    """Public blog detail page"""
+    from django.shortcuts import get_object_or_404
+    post = get_object_or_404(BlogPost, slug=slug, is_published=True)
+    recent_posts = BlogPost.objects.filter(is_published=True).exclude(id=post.id).order_by('-published_at')[:5]
+    # Previous/Next posts by published date
+    prev_post = (
+        BlogPost.objects.filter(is_published=True, published_at__lt=post.published_at)
+        .order_by('-published_at')
+        .first()
+    )
+    next_post = (
+        BlogPost.objects.filter(is_published=True, published_at__gt=post.published_at)
+        .order_by('published_at')
+        .first()
+    )
+    
+    # SEO data for blog post
+    seo_data = SEOHelper.get_page_seo_data(
+        obj=post,
+        canonical_url=request.build_absolute_uri()
+    )
+    
+    context = {
+        'post': post,
+        'recent_posts': recent_posts,
+        'prev_post': prev_post,
+        'next_post': next_post,
+        **get_common_context(),
+        **seo_data,
+    }
+    return render(request, 'app/blog_detail.html', context)
 
 
 def about(request):
     """About Us page"""
     aboutus = AboutUsPage.objects.filter(is_active=True).first()
     banner = Banner.objects.filter(page_path='/about/', is_active=True).first()
+    
+    # SEO data - use about page's SEO if available
+    seo_data = SEOHelper.get_page_seo_data(obj=aboutus, page_type='about', request=request)
+    
     context = {
         'aboutus': aboutus,
         'banner': banner,
         **get_common_context(),
+        **seo_data,
     }
     return render(request, 'app/aboutus.html', context)
 
@@ -91,6 +177,15 @@ def gallery(request):
     services = Services.objects.filter(is_active=True).order_by('name')
     banner = Banner.objects.filter(page_path='/gallery/', is_active=True).first()
 
+    # SEO data
+    seo_data = SEOHelper.get_page_seo_data(
+        page_type='default',
+        request=request,
+        meta_title='Gallery - Blue Diamond Service Center',
+        meta_description='Browse our gallery of service work and training photos. See our professional appliance repair and maintenance services in action.',
+        meta_keywords='appliance repair gallery, service photos, training images'
+    )
+
     context = {
         'services': services,
         'images': page_obj.object_list,
@@ -98,6 +193,7 @@ def gallery(request):
         'selected_service': selected_service,
         'banner': banner,
         **get_common_context(),
+        **seo_data,
     }
     return render(request, 'app/gallery.html', context)
 
@@ -116,10 +212,21 @@ def enquiry(request):
         form = EnquiryForm()
 
     banner = Banner.objects.filter(page_path='/enquiry/', is_active=True).first()
+    
+    # SEO data
+    seo_data = SEOHelper.get_page_seo_data(
+        page_type='default',
+        request=request,
+        meta_title='Enquiry - Blue Diamond Service Center',
+        meta_description='Get in touch with us for appliance repair services or training course enquiries. Quick response and professional service guaranteed.',
+        meta_keywords='enquiry, service request, training enquiry, contact form'
+    )
+    
     context = {
         'form': form,
         'banner': banner,
         **get_common_context(),
+        **seo_data,
     }
     return render(request, 'app/enquiry.html', context)
 
@@ -147,22 +254,51 @@ def contact(request):
             messages.error(request, 'Please fill in all required fields.')
     
     banner = Banner.objects.filter(page_path='/contact/', is_active=True).first()
+    
+    # SEO data
+    seo_data = SEOHelper.get_page_seo_data(page_type='contact', request=request)
+    
     context = {
         'banner': banner,
         **get_common_context(),
+        **seo_data,
     }
     return render(request, 'app/contact.html', context)
 
 
 def services(request):
     """Services page displaying all active services"""
-    services = Services.objects.filter(is_active=True).order_by('name')
+    services_qs = Services.objects.filter(is_active=True).order_by('name')
+    # Pagination
+    from django.core.paginator import Paginator
+    paginator = Paginator(services_qs, 30)  # ~10 rows per page on desktop (≈3 columns)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     banner = Banner.objects.filter(page_path='/services/', is_active=True).first()
     
+    # SEO data
+    seo_data = SEOHelper.get_page_seo_data(page_type='services', request=request)
+    
+    # Build a small window of page numbers around the current page to simplify template logic
+    current = page_obj.number
+    total = paginator.num_pages
+    start = max(1, current - 2)
+    end = min(total, current + 2)
+    page_numbers = list(range(start, end + 1))
+    show_first = 1 not in page_numbers
+    show_last = total not in page_numbers
+
     context = {
-        'services': services,
+        'services': page_obj.object_list,
+        'page_obj': page_obj,
+        'page_numbers': page_numbers,
+        'show_first': show_first,
+        'show_last': show_last,
+        'total_pages': total,
         'banner': banner,
         **get_common_context(),
+        **seo_data,
     }
     return render(request, 'app/services.html', context)
 
@@ -175,11 +311,18 @@ def service_detail(request, slug):
     other_services = Services.objects.filter(is_active=True).exclude(id=service.id).order_by('name')[:5]
     related_services = Services.objects.filter(is_active=True).exclude(id=service.id).order_by('?')[:3]
     
+    # SEO data for service
+    seo_data = SEOHelper.get_page_seo_data(
+        obj=service,
+        canonical_url=request.build_absolute_uri()
+    )
+    
     context = {
         'service': service,
         'other_services': other_services,
         'related_services': related_services,
         **get_common_context(),
+        **seo_data,
     }
     return render(request, 'app/service_detail.html', context)
 
@@ -188,10 +331,21 @@ def privacy_policy(request):
     """Privacy Policy page"""
     privacy = PrivacyPolicy.objects.filter(is_active=True).first()
     banner = Banner.objects.filter(page_path='/privacy-policy/', is_active=True).first()
+    
+    # SEO data
+    seo_data = SEOHelper.get_page_seo_data(
+        page_type='default',
+        request=request,
+        meta_title='Privacy Policy - Blue Diamond Service Center',
+        meta_description='Read our privacy policy to understand how we collect, use, and protect your personal information.',
+        meta_keywords='privacy policy, data protection, privacy'
+    )
+    
     context = {
         'privacy': privacy,
         'banner': banner,
         **get_common_context(),
+        **seo_data,
     }
     return render(request, 'app/privacy_policy.html', context)
 
@@ -200,9 +354,70 @@ def terms_and_conditions(request):
     """Terms and Conditions page"""
     terms = TermsAndConditions.objects.filter(is_active=True).first()
     banner = Banner.objects.filter(page_path='/terms-and-conditions/', is_active=True).first()
+    
+    # SEO data
+    seo_data = SEOHelper.get_page_seo_data(
+        page_type='default',
+        request=request,
+        meta_title='Terms and Conditions - Blue Diamond Service Center',
+        meta_description='Read our terms and conditions for using our services and website.',
+        meta_keywords='terms and conditions, terms of service, legal'
+    )
+    
     context = {
         'terms': terms,
         'banner': banner,
         **get_common_context(),
+        **seo_data,
     }
     return render(request, 'app/terms_and_conditions.html', context)
+
+
+def training_courses(request):
+    """Training courses page displaying all active courses"""
+    courses_qs = TrainingCourse.objects.filter(is_active=True).order_by('title')
+    # Pagination
+    from django.core.paginator import Paginator
+    paginator = Paginator(courses_qs, 30)  # ~10 rows per page on desktop (≈3 columns)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    banner = Banner.objects.filter(page_path='/training-courses/', is_active=True).first()
+    
+    # SEO data
+    seo_data = SEOHelper.get_page_seo_data(page_type='training', request=request)
+    
+    context = {
+        'courses': page_obj.object_list,
+        'page_obj': page_obj,
+        # Page window like blog list
+        'page_numbers': list(range(max(1, page_obj.number - 2), min(page_obj.paginator.num_pages, page_obj.number + 2) + 1)),
+        'show_first': 1 not in list(range(max(1, page_obj.number - 2), min(page_obj.paginator.num_pages, page_obj.number + 2) + 1)),
+        'show_last': page_obj.paginator.num_pages not in list(range(max(1, page_obj.number - 2), min(page_obj.paginator.num_pages, page_obj.number + 2) + 1)),
+        'total_pages': page_obj.paginator.num_pages,
+        'banner': banner,
+        **get_common_context(),
+        **seo_data,
+    }
+    return render(request, 'app/training_courses.html', context)
+
+
+def training_course_detail(request, slug):
+    """Training course detail page"""
+    from django.shortcuts import get_object_or_404
+    
+    course = get_object_or_404(TrainingCourse, slug=slug, is_active=True)
+    other_courses = TrainingCourse.objects.filter(is_active=True).exclude(id=course.id).order_by('title')[:3]
+    
+    # SEO data for training course
+    seo_data = SEOHelper.get_page_seo_data(
+        obj=course,
+        canonical_url=request.build_absolute_uri()
+    )
+    
+    context = {
+        'course': course,
+        'other_courses': other_courses,
+        **get_common_context(),
+        **seo_data,
+    }
+    return render(request, 'app/training_course_detail.html', context)

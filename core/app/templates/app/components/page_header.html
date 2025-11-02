@@ -1,0 +1,50 @@
+{% load static %}
+{% comment %}
+  Minimal page header with title and breadcrumbs
+  Usage:
+    include 'app/components/page_header.html' with title='Gallery'
+    or
+    include 'app/components/page_header.html' with title=dynamic_title breadcrumb_items=items
+  - breadcrumb_items optional: list of { title, url } where the last item is current page
+  Note: We add a responsive top offset to clear the fixed header + top bar.
+{% endcomment %}
+<style>
+  /* Responsive top offset so header never hides behind the fixed navigation */
+  .bd-page-header { margin-top: 130px; }
+  @media (max-width: 1200px) { .bd-page-header { margin-top: 110px; } }
+  @media (max-width: 992px)  { .bd-page-header { margin-top: 100px; } }
+  @media (max-width: 768px)  { .bd-page-header { margin-top: 85px; } }
+  @media (max-width: 576px)  { .bd-page-header { margin-top: 75px; } }
+  .bd-page-header { text-align: center; }
+  .bd-page-header h1 { text-align: center; }
+  .bd-page-header .breadcrumb { display: flex; justify-content: center; flex-wrap: wrap; }
+</style>
+<section class="page-header bd-page-header" style="padding: 60px 0 30px; background:#f7f8fb; border-bottom:1px solid #eee;">
+  <div class="container">
+    <h1 style="margin:0 0 10px; font-size: 36px; font-weight: 700; color:#222;">{{ title }}</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb" style="background:transparent; margin:0; padding:0;">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        {% if breadcrumb_items %}
+          {% for bc in breadcrumb_items %}
+            {% if forloop.last %}
+              <li class="breadcrumb-item active" aria-current="page">{{ bc.title }}</li>
+            {% else %}
+              <li class="breadcrumb-item"><a href="{{ bc.url }}">{{ bc.title }}</a></li>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          {# Optional parent crumb support #}
+          {% if parent_title %}
+            {% if parent_url %}
+              <li class="breadcrumb-item"><a href="{{ parent_url }}">{{ parent_title }}</a></li>
+            {% else %}
+              <li class="breadcrumb-item">{{ parent_title }}</li>
+            {% endif %}
+          {% endif %}
+          <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+        {% endif %}
+      </ol>
+    </nav>
+  </div>
+</section>

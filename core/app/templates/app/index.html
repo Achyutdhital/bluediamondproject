@@ -94,6 +94,46 @@
 {% endif %}
 <!--================Popular Brands Section End=================-->
 
+<!--================Featured Video Section Start=================-->
+{% if featured_video %}
+<section class="secptb70">
+    <div class="container">
+        <div class="page-heading text-center" style="margin-bottom:25px;">
+            <h2>Watch Our Work</h2>
+            <p>Short clip from our recent service/training session</p>
+        </div>
+        <div class="row" style="align-items:center;">
+            <div class="col-md-6 col-sm-12">
+                <h3 style="margin-top:0;">{{ featured_video.title }}</h3>
+                {% if featured_video.description %}
+                <p style="font-size:16px; line-height:1.8;">{{ featured_video.description|linebreaks }}</p>
+                {% endif %}
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <style>
+                    /* Default 16:9, slightly taller on desktop, with rounded corners and soft shadow */
+                    .video-wrapper{position:relative;padding-top:56.25%;height:0;overflow:hidden;border-radius:12px;background:#000;box-shadow:0 10px 30px rgba(0,0,0,.12)}
+                    @media (min-width: 992px){ .video-wrapper{ padding-top:62%; } }
+                    .video-wrapper iframe,.video-wrapper video{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+                </style>
+                {% if featured_video.video_file %}
+                    <div class="video-wrapper">
+                        <video controls preload="metadata">
+                            <source src="{{ featured_video.video_file.url }}" type="video/mp4">
+                        </video>
+                    </div>
+                {% elif featured_video.embed_url %}
+                    <div class="video-wrapper">
+                        <iframe src="{{ featured_video.embed_url|safe }}" title="{{ featured_video.title }}" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+<!--================Featured Video Section End=================-->
+
 <!--================our-services-section-Start=================-->
 {% if services %}
 <section class="secptb70 service_page">
@@ -132,20 +172,232 @@
         <div class="page-heading">
             <h2>Our Training Courses</h2>
         </div>
+        <style>
+            .training-card {
+                box-shadow: 0 8px 32px rgba(30,60,114,0.18);
+                border-radius: 18px;
+                border: 1.5px solid #dbeafe;
+                overflow: hidden;
+                background: #fff;
+                transition: box-shadow 0.2s, transform 0.2s;
+                margin-bottom: 30px;
+                display: flex;
+                flex-direction: column;
+                height: 380px;
+                max-width: 320px;
+            }
+            .training-card:hover {
+                box-shadow: 0 16px 48px rgba(30,60,114,0.22);
+                transform: translateY(-6px) scale(1.02);
+            }
+            .training-card .service_image {
+                display: block;
+                height: 180px;
+                overflow: hidden;
+                border-radius: 18px 18px 0 0;
+            }
+            .training-card .service_image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+            .training-card .service_text {
+                padding: 20px 15px 15px 15px;
+                text-align: center;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+            .training-card h4 {
+                font-size: 1.1rem;
+                font-weight: 700;
+                margin-bottom: 8px;
+                color: #1e3c72;
+                letter-spacing: -0.5px;
+                line-height: 1.3;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+            }
+            .training-card p {
+                color: #444;
+                font-size: 12px;
+                margin-bottom: 8px;
+                line-height: 1.4;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                height: 50px;
+            }
+            .course-details {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin: 10px 0;
+                padding: 8px 0;
+                border-top: 1px solid #e5e7eb;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .course-detail {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                font-size: 13px;
+                color: #64748b;
+            }
+            .course-detail.price {
+                color: #1e3c72;
+                font-weight: 600;
+            }
+            .training-card .theme-btn {
+                box-shadow: 0 2px 8px rgba(30,60,114,0.10);
+                border-radius: 30px;
+                font-weight: 600;
+                padding: 8px 20px;
+                background: linear-gradient(135deg, #1e3c72 60%, #2563eb 100%);
+                color: #fff;
+                border: none;
+                transition: background 0.2s;
+                margin-top: 5px;
+                font-size: 13px;
+            }
+            .training-card .theme-btn:hover {
+                background: linear-gradient(135deg, #2563eb 60%, #1e3c72 100%);
+                color: #fff;
+            }
+        </style>
         <div class="row service_item_inner align_item_center justify_content_center">
             {% for course in training_courses %}
             <div class="col-md-3 col-sm-6 col-xs-12">
-                <div class="service_box_item">
-                    <a href="#" class="service_image">
+                <div class="service_box_item training-card">
+                    <a href="{% url 'training_course_detail' course.slug %}" class="service_image">
                         {% if course.image %}
                         <img src="{{ course.image.url }}" alt="{{ course.title }}">
+                        {% else %}
+                        <img src="{% static 'app/bluediamondservicecenter/home/image3.jpg' %}" alt="{{ course.title }}">
                         {% endif %}
                     </a>
                     <div class="service_text">
-                        <a href="#"><h4>{{ course.title }}</h4></a>
-                        <p>{{ course.short_description|default:course.description|striptags|truncatewords:25 }}</p>
-                        <a href="#" class="theme-btn btn-lg">Read More</a>
+                        <div>
+                            <a href="{% url 'training_course_detail' course.slug %}"><h4>{{ course.title }}</h4></a>
+                            <p>{{ course.short_description|default:course.description|striptags|truncatewords:20 }}</p>
+                            <div class="course-details">
+                                {% if course.duration %}
+                                <div class="course-detail">
+                                    <i class="fa fa-clock-o"></i>
+                                    <span>{{ course.duration }}</span>
+                                </div>
+                                {% endif %}
+                                {% if course.fee %}
+                                <div class="course-detail price">
+                                    <i class="fa fa-money"></i>
+                                    <span>Rs. {{ course.fee }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <a href="{% url 'training_course_detail' course.slug %}" class="theme-btn btn-lg">Learn More</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
 
+    </div>
+</section>
+{% endif %}
+<!--================training-courses-section-End=================-->
+
+<!--================Latest Blog Section Start=================-->
+{% if latest_blogs %}
+<section class="secptb70 blog-section" style="box-shadow: 0 12px 36px rgba(30,60,114,0.13); border-radius: 22px; border: 1.5px solid #e3e6ee; margin-bottom: 48px; padding: 48px 0; background: linear-gradient(135deg, #f8fafc 80%, #eaf0fa 100%);">
+    <div class="container">
+        <div class="page-heading" style="text-align:center; margin-bottom:32px;">
+            <h2 style="font-size:2.5rem; font-weight:800; color:#1e3c72; letter-spacing:-1px;">Our Blogs</h2>
+        </div>
+        <style>
+            .blog-card {
+                box-shadow: 0 8px 32px rgba(30,60,114,0.18);
+                border-radius: 18px;
+                border: 1.5px solid #dbeafe;
+                overflow: hidden;
+                background: #fff;
+                max-width:350px;
+                width:100%;
+                transition: box-shadow 0.2s, transform 0.2s;
+                margin-bottom: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .blog-card:hover {
+                box-shadow: 0 16px 48px rgba(30,60,114,0.22);
+                transform: translateY(-6px) scale(1.03);
+            }
+            .blog-card .service_image img {
+                width: 100%;
+                height: 210px;
+                object-fit: cover;
+                border-radius: 18px 18px 0 0;
+                box-shadow: 0 2px 12px rgba(30,60,114,0.10);
+            }
+            .blog-card .service_text {
+                padding: 28px 22px 22px 22px;
+                text-align: center;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+            }
+            .blog-card h4 {
+                font-size: 1.35rem;
+                font-weight: 700;
+                margin-bottom: 12px;
+                color: #1e3c72;
+                letter-spacing: -0.5px;
+            }
+            .blog-card p {
+                color: #444;
+                font-size: 15px;
+                margin-bottom: 22px;
+                min-height:48px;
+            }
+            .blog-card .theme-btn {
+                box-shadow: 0 2px 8px rgba(30,60,114,0.10);
+                border-radius: 30px;
+                font-weight:600;
+                padding:12px 32px;
+                background: linear-gradient(135deg, #1e3c72 60%, #2563eb 100%);
+                color:#fff;
+                border: none;
+                transition: background 0.2s;
+            }
+            .blog-card .theme-btn:hover {
+                background: linear-gradient(135deg, #2563eb 60%, #1e3c72 100%);
+                color: #fff;
+            }
+        </style>
+        <div class="row service_item_inner align_item_center justify_content_center" style="display:flex; flex-wrap:wrap; gap:32px; justify-content:center;">
+            {% for post in latest_blogs %}
+            <div class="col-md-4 col-sm-6 col-xs-12" style="display:flex; justify-content:center;">
+                <div class="card blog-card service_box_item">
+                    <a href="{% url 'blog_detail' post.slug %}" class="service_image">
+                        {% if post.cover_image %}
+                        <img src="{{ post.cover_image.url }}" alt="{{ post.title }}">
+                        {% else %}
+                        <img src="{% static 'app/bluediamondservicecenter/home/image3.jpg' %}" alt="{{ post.title }}">
+                        {% endif %}
+                    </a>
+                    <div class="service_text">
+                        <a href="{% url 'blog_detail' post.slug %}"><h4>{{ post.title }}</h4></a>
+                        <p>{{ post.excerpt|default:post.content|striptags|truncatewords:20 }}</p>
+                        <a href="{% url 'blog_list' %}" class="theme-btn btn-lg">View All</a>
                     </div>
                 </div>
             </div>
@@ -154,7 +406,7 @@
     </div>
 </section>
 {% endif %}
-<!--================training-courses-section-End=================-->
+<!--================Latest Blog Section End=================-->
 
 <!--================Testimonials Section Start=================-->
 {% if testimonials %}
@@ -164,34 +416,117 @@
             <h2>Customer Reviews</h2>
             <p>What our customers say about our services</p>
         </div>
+        <style>
+            .testimonial-item {
+                background: #fff;
+                border-radius: 15px;
+                padding: 30px;
+                margin: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                text-align: center;
+                transition: transform 0.3s ease;
+            }
+            .testimonial-item:hover {
+                transform: translateY(-5px);
+            }
+            .author-photo {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                overflow: hidden;
+                margin: 0 auto 15px;
+                border: 3px solid #1e3c72;
+            }
+            .author-photo img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+            .testimonial-author h4 {
+                color: #1e293b;
+                margin: 0 0 5px;
+                font-size: 1.2rem;
+                font-weight: 600;
+            }
+            .author-location {
+                color: #64748b;
+                font-size: 0.9rem;
+                display: block;
+                margin-bottom: 15px;
+            }
+            .testimonial-rating {
+                margin-bottom: 20px;
+            }
+            .testimonial-rating .star-filled {
+                color: #fbbf24;
+                font-size: 1.1rem;
+                margin: 0 2px;
+            }
+            .testimonial-rating .star-empty {
+                color: #d1d5db;
+                font-size: 1.1rem;
+                margin: 0 2px;
+            }
+            .testimonial-content p {
+                color: #374151;
+                font-style: italic;
+                line-height: 1.6;
+                margin: 0;
+                font-size: 1rem;
+            }
+        </style>
         <div class="row">
             <div class="col-md-12">
-                <div class="testimonial-carousel owl-carousel">
+                <div class="testimonial-carousel owl-carousel owl-theme">
                     {% for t in testimonials %}
                     <div class="testimonial-item">
                         <div class="testimonial-author">
-                            {% if t.photo %}
-                            <img src="{{ t.photo.url }}" alt="{{ t.name }}">
-                            {% endif %}
+                            <div class="author-photo">
+                                {% if t.photo %}
+                                    <img src="{{ t.photo.url }}" alt="{{ t.name }}">
+                                {% else %}
+                                    <div style="width: 80px; height: 80px; background: #1e3c72; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold;">{{ t.name|first }}</div>
+                                {% endif %}
+                            </div>
                             <h4>{{ t.name }}</h4>
-                            {% if t.location %}<span>{{ t.location }}</span>{% endif %}
-                             <div class="testimonial-rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
+                            {% if t.location %}<span class="author-location">{{ t.location }}</span>{% endif %}
+                            <div class="testimonial-rating">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= t.rating %}
+                                        <i class="fa fa-star star-filled"></i>
+                                    {% else %}
+                                        <i class="fa fa-star star-empty"></i>
+                                    {% endif %}
+                                {% endfor %}
                             </div>
                         </div>
                         <div class="testimonial-content">
-                    
-                            <p>{{ t.message }}</p>
+                            <p>"{{ t.message|truncatewords:60 }}"</p>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
             </div>
         </div>
+        <script>
+        $(document).ready(function(){
+            $('.testimonial-carousel').owlCarousel({
+                items: 3,
+                loop: true,
+                autoplay: true,
+                autoplayTimeout: 4000,
+                autoplayHoverPause: true,
+                nav: false,
+                dots: false,
+                responsive: {
+                    0: { items: 1 },
+                    768: { items: 2 },
+                    992: { items: 3 }
+                }
+            });
+        });
+        </script>
     </div>
 </section>
 {% endif %}

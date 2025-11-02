@@ -1,0 +1,68 @@
+{% load static %}
+{% comment %}
+  Internal renderer for the banner. Computes background safely without complex expressions.
+{% endcomment %}
+
+{% with 
+    btype=banner.banner_type|default:'gradient' 
+    pcolor=banner.primary_color|default:'#1e3c72' 
+    scolor=banner.secondary_color|default:'#2a5298' 
+    tcolor=banner.text_color|default:'#ffffff' 
+%}
+    {% if banner and btype == 'image' and banner.image %}
+        <section class="banner inner-page" style="background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('{{ banner.image.url }}'); background-size: cover; background-position: center; padding: 100px 0 80px 0; margin-top: 70px; color: {{ tcolor }};">
+    {% elif banner and btype == 'solid' %}
+        <section class="banner inner-page" style="background: {{ pcolor }}; padding: 100px 0 80px 0; margin-top: 70px; color: {{ tcolor }};">
+    {% elif banner %}
+        <section class="banner inner-page" style="background: linear-gradient({{ pcolor }}, {{ scolor }}); padding: 100px 0 80px 0; margin-top: 70px; color: {{ tcolor }};">
+    {% else %}
+        {% with fallback=default_image|default:'app/bluediamondservicecenter/home/image1.jpg' %}
+            <section class="banner inner-page" style="background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('{% static fallback %}'); background-size: cover; background-position: center; padding: 100px 0 80px 0; margin-top: 70px; color: #ffffff;">
+        {% endwith %}
+    {% endif %}
+        <div class="container">
+            <div class="banner-wrap" style="text-align: center;">
+                <h1 style="font-size: 42px; margin-bottom: 10px;">{{ title }}</h1>
+                {% if subtitle %}
+                <p style="opacity: 0.85; margin-bottom: 15px;">{{ subtitle }}</p>
+                {% endif %}
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb" style="background: transparent; justify-content: center; margin: 0;">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                        {% if breadcrumb_items %}
+                            {% for bc in breadcrumb_items %}
+                                {% if forloop.last %}
+                                    <li class="breadcrumb-item active" aria-current="page" style="opacity: 0.85;">{{ bc.title }}</li>
+                                {% else %}
+                                    <li class="breadcrumb-item"><a href="{{ bc.url }}">{{ bc.title }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </section>
+    <div class="container">
+        <div class="banner-wrap" style="text-align: center;">
+            <h1 style="color: {{ text_color }}; font-size: 42px; margin-bottom: 10px;">{{ title }}</h1>
+            {% if subtitle %}
+            <p style="color: {{ text_color }}; opacity: 0.85; margin-bottom: 15px;">{{ subtitle }}</p>
+            {% endif %}
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb" style="background: transparent; justify-content: center; margin: 0;">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color: {{ text_color }};">Home</a></li>
+                    {% if breadcrumb_items %}
+                        {% for bc in breadcrumb_items %}
+                            {% if forloop.last %}
+                                <li class="breadcrumb-item active" aria-current="page" style="color: {{ text_color }}; opacity: 0.85;">{{ bc.title }}</li>
+                            {% else %}
+                                <li class="breadcrumb-item"><a href="{{ bc.url }}" style="color: {{ text_color }};">{{ bc.title }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>

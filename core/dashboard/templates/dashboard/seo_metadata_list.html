@@ -1,11 +1,9 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
-{% block title %}
-    SEO Metadata List
-{% endblock %}
+{% block title %}Page SEO Metadata{% endblock %}
 
 {% block body %}
-    <title>SEO Metadata List</title>
+    <title>Page SEO Metadata</title>
 
     <div class="content-page">
         <div class="content">
@@ -13,7 +11,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="page-title-box">
-                            <h4 class="page-title">SEO Metadata List</h4>
+                            <h4 class="page-title">Page SEO Metadata</h4>
                         </div>
                     </div>
                 </div>
@@ -33,7 +31,7 @@
                             <div class="card-body">
                                 <div class="row mb-2">
                                     <div class="col-sm-5">
-                                        <a href="{% url 'dashboard:seo_metadata_add' %}" class="btn btn-danger mb-2"><i class="mdi mdi-plus-circle me-2"></i> Add SEO Metadata</a>
+                                        <a href="{% url 'dashboard:seo_metadata_add' %}" class="btn btn-danger mb-2"><i class="mdi mdi-plus-circle me-2"></i> Add SEO</a>
                                     </div>
                                 </div>
                                 <div class="tab-content">
@@ -41,9 +39,9 @@
                                         <thead>
                                             <tr>
                                                 <th>Id</th>
-                                                <th>Title</th>
-                                                <th>Object id</th>
-                                                <th>Content type</th>
+                                                <th>Meta Title</th>
+                                                <th>Schema Type</th>
+                                                <th>Linked To</th>
                                                 <th style="width: 120px;">Action</th>
                                             </tr>
                                         </thead>
@@ -71,9 +69,21 @@
                                             </div>
                                                 <tr>
                                                     <td>{{ forloop.counter }}</td>
-                                                    <td>{{ item.title }}</td>
-                                                    <td>{{ item.object_id }}</td>
-                                                    <td>{{ item.content_type }}</td>
+                                                                                                        <td>{{ item.meta_title|default:'-' }}</td>
+                                                                                                        <td>{{ item.schema_type|default:'-' }}</td>
+                                                                                                        <td>
+                                                                                                                {% if item.service %}
+                                                                                                                    Service: {{ item.service.name }}
+                                                                                                                {% elif item.blog_post %}
+                                                                                                                    Blog: {{ item.blog_post.title }}
+                                                                                                                {% elif item.training_course %}
+                                                                                                                    Course: {{ item.training_course.title }}
+                                                                                                                {% elif item.about_us_page %}
+                                                                                                                    About Us Page
+                                                                                                                {% else %}
+                                                                                                                    Unlinked
+                                                                                                                {% endif %}
+                                                                                                        </td>
                                                     <td>
                                                         <a href="{% url 'dashboard:seo_metadata_edit' item.pk %}" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a>
                                                         <a href="#" class="action-icon" data-bs-toggle="modal" data-bs-target="#delete-modal-{{ item.id }}"> <i class="mdi mdi-delete"></i></a>

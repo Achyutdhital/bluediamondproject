@@ -1,0 +1,174 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Global SEO Settings{% endblock %}
+
+{% block body %}
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <h4 class="page-title">Global SEO Settings</h4>
+                    </div>
+                </div>
+            </div>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- Site Information -->
+                                <h5 class="mb-3">Site Information</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.site_name.label }}</label>
+                                            {{ form.site_name }}
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.default_title.label }}</label>
+                                            {{ form.default_title }}
+                                            <small class="form-text text-muted">Default title template for pages</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.default_description.label }}</label>
+                                            {{ form.default_description }}
+                                            <small class="form-text text-muted">Default meta description (max 160 chars)</small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.default_keywords.label }}</label>
+                                            {{ form.default_keywords }}
+                                            <small class="form-text text-muted">Comma-separated keywords</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="my-3">
+                                <h5 class="mb-3">Analytics & Tracking</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.google_analytics_id.label }}</label>
+                                            {{ form.google_analytics_id }}
+                                            <small class="form-text text-muted">GA4 ID (G-XXXXXXXXXX)</small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.google_tag_manager_id.label }}</label>
+                                            {{ form.google_tag_manager_id }}
+                                            <small class="form-text text-muted">GTM ID (GTM-XXXXXXX)</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.google_search_console_id.label }}</label>
+                                            {{ form.google_search_console_id }}
+                                            <small class="form-text text-muted">Search Console verification</small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.bing_webmaster_id.label }}</label>
+                                            {{ form.bing_webmaster_id }}
+                                            <small class="form-text text-muted">Bing verification</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="my-3">
+                                <h5 class="mb-3">Social Media</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.facebook_app_id.label }}</label>
+                                            {{ form.facebook_app_id }}
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.twitter_handle.label }}</label>
+                                            {{ form.twitter_handle }}
+                                            <small class="form-text text-muted">Without @</small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.linkedin_url.label }}</label>
+                                            {{ form.linkedin_url }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.instagram_url.label }}</label>
+                                            {{ form.instagram_url }}
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.youtube_url.label }}</label>
+                                            {{ form.youtube_url }}
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.default_og_image.label }}</label>
+                                            {{ form.default_og_image }}
+                                            <small class="form-text text-muted">1200x630px recommended</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="my-3">
+                                <h5 class="mb-3">Business Information</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.business_phone.label }}</label>
+                                            {{ form.business_phone }}
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.business_email.label }}</label>
+                                            {{ form.business_email }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.business_address.label }}</label>
+                                            {{ form.business_address }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="my-3">
+                                <h5 class="mb-3">Advanced</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.schema_org_type.label }}</label>
+                                            {{ form.schema_org_type }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ form.robots_txt_content.label }}</label>
+                                            {{ form.robots_txt_content }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    {{ form.is_active }}
+                                    <label class="form-check-label" for="{{ form.is_active.id_for_label }}">{{ form.is_active.label }}</label>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="mdi mdi-content-save me-1"></i> Save SEO Settings
+                                </button>
+                                <a href="{% url 'dashboard:dashboard' %}" class="btn btn-secondary ms-2">
+                                    <i class="mdi mdi-arrow-left"></i> Back to Dashboard
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

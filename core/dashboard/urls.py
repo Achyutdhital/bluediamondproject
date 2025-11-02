@@ -76,6 +76,7 @@ urlpatterns = [
 	path('terms-conditions/', views.TermsConditionsEditView.as_view(), name='terms_conditions_edit'),
 
 	# SEO
+	path('seo-settings/', views.DefaultSeoSettingsEditView.as_view(), name='default_seo_settings_edit'),
 	path('seo-metadata/', views.SeoMetadataListView.as_view(), name='seo_metadata_list'),
 	path('seo-metadata/add/', views.SeoMetadataAddEditView.as_view(), name='seo_metadata_add'),
 	path('seo-metadata/<int:pk>/edit/', views.SeoMetadataAddEditView.as_view(), name='seo_metadata_edit'),
@@ -90,5 +91,17 @@ urlpatterns = [
 	path('contacts/', views.ContactListView.as_view(), name='contacts_list'),
 	path('contacts/<int:pk>/', views.ContactDetailView.as_view(), name='contact_detail'),
 	path('contacts/<int:pk>/delete/', views.ContactDeleteView.as_view(), name='contact_delete'),
+
+	# Blog
+	path('blogs/', views.BlogListView.as_view(), name='blogs_list'),
+	path('blogs/add/', views.BlogAddEditView.as_view(), name='blog_add'),
+	path('blogs/<int:pk>/edit/', views.BlogAddEditView.as_view(), name='blog_edit'),
+	path('blogs/<int:pk>/delete/', views.BlogDeleteView.as_view(), name='blog_delete'),
+
+	# Videos
+	path('videos/', views.VideoListView.as_view(), name='videos_list'),
+	path('videos/add/', views.VideoAddEditView.as_view(), name='video_add'),
+	path('videos/<int:pk>/edit/', views.VideoAddEditView.as_view(), name='video_edit'),
+	path('videos/<int:pk>/delete/', views.VideoDeleteView.as_view(), name='video_delete'),
 ]
 

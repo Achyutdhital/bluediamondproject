@@ -321,6 +321,20 @@
                                 <span> Gallery </span>
                             </a>
                         </li>
+
+                        <li class="side-nav-item">
+                            <a href="{% url 'dashboard:blogs_list' %}" class="side-nav-link">
+                                <i class="uil-notes"></i>
+                                <span> Blog Posts </span>
+                            </a>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a href="{% url 'dashboard:videos_list' %}" class="side-nav-link">
+                                <i class="uil-video"></i>
+                                <span> Videos </span>
+                            </a>
+                        </li>
                         
                         <li class="side-nav-item">
                             <a data-bs-toggle="collapse" href="#sidebarPages4" aria-expanded="false" aria-controls="sidebarPages" class="side-nav-link">
@@ -344,10 +358,21 @@
                         </li>
 
                         <li class="side-nav-item">
-                            <a href="{% url 'dashboard:seo_metadata_list' %}" class="side-nav-link">
-                                <i class="ri-server-fill"></i>
-                                <span> SEO Metadata </span>
+                            <a data-bs-toggle="collapse" href="#sidebarSEO" aria-expanded="false" aria-controls="sidebarSEO" class="side-nav-link">
+                                <i class="ri-search-line"></i>
+                                <span> SEO Management </span>
+                                <span class="menu-arrow"></span>
                             </a>
+                            <div class="collapse" id="sidebarSEO">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="{% url 'dashboard:default_seo_settings_edit' %}">Global SEO Settings</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'dashboard:seo_metadata_list' %}">Page SEO Metadata</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
 
                         <li class="side-nav-title">Customer Inquiries</li>                        

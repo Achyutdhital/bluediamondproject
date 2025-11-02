@@ -7,20 +7,7 @@
 
 {% block content %}
 
-<!-- Banner Section -->
-<section class="banner inner-page" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% if banner and banner.image %}{{ banner.image.url }}{% else %}{% static 'app/bluediamondservicecenter/home/image1.jpg' %}{% endif %}'); background-size: cover; background-position: center; padding: 100px 0 80px 0; margin-top: 70px;">
-    <div class="container">
-        <div class="banner-wrap" style="text-align: center;">
-            <h1 style="color: #fff; font-size: 42px; margin-bottom: 20px;">{% if banner %}{{ banner.title }}{% else %}Our Services{% endif %}</h1>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb" style="background: transparent; justify-content: center; margin: 0;">
-                    <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color: #fff;">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page" style="color: #ddd;">Services</li>
-                </ol>
-            </nav>
-        </div>
-    </div>
-</section>
+{% include 'app/components/page_header.html' with title='Services' %}
 
 <!-- Services Section -->
 <section class="secptb70">
@@ -62,6 +49,31 @@
             </div>
             {% endfor %}
         </div>
+        
+        {# Pagination #}
+        {% if page_obj and page_obj.paginator.num_pages > 1 %}
+        <div class="pagination-wrapper">
+            <nav class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="page-btn prev">← Previous</a>
+                {% endif %}
+
+                <div class="page-numbers">
+                    {% for i in page_numbers %}
+                        {% if page_obj.number == i %}
+                            <span class="page-btn current">{{ i }}</span>
+                        {% else %}
+                            <a href="?page={{ i }}" class="page-btn">{{ i }}</a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="page-btn next">Next →</a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
         {% else %}
         <div class="no-services" style="text-align: center; padding: 60px 20px;">
             <i class="fas fa-tools" style="font-size: 64px; color: #ddd; margin-bottom: 20px;"></i>
@@ -269,6 +281,55 @@
     .service-content h3 {
         font-size: 18px;
     }
+}
+
+/* Pagination */
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #ffffff;
+    padding: 12px 20px;
+    border-radius: 50px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+.page-numbers {
+    display: flex;
+    gap: 5px;
+}
+
+.page-btn {
+    padding: 8px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #64748b;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    background: none;
+}
+
+.page-btn:hover {
+    background: #f1f5f9;
+    color: #1e3c72;
+}
+
+.page-btn.current {
+    background: #1e3c72;
+    color: #ffffff;
+}
+
+.page-btn.prev,
+.page-btn.next {
+    font-weight: 600;
+    color: #1e3c72;
 }
 </style>
 

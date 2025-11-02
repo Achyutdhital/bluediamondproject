@@ -9,22 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" href="{%static 'app/bluediamondservicecenter/favicon.png' %}" type="image/x-icon"/>
         
-        <!-- SEO Meta Tags -->
-        <title>{% block title %}{{ default_seo.title }}{% endblock %}</title>
-        <meta name="description" content="{% block meta_description %}{{ default_seo.description }}{% endblock %}">
-        <meta name="keywords" content="{% block meta_keywords %}{{ default_seo.keywords }}{% endblock %}">
-        <meta name="author" content="{{ company.company_name|default:'Blue Diamond Service Center' }}">
-        
-        <!-- Open Graph / Facebook -->
-        <meta property="og:type" content="website">
-        <meta property="og:title" content="{% block og_title %}{{ default_seo.title }}{% endblock %}">
-        <meta property="og:description" content="{% block og_description %}{{ default_seo.description }}{% endblock %}">
-        <meta property="og:image" content="{% block og_image %}{% if company.logo %}{{ request.scheme }}://{{ request.get_host }}{{ company.logo.url }}{% endif %}{% endblock %}">
-        
-        <!-- Twitter -->
-        <meta property="twitter:card" content="summary_large_image">
-        <meta property="twitter:title" content="{% block twitter_title %}{{ default_seo.title }}{% endblock %}">
-        <meta property="twitter:description" content="{% block twitter_description %}{{ default_seo.description }}{% endblock %}">
+        {% include 'app/seo_meta.html' %}
         
         <!-- Icon css link -->
         <link href="{%static 'app/css/font-awesome.min.css' %}" rel="stylesheet">
@@ -65,6 +50,13 @@ $(document).ready(function() {
     </head>
     
     <body>
+        <!-- Google Tag Manager (noscript) -->
+        {% if default_seo.google_tag_manager_id %}
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ default_seo.google_tag_manager_id }}"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        {% endif %}
+        <!-- End Google Tag Manager (noscript) -->
+        
         <!--================Header Area Start =================-->
         <header class="main_header_area color_menu">
             <div class="header_top">
@@ -134,6 +126,12 @@ $(document).ready(function() {
                                     <a href="/gallery/">Gallery</a>
                                 </li>
                                 <li>
+                                    <a href="{% url 'training_courses' %}">Training</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'blog_list' %}">Blog</a>
+                                </li>
+                                <li>
                                     <a href="/enquiry/">Enquiry Now</a>
                                 </li>
                                 <li>
@@ -162,6 +160,8 @@ $(document).ready(function() {
             <li><a href="{% url 'about' %}">About Us</a></li>
             <li><a href="{% url 'services' %}">Our Services</a></li>
             <li><a href="{% url 'gallery' %}">Gallery</a></li>
+            <li><a href="{% url 'training_courses' %}">Training</a></li>
+            <li><a href="{% url 'blog_list' %}">Blog</a></li>
             <li><a href="{% url 'enquiry' %}">Enquiry Now</a></li>
             <li><a href="{% url 'contact' %}">Contact Us</a></li>
         </ul>
@@ -206,6 +206,8 @@ $(document).ready(function() {
                                     <li><a href="/about/">- About Us</a></li>
                                     <li><a href="/services/">- Our Services</a></li>
                                     <li><a href="/gallery/">- Gallery</a></li>
+                                    <li><a href="{% url 'training_courses' %}">- Training</a></li>
+                                    <li><a href="{% url 'blog_list' %}">- Blog</a></li>
                                     <li><a href="/enquiry/">- Enquiry Now</a></li>
                                     <li><a href="/contact/">- Contact Us</a></li>
                                 </ul>

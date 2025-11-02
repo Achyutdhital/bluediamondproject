@@ -1,0 +1,102 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}{{ post.title }} | Blog | {{ company.company_name|default:'Blue Diamond Service Center' }}{% endblock %}
+{% block content %}
+
+{% url 'blog_list' as blog_list_url %}
+{% include 'app/components/page_header.html' with title=post.title parent_title='Blog' parent_url=blog_list_url %}
+
+<section class="blog-detail-section">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 col-md-12">
+				<article class="blog-detail">
+					<header class="post-header">
+						<div class="post-meta">
+							<span class="date"><i class="fa fa-calendar"></i> {{ post.published_at|date:'F d, Y' }}</span>
+						</div>
+					</header>
+
+					{% if post.cover_image %}
+					<div class="post-cover">
+						<img src="{{ post.cover_image.url }}" alt="{{ post.title }}">
+					</div>
+					{% endif %}
+
+					<div class="post-content">
+						{{ post.content|safe }}
+					</div>
+
+					<footer class="post-footer">
+						<div class="post-nav">
+							{% if prev_post %}
+							<a class="prev" href="{% url 'blog_detail' prev_post.slug %}">← {{ prev_post.title|truncatechars:40 }}</a>
+							{% endif %}
+							{% if next_post %}
+							<a class="next" href="{% url 'blog_detail' next_post.slug %}">{{ next_post.title|truncatechars:40 }} →</a>
+							{% endif %}
+						</div>
+					</footer>
+				</article>
+			</div>
+
+			<div class="col-lg-4 col-md-12">
+				{% if recent_posts %}
+				<aside class="sidebar">
+					<div class="sidebar-widget">
+						<h3 class="widget-title">Recent Posts</h3>
+						<ul class="recent-posts">
+							{% for rp in recent_posts %}
+							<li>
+								<a href="{% url 'blog_detail' rp.slug %}">
+									{% if rp.cover_image %}
+										<img src="{{ rp.cover_image.url }}" alt="{{ rp.title }}">
+									{% else %}
+										<img src="{% static 'app/bluediamondservicecenter/home/image3.jpg' %}" alt="{{ rp.title }}">
+									{% endif %}
+									<span class="title">{{ rp.title|truncatechars:60 }}</span>
+									<span class="date">{{ rp.published_at|date:'M d, Y' }}</span>
+								</a>
+							</li>
+							{% endfor %}
+						</ul>
+					</div>
+				</aside>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+.blog-detail-section { padding: 60px 0; background: #f8fafc; }
+.blog-detail { background: #fff; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+.post-header { margin-bottom: 15px; }
+.post-meta { color: #64748b; font-size: 0.95rem; display: flex; gap: 15px; }
+.post-meta .date i { margin-right: 6px; color: #1e3c72; }
+.post-cover { margin: 20px 0 25px; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+.post-cover img { width: 100%; height: auto; display: block; }
+.post-content { color: #374151; line-height: 1.8; font-size: 1.05rem; }
+.post-content h2, .post-content h3 { color: #1e293b; margin: 30px 0 15px; font-weight: 700; }
+.post-content p { margin-bottom: 18px; }
+.post-footer { margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 20px; }
+.post-nav { display: flex; justify-content: space-between; }
+.post-nav a { color: #1e3c72; text-decoration: none; font-weight: 600; }
+.post-nav a:hover { color: #2a5298; }
+
+.sidebar .sidebar-widget { background: #fff; border-radius: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+.widget-title { font-size: 1.2rem; font-weight: 700; color: #1e293b; margin: 0 0 15px; }
+.recent-posts { list-style: none; padding: 0; margin: 0; }
+.recent-posts li { display: flex; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
+.recent-posts li:last-child { border-bottom: none; }
+.recent-posts img { width: 60px; height: 45px; object-fit: cover; border-radius: 8px; }
+.recent-posts .title { display: block; color: #1e293b; font-weight: 600; }
+.recent-posts .date { display: block; color: #64748b; font-size: 0.85rem; }
+
+@media (max-width: 768px) {
+	.blog-detail { padding: 20px; }
+}
+</style>
+
+{% endblock %}

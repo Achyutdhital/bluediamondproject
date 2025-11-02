@@ -25,9 +25,12 @@ from app.models import (
 	AboutUsPage,
 	PrivacyPolicy,
 	TermsAndConditions,
-	SeoMetadata,
+	SEO,
+	DefaultSeoSettings,
 	Enquiry,
 	Contact,
+    BlogPost,
+    Video,
 )
 
 from .forms import (
@@ -46,8 +49,11 @@ from .forms import (
 	PrivacyPolicyForm,
 	TermsAndConditionsForm,
 	SeoMetadataForm,
+	DefaultSeoSettingsForm,
 	EnquiryForm as DashboardEnquiryForm,  # not used for create here, but kept for completeness
 	ContactForm as DashboardContactForm,  # not used
+	BlogPostForm,
+	VideoForm,
 )
 
 
@@ -134,17 +140,27 @@ class ServiceAddEditView(LoginRequiredMixin, View):
 	def get(self, request, pk=None):
 		instance = get_object_or_404(Services, pk=pk) if pk else None
 		form = ServiceForm(instance=instance)
-		return render(request, self.template_name, {'form': form, 'instance': instance})
+		seo_form = SeoMetadataForm(instance=instance.seo if instance and instance.seo else None)
+		return render(request, self.template_name, {'form': form, 'seo_form': seo_form, 'instance': instance})
 
 	def post(self, request, pk=None):
 		instance = get_object_or_404(Services, pk=pk) if pk else None
 		form = ServiceForm(request.POST, request.FILES, instance=instance)
+		seo_form = SeoMetadataForm(request.POST, request.FILES, instance=instance.seo if instance and instance.seo else None)
+		
 		if form.is_valid():
-			form.save()
+			service = form.save()
+			
+			# Handle SEO separately if provided
+			if seo_form.is_valid() and (seo_form.cleaned_data.get('meta_title') or seo_form.cleaned_data.get('meta_description')):
+				seo = seo_form.save()
+				service.seo = seo
+				service.save()
+			
 			messages.success(request, 'Service saved successfully.' if not instance else 'Service updated successfully.')
 			return redirect('dashboard:services_list')
 		messages.warning(request, 'Please correct the errors below.')
-		return render(request, self.template_name, {'form': form, 'instance': instance})
+		return render(request, self.template_name, {'form': form, 'seo_form': seo_form, 'instance': instance})
 
 
 class ServiceDeleteView(LoginRequiredMixin, View):
@@ -167,17 +183,27 @@ class TrainingCourseAddEditView(LoginRequiredMixin, View):
 	def get(self, request, pk=None):
 		instance = get_object_or_404(TrainingCourse, pk=pk) if pk else None
 		form = TrainingCourseForm(instance=instance)
-		return render(request, self.template_name, {'form': form, 'instance': instance})
+		seo_form = SeoMetadataForm(instance=instance.seo if instance and instance.seo else None)
+		return render(request, self.template_name, {'form': form, 'seo_form': seo_form, 'instance': instance})
 
 	def post(self, request, pk=None):
 		instance = get_object_or_404(TrainingCourse, pk=pk) if pk else None
 		form = TrainingCourseForm(request.POST, request.FILES, instance=instance)
+		seo_form = SeoMetadataForm(request.POST, request.FILES, instance=instance.seo if instance and instance.seo else None)
+		
 		if form.is_valid():
-			form.save()
+			course = form.save()
+			
+			# Handle SEO separately if provided
+			if seo_form.is_valid() and (seo_form.cleaned_data.get('meta_title') or seo_form.cleaned_data.get('meta_description')):
+				seo = seo_form.save()
+				course.seo = seo
+				course.save()
+			
 			messages.success(request, 'Training course saved successfully.' if not instance else 'Training course updated successfully.')
 			return redirect('dashboard:training_courses_list')
 		messages.warning(request, 'Please correct the errors below.')
-		return render(request, self.template_name, {'form': form, 'instance': instance})
+		return render(request, self.template_name, {'form': form, 'seo_form': seo_form, 'instance': instance})
 
 
 class TrainingCourseDeleteView(LoginRequiredMixin, View):
@@ -488,17 +514,38 @@ class AboutUsPageEditView(LoginRequiredMixin, View):
 	def get(self, request):
 		instance = AboutUsPage.objects.first()
 		form = AboutUsPageForm(instance=instance)
-		return render(request, self.template_name, {'form': form, 'instance': instance})
+		# Initialize SEO form
+		seo_form = SeoMetadataForm(instance=instance.seo if instance and instance.seo else None)
+		return render(request, self.template_name, {
+			'form': form,
+			'instance': instance,
+			'seo_form': seo_form
+		})
 
 	def post(self, request):
 		instance = AboutUsPage.objects.first()
 		form = AboutUsPageForm(request.POST, request.FILES, instance=instance)
+		seo_form = SeoMetadataForm(
+			request.POST,
+			request.FILES,
+			instance=instance.seo if instance and instance.seo else None
+		)
+		
 		if form.is_valid():
-			form.save()
+			about_page = form.save()
+			# Save SEO data only if user provided something meaningful
+			if seo_form.is_valid() and (seo_form.cleaned_data.get('meta_title') or seo_form.cleaned_data.get('meta_description')):
+				seo = seo_form.save()
+				about_page.seo = seo
+				about_page.save(update_fields=['seo'])
 			messages.success(request, 'About Us page saved successfully.')
 			return redirect('dashboard:about_us_page_edit')
 		messages.warning(request, 'Please correct the errors below.')
-		return render(request, self.template_name, {'form': form, 'instance': instance})
+		return render(request, self.template_name, {
+			'form': form,
+			'instance': instance,
+			'seo_form': seo_form
+		})
 
 
 class PrivacyPolicyEditView(LoginRequiredMixin, View):
@@ -541,7 +588,7 @@ class TermsConditionsEditView(LoginRequiredMixin, View):
 
 # SEO Metadata
 class SeoMetadataListView(LoginRequiredMixin, ListView):
-	model = SeoMetadata
+	model = SEO
 	template_name = 'dashboard/seo_metadata_list.html'
 	context_object_name = 'seo_metadata'
 
@@ -550,13 +597,13 @@ class SeoMetadataAddEditView(LoginRequiredMixin, View):
 	template_name = 'dashboard/seo_metadata_add_edit.html'
 
 	def get(self, request, pk=None):
-		instance = get_object_or_404(SeoMetadata, pk=pk) if pk else None
+		instance = get_object_or_404(SEO, pk=pk) if pk else None
 		form = SeoMetadataForm(instance=instance)
 		return render(request, self.template_name, {'form': form, 'instance': instance})
 
 	def post(self, request, pk=None):
-		instance = get_object_or_404(SeoMetadata, pk=pk) if pk else None
-		form = SeoMetadataForm(request.POST, instance=instance)
+		instance = get_object_or_404(SEO, pk=pk) if pk else None
+		form = SeoMetadataForm(request.POST, request.FILES, instance=instance)
 		if form.is_valid():
 			form.save()
 			messages.success(request, 'SEO metadata saved successfully.' if not instance else 'SEO metadata updated successfully.')
@@ -567,7 +614,7 @@ class SeoMetadataAddEditView(LoginRequiredMixin, View):
 
 class SeoMetadataDeleteView(LoginRequiredMixin, View):
 	def post(self, request, pk):
-		instance = get_object_or_404(SeoMetadata, pk=pk)
+		instance = get_object_or_404(SEO, pk=pk)
 		instance.delete()
 		messages.success(request, 'SEO metadata deleted successfully.')
 		return redirect('dashboard:seo_metadata_list')
@@ -650,4 +697,105 @@ class ContactDeleteView(LoginRequiredMixin, View):
 		contact.delete()
 		messages.success(request, 'Contact deleted successfully.')
 		return redirect('dashboard:contacts_list')
+
+
+# Blog management
+class BlogListView(LoginRequiredMixin, ListView):
+	model = BlogPost
+	template_name = 'dashboard/blog_list.html'
+	context_object_name = 'blogs'
+
+
+class BlogAddEditView(LoginRequiredMixin, View):
+	template_name = 'dashboard/blog_add_edit.html'
+
+	def get(self, request, pk=None):
+		instance = get_object_or_404(BlogPost, pk=pk) if pk else None
+		form = BlogPostForm(instance=instance)
+		seo_form = SeoMetadataForm(instance=instance.seo if instance and instance.seo else None)
+		return render(request, self.template_name, {'form': form, 'seo_form': seo_form, 'instance': instance})
+
+	def post(self, request, pk=None):
+		instance = get_object_or_404(BlogPost, pk=pk) if pk else None
+		form = BlogPostForm(request.POST, request.FILES, instance=instance)
+		seo_form = SeoMetadataForm(request.POST, request.FILES, instance=instance.seo if instance and instance.seo else None)
+		
+		if form.is_valid():
+			blog = form.save()
+			
+			# Handle SEO separately if provided
+			if seo_form.is_valid() and (seo_form.cleaned_data.get('meta_title') or seo_form.cleaned_data.get('meta_description')):
+				seo = seo_form.save()
+				blog.seo = seo
+				blog.save()
+			
+			messages.success(request, 'Blog saved successfully.' if not instance else 'Blog updated successfully.')
+			return redirect('dashboard:blogs_list')
+		messages.warning(request, 'Please correct the errors below.')
+		return render(request, self.template_name, {'form': form, 'seo_form': seo_form, 'instance': instance})
+
+
+class BlogDeleteView(LoginRequiredMixin, View):
+	def post(self, request, pk):
+		instance = get_object_or_404(BlogPost, pk=pk)
+		instance.delete()
+		messages.success(request, 'Blog deleted successfully.')
+		return redirect('dashboard:blogs_list')
+
+
+# Video management
+class VideoListView(LoginRequiredMixin, ListView):
+	model = Video
+	template_name = 'dashboard/video_list.html'
+	context_object_name = 'videos'
+
+
+class VideoAddEditView(LoginRequiredMixin, View):
+	template_name = 'dashboard/video_add_edit.html'
+
+	def get(self, request, pk=None):
+		instance = get_object_or_404(Video, pk=pk) if pk else None
+		form = VideoForm(instance=instance)
+		return render(request, self.template_name, {'form': form, 'instance': instance})
+
+	def post(self, request, pk=None):
+		instance = get_object_or_404(Video, pk=pk) if pk else None
+		form = VideoForm(request.POST, request.FILES, instance=instance)
+		if form.is_valid():
+			obj = form.save()
+			# Ensure only one active video at a time; when this one is active, deactivate others
+			if obj.is_active:
+				Video.objects.exclude(pk=obj.pk).update(is_active=False)
+			messages.success(request, 'Video saved successfully.' if not instance else 'Video updated successfully.')
+			return redirect('dashboard:videos_list')
+		messages.warning(request, 'Please correct the errors below.')
+		return render(request, self.template_name, {'form': form, 'instance': instance})
+
+
+class VideoDeleteView(LoginRequiredMixin, View):
+	def post(self, request, pk):
+		instance = get_object_or_404(Video, pk=pk)
+		instance.delete()
+		messages.success(request, 'Video deleted successfully.')
+		return redirect('dashboard:videos_list')
+
+
+# Default SEO Settings
+class DefaultSeoSettingsEditView(LoginRequiredMixin, View):
+	template_name = 'dashboard/default_seo_settings_edit.html'
+
+	def get(self, request):
+		instance = DefaultSeoSettings.objects.first()
+		form = DefaultSeoSettingsForm(instance=instance)
+		return render(request, self.template_name, {'form': form, 'instance': instance})
+
+	def post(self, request):
+		instance = DefaultSeoSettings.objects.first()
+		form = DefaultSeoSettingsForm(request.POST, request.FILES, instance=instance)
+		if form.is_valid():
+			form.save()
+			messages.success(request, 'SEO settings saved successfully.')
+			return redirect('dashboard:default_seo_settings_edit')
+		messages.warning(request, 'Please correct the errors below.')
+		return render(request, self.template_name, {'form': form, 'instance': instance})
 

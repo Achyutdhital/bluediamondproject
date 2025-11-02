@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and dashboard areas
+Disallow: /admin/
+Disallow: /dashboard/
+
+# Disallow media files that shouldn't be indexed
+Disallow: /media/private/
+
+# Allow important directories
+Allow: /media/
+Allow: /static/
+
+# Sitemap location
+Sitemap: {{ request.scheme }}://{{ request.get_host }}/sitemap.xml

@@ -1,0 +1,28 @@
+{% load static %}
+
+{#
+  Reusable Page Banner Component
+
+  Usage:
+  {% include 'app/components/page_banner.html' with 
+	   title="Page Title" 
+	   subtitle="Optional subtitle" 
+	   banner=banner  
+	   default_image='app/bluediamondservicecenter/home/image1.jpg' 
+	   breadcrumb_items=breadcrumb_items %}
+
+  Context parameters:
+  - title: string (required)
+  - subtitle: string (optional)
+  - banner: Banner instance (optional) supporting types gradient|solid|image
+  - default_image: static path to fallback image (optional)
+  - breadcrumb_items: list of { title, url } (optional)
+ #}
+
+{% include 'app/components/page_banner_inner.html' with 
+	title=title 
+	subtitle=subtitle 
+	banner=banner 
+	default_image=default_image 
+	breadcrumb_items=breadcrumb_items %}
+

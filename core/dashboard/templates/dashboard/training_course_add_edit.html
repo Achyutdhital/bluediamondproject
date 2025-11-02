@@ -125,17 +125,29 @@
                                                     <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Is Active</label>
                                                 </div>
                                             </div>
+                                        </div> <!-- end row -->
+                                    </div> <!-- end card-body -->
+                                </div> <!-- end card -->
+                            </div> <!-- end col -->
+                        </div> <!-- end row -->
 
-                                        <div class="col-auto">
-                                            <a href="{% url 'dashboard:training_courses_list' %}" class="btn btn-danger"><i class="mdi mdi-arrow-left me-1"></i>Back to Table</a>
-                                            <button type="submit" class="btn btn-danger chat-send waves-effect waves-light">
-                                                <i class="mdi mdi-content-save me-1"></i>{% if instance %}Update Training Course{% else %}Add Training Course{% endif %}
-                                            </button>
-                                        </div>
-                                    </div> <!-- end row -->
-                                </div> <!-- end card-body -->
-                            </div> <!-- end card -->
-                        </div> <!-- end col -->
+                        <!-- SEO Settings -->
+                        {% include 'dashboard/_seo_accordion.html' with seo_form=seo_form %}
+
+                        <!-- Submit Buttons -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <a href="{% url 'dashboard:training_courses_list' %}" class="btn btn-danger">
+                                            <i class="mdi mdi-arrow-left me-1"></i>Back to Table
+                                        </a>
+                                        <button type="submit" class="btn btn-primary chat-send waves-effect waves-light">
+                                            <i class="mdi mdi-content-save me-1"></i>{% if instance %}Update Training Course{% else %}Add Training Course{% endif %}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                     </div> <!-- end row -->
                 </form>
             </div> <!-- container -->

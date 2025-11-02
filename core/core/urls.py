@@ -53,7 +53,19 @@ urlpatterns = [
     # SEO URLs
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('robots.txt', robots_txt, name='robots_txt'),
-    
-    # Serve media files using Django's serve view (works with Passenger/production)
-    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
+
+# Serve media files in both development and production
+# In production (cPanel), this requires appropriate .htaccess configuration
+if settings.DEBUG:
+    urlpatterns += [
+        re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    ]
+else:
+    # Production: serve media files via Django (Passenger compatible)
+    urlpatterns += [
+        re_path(r'^media/(?P<path>.*)$', serve, {
+            'document_root': settings.MEDIA_ROOT,
+            'show_indexes': False
+        }),
+    ]

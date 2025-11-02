@@ -15,57 +15,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include, re_path
+from django.urls import path, include
 from django.conf import settings
-from django.views.static import serve
-from django.contrib.sitemaps.views import sitemap
-from django.views.generic import TemplateView
-from django.http import HttpResponse
-from app.sitemaps import StaticViewSitemap, ServiceSitemap, BlogSitemap, TrainingCourseSitemap
-from app.models import DefaultSeoSettings
-
-sitemaps = {
-    'static': StaticViewSitemap,
-    'services': ServiceSitemap,
-    'blog': BlogSitemap,
-    'training': TrainingCourseSitemap,
-}
-
-def robots_txt(request):
-    """Dynamic robots.txt based on SEO settings"""
-    try:
-        seo_settings = DefaultSeoSettings.objects.filter(is_active=True).first()
-        if seo_settings and seo_settings.robots_txt_content:
-            content = seo_settings.robots_txt_content
-        else:
-            content = "User-agent: *\nDisallow: /dashboard/\nSitemap: /sitemap.xml"
-    except:
-        content = "User-agent: *\nDisallow: /dashboard/\nSitemap: /sitemap.xml"
-    
-    return HttpResponse(content, content_type='text/plain')
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('', include('app.urls')),
     path('dashboard/', include('dashboard.urls')),
-    
-    # SEO URLs
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
-    path('robots.txt', robots_txt, name='robots_txt'),
 ]
 
-# Serve media files in both development and production
-# In production (cPanel), this requires appropriate .htaccess configuration
 if settings.DEBUG:
-    urlpatterns += [
-        re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
-    ]
-else:
-    # Production: serve media files via Django (Passenger compatible)
-    urlpatterns += [
-        re_path(r'^media/(?P<path>.*)$', serve, {
-            'document_root': settings.MEDIA_ROOT,
-            'show_indexes': False
-        }),
-    ]
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

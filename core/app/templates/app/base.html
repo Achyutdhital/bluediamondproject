@@ -7,7 +7,12 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" href="{%static 'app/bluediamondservicecenter/favicon.png' %}" type="image/x-icon"/>
+        
+        <!-- Favicon -->
+        {% if company.logo %}
+        <link rel="icon" href="{{ company.logo.url }}" type="image/x-icon"/>
+        <link rel="shortcut icon" href="{{ company.logo.url }}" type="image/x-icon"/>
+        {% endif %}
         
         {% include 'app/seo_meta.html' %}
         

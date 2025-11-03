@@ -1,0 +1,123 @@
+<!--================our-services-section-Start=================-->
+{% if services %}
+<section class="secptb70 service_page">
+    <div class="container">
+        <div class="page-heading">
+            <h2>Our Services</h2>
+        </div>
+        <style>
+            .services-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 30px;
+                align-items: start;
+            }
+            
+            @media (max-width: 768px) {
+                .services-grid {
+                    grid-template-columns: 1fr;
+                    gap: 20px;
+                }
+            }
+            
+            .service_box_item {
+                background: #fff;
+                border-radius: 15px;
+                overflow: hidden;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .service_box_item:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            }
+            
+            .service_box_item .service_image {
+                display: block;
+                height: 200px;
+                overflow: hidden;
+            }
+            
+            .service_box_item .service_image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+            
+            .service_box_item:hover .service_image img {
+                transform: scale(1.05);
+            }
+            
+            .service_box_item .service_text {
+                padding: 25px 20px;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+            
+            .service_box_item .service_text h4 {
+                font-size: 1.3rem;
+                font-weight: 700;
+                margin-bottom: 15px;
+                color: #1e3c72;
+                line-height: 1.3;
+            }
+            
+            .service_box_item .service_text p {
+                color: #666;
+                font-size: 14px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+                flex: 1;
+            }
+            
+            .service_box_item .theme-btn {
+                background: linear-gradient(135deg, #1e3c72, #2563eb);
+                color: white;
+                padding: 12px 25px;
+                border-radius: 25px;
+                text-decoration: none;
+                font-weight: 600;
+                text-align: center;
+                transition: all 0.3s ease;
+                border: none;
+                display: inline-block;
+                align-self: flex-start;
+            }
+            
+            .service_box_item .theme-btn:hover {
+                background: linear-gradient(135deg, #2563eb, #1e3c72);
+                color: white;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(30, 60, 114, 0.3);
+            }
+        </style>
+        
+        <div class="services-grid">
+            {% for svc in services %}
+            <div class="service_box_item">
+                <a href="/services/{{ svc.slug }}/" class="service_image">
+                    {% if svc.feature_image %}
+                    <img src="{{ svc.feature_image.url }}" alt="{{ svc.name }}">
+                    {% endif %}
+                </a>
+                <div class="service_text">
+                    <div>
+                        <a href="/services/{{ svc.slug }}/"><h4>{{ svc.name }}</h4></a>
+                        <p>{{ svc.short_description|truncatewords:20 }}</p>
+                    </div>
+                    <a href="/services/{{ svc.slug }}/" class="theme-btn btn-lg">Read More</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+<!--================our-services-section-End=================-->

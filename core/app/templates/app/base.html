@@ -321,27 +321,65 @@ $(document).ready(function() {
 <script src="{%static 'app/dist/jquery-simple-mobilemenu.js' %}"></script>
 <script>
     $(document).ready(function(){
-        // Testimonial Carousel
-        $('.testimonial-carousel').owlCarousel({
-            loop: true,
-            margin: 30,
-            nav: true,
-            dots: true,
-            autoplay: true,
-            autoplayTimeout: 5000,
-            autoplayHoverPause: true,
-            responsive: {
-                0: {
-                    items: 1
-                },
-                600: {
-                    items: 2
-                },
-                1000: {
-                    items: 3
+        // Testimonial Carousel (mobile-safe with autoHeight and responsive margins)
+        var $tc = $('.testimonial-carousel');
+        if ($tc.length) {
+            $tc.owlCarousel({
+                loop: true,
+                nav: false, // Disable arrows
+                dots: false, // Disable dots
+                autoplay: true,
+                autoplayTimeout: 5000,
+                autoplayHoverPause: true,
+                autoHeight: true,
+                responsive: {
+                    0: {
+                        items: 1,
+                        margin: 8,
+                        autoWidth: false
+                    },
+                    480: {
+                        items: 1,
+                        margin: 12,
+                        autoWidth: false
+                    },
+                    600: {
+                        items: 2,
+                        margin: 20,
+                        autoWidth: false
+                    },
+                    1000: {
+                        items: 3,
+                        margin: 24,
+                        autoWidth: false
+                    }
                 }
-            }
-        });
+            });
+            // Defensive refresh in case of late font/image load affecting widths
+            setTimeout(function(){ $tc.trigger('refresh.owl.carousel'); }, 500);
+        }
+
+        // Brand Carousel (uniform logo size, seamless autoplay)
+        var $bc = $('.brand-carousel');
+        if ($bc.length) {
+            $bc.owlCarousel({
+                loop: true,
+                nav: false,
+                dots: false,
+                autoplay: true,
+                autoplayTimeout: 2500,
+                autoplayHoverPause: true,
+                smartSpeed: 500,
+                responsive: {
+                    0:   { items: 2, margin: 10 },
+                    480: { items: 3, margin: 12 },
+                    768: { items: 4, margin: 16 },
+                    992: { items: 5, margin: 20 },
+                    1200:{ items: 6, margin: 24 }
+                }
+            });
+            setTimeout(function(){ $bc.trigger('refresh.owl.carousel'); }, 500);
+        }
     });
 </script>
 </body>

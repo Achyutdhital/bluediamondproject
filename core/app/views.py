@@ -178,13 +178,7 @@ def gallery(request):
     banner = Banner.objects.filter(page_path='/gallery/', is_active=True).first()
 
     # SEO data
-    seo_data = SEOHelper.get_page_seo_data(
-        page_type='default',
-        request=request,
-        meta_title='Gallery - Blue Diamond Service Center',
-        meta_description='Browse our gallery of service work and training photos. See our professional appliance repair and maintenance services in action.',
-        meta_keywords='appliance repair gallery, service photos, training images'
-    )
+    seo_data = SEOHelper.get_page_seo_data(page_type='gallery', request=request)
 
     context = {
         'services': services,

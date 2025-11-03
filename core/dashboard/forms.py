@@ -149,6 +149,49 @@ class SeoMetadataForm(forms.ModelForm):
             'robots': TextInput(attrs={'class': 'form-control', 'placeholder': 'index, follow'}),
             'schema_type': Select(attrs={'class': 'form-control'}),
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Make all fields optional (not required)
+        for field in self.fields.values():
+            field.required = False
+
+
+class PageSEOForm(forms.ModelForm):
+    """Form for managing static page SEO (Homepage, Contact, etc.)"""
+    class Meta:
+        model = PageSEO
+        fields = [
+            'page', 'meta_title', 'meta_description', 'meta_keywords', 'focus_keyword',
+            'og_title', 'og_description', 'og_image',
+            'twitter_card', 'twitter_title', 'twitter_description', 'twitter_image',
+            'canonical_url', 'robots', 'schema_type', 'is_active'
+        ]
+        widgets = {
+            'page': Select(attrs={'class': 'form-control'}),
+            'meta_title': TextInput(attrs={'class': 'form-control', 'placeholder': 'Page Title (50-60 chars)'}),
+            'meta_description': Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Meta description (150-160 chars)'}),
+            'meta_keywords': TextInput(attrs={'class': 'form-control', 'placeholder': 'keyword1, keyword2, keyword3'}),
+            'focus_keyword': TextInput(attrs={'class': 'form-control', 'placeholder': 'Primary focus keyword'}),
+            'og_title': TextInput(attrs={'class': 'form-control', 'placeholder': 'Open Graph title (optional)'}),
+            'og_description': Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'OG description (optional)'}),
+            'og_image': ClearableFileInput(attrs={'class': 'form-control'}),
+            'twitter_card': Select(attrs={'class': 'form-control'}),
+            'twitter_title': TextInput(attrs={'class': 'form-control', 'placeholder': 'Twitter title (optional)'}),
+            'twitter_description': Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Twitter description (optional)'}),
+            'twitter_image': ClearableFileInput(attrs={'class': 'form-control'}),
+            'canonical_url': URLInput(attrs={'class': 'form-control', 'placeholder': 'https://example.com/page/ (optional)'}),
+            'robots': TextInput(attrs={'class': 'form-control', 'placeholder': 'index, follow'}),
+            'schema_type': Select(attrs={'class': 'form-control'}),
+            'is_active': CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Make all fields optional except 'page'
+        for field_name, field in self.fields.items():
+            if field_name != 'page':
+                field.required = False
 
 class EnquiryForm(forms.ModelForm):
     class Meta:

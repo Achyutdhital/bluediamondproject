@@ -81,6 +81,12 @@ urlpatterns = [
 	path('seo-metadata/add/', views.SeoMetadataAddEditView.as_view(), name='seo_metadata_add'),
 	path('seo-metadata/<int:pk>/edit/', views.SeoMetadataAddEditView.as_view(), name='seo_metadata_edit'),
 	path('seo-metadata/<int:pk>/delete/', views.SeoMetadataDeleteView.as_view(), name='seo_metadata_delete'),
+	
+	# Page SEO (Homepage, Contact, Lists, etc.)
+	path('page-seo/', views.PageSEOListView.as_view(), name='page_seo_list'),
+	path('page-seo/add/', views.PageSEOAddEditView.as_view(), name='page_seo_add'),
+	path('page-seo/<int:pk>/edit/', views.PageSEOAddEditView.as_view(), name='page_seo_edit'),
+	path('page-seo/<int:pk>/delete/', views.PageSEODeleteView.as_view(), name='page_seo_delete'),
 
 	# Enquiries
 	path('enquiries/', views.EnquiryListView.as_view(), name='enquiries_list'),

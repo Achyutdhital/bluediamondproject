@@ -26,6 +26,7 @@ from app.models import (
 	PrivacyPolicy,
 	TermsAndConditions,
 	SEO,
+	PageSEO,
 	DefaultSeoSettings,
 	Enquiry,
 	Contact,
@@ -49,6 +50,7 @@ from .forms import (
 	PrivacyPolicyForm,
 	TermsAndConditionsForm,
 	SeoMetadataForm,
+	PageSEOForm,
 	DefaultSeoSettingsForm,
 	EnquiryForm as DashboardEnquiryForm,  # not used for create here, but kept for completeness
 	ContactForm as DashboardContactForm,  # not used
@@ -149,13 +151,30 @@ class ServiceAddEditView(LoginRequiredMixin, View):
 		seo_form = SeoMetadataForm(request.POST, request.FILES, instance=instance.seo if instance and instance.seo else None)
 		
 		if form.is_valid():
-			service = form.save()
+			# Save service without committing to database yet
+			service = form.save(commit=False)
 			
-			# Handle SEO separately if provided
-			if seo_form.is_valid() and (seo_form.cleaned_data.get('meta_title') or seo_form.cleaned_data.get('meta_description')):
-				seo = seo_form.save()
-				service.seo = seo
-				service.save()
+			# Handle SEO separately if ANY field is provided
+			has_seo_data = any([
+				seo_form.data.get('meta_title'),
+				seo_form.data.get('meta_description'),
+				seo_form.data.get('meta_keywords'),
+				seo_form.data.get('focus_keyword'),
+			])
+			
+			if has_seo_data:
+				if seo_form.is_valid():
+					seo = seo_form.save()
+					service.seo = seo
+				else:
+					# Show SEO form errors - display actual errors for debugging
+					for field, errors in seo_form.errors.items():
+						for error in errors:
+							messages.error(request, f'SEO {field}: {error}')
+					return render(request, self.template_name, {'form': form, 'seo_form': seo_form, 'instance': instance})
+			
+			# Now save the service (will auto-generate SEO only if seo_id is still None)
+			service.save()
 			
 			messages.success(request, 'Service saved successfully.' if not instance else 'Service updated successfully.')
 			return redirect('dashboard:services_list')
@@ -192,13 +211,30 @@ class TrainingCourseAddEditView(LoginRequiredMixin, View):
 		seo_form = SeoMetadataForm(request.POST, request.FILES, instance=instance.seo if instance and instance.seo else None)
 		
 		if form.is_valid():
-			course = form.save()
+			# Save course without committing to database yet
+			course = form.save(commit=False)
 			
-			# Handle SEO separately if provided
-			if seo_form.is_valid() and (seo_form.cleaned_data.get('meta_title') or seo_form.cleaned_data.get('meta_description')):
-				seo = seo_form.save()
-				course.seo = seo
-				course.save()
+			# Handle SEO separately if ANY field is provided
+			has_seo_data = any([
+				seo_form.data.get('meta_title'),
+				seo_form.data.get('meta_description'),
+				seo_form.data.get('meta_keywords'),
+				seo_form.data.get('focus_keyword'),
+			])
+			
+			if has_seo_data:
+				if seo_form.is_valid():
+					seo = seo_form.save()
+					course.seo = seo
+				else:
+					# Show SEO form errors - display actual errors for debugging
+					for field, errors in seo_form.errors.items():
+						for error in errors:
+							messages.error(request, f'SEO {field}: {error}')
+					return render(request, self.template_name, {'form': form, 'seo_form': seo_form, 'instance': instance})
+			
+			# Now save the course (will auto-generate SEO only if seo_id is still None)
+			course.save()
 			
 			messages.success(request, 'Training course saved successfully.' if not instance else 'Training course updated successfully.')
 			return redirect('dashboard:training_courses_list')
@@ -721,13 +757,30 @@ class BlogAddEditView(LoginRequiredMixin, View):
 		seo_form = SeoMetadataForm(request.POST, request.FILES, instance=instance.seo if instance and instance.seo else None)
 		
 		if form.is_valid():
-			blog = form.save()
+			# Save blog without committing to database yet
+			blog = form.save(commit=False)
 			
-			# Handle SEO separately if provided
-			if seo_form.is_valid() and (seo_form.cleaned_data.get('meta_title') or seo_form.cleaned_data.get('meta_description')):
-				seo = seo_form.save()
-				blog.seo = seo
-				blog.save()
+			# Handle SEO separately if ANY field is provided
+			has_seo_data = any([
+				seo_form.data.get('meta_title'),
+				seo_form.data.get('meta_description'),
+				seo_form.data.get('meta_keywords'),
+				seo_form.data.get('focus_keyword'),
+			])
+			
+			if has_seo_data:
+				if seo_form.is_valid():
+					seo = seo_form.save()
+					blog.seo = seo
+				else:
+					# Show SEO form errors - display actual errors for debugging
+					for field, errors in seo_form.errors.items():
+						for error in errors:
+							messages.error(request, f'SEO {field}: {error}')
+					return render(request, self.template_name, {'form': form, 'seo_form': seo_form, 'instance': instance})
+			
+			# Now save the blog (will auto-generate SEO only if seo_id is still None)
+			blog.save()
 			
 			messages.success(request, 'Blog saved successfully.' if not instance else 'Blog updated successfully.')
 			return redirect('dashboard:blogs_list')
@@ -798,4 +851,47 @@ class DefaultSeoSettingsEditView(LoginRequiredMixin, View):
 			return redirect('dashboard:default_seo_settings_edit')
 		messages.warning(request, 'Please correct the errors below.')
 		return render(request, self.template_name, {'form': form, 'instance': instance})
+
+
+# Page SEO Management (Homepage, Contact, Services List, etc.)
+class PageSEOListView(LoginRequiredMixin, ListView):
+	model = PageSEO
+	template_name = 'dashboard/page_seo_list.html'
+	context_object_name = 'page_seos'
+	
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		# Show which pages don't have SEO yet
+		existing_pages = PageSEO.objects.values_list('page', flat=True)
+		all_pages = dict(PageSEO.PAGE_CHOICES)
+		missing_pages = [(k, v) for k, v in all_pages.items() if k not in existing_pages]
+		context['missing_pages'] = missing_pages
+		return context
+
+
+class PageSEOAddEditView(LoginRequiredMixin, View):
+	template_name = 'dashboard/page_seo_add_edit.html'
+
+	def get(self, request, pk=None):
+		instance = get_object_or_404(PageSEO, pk=pk) if pk else None
+		form = PageSEOForm(instance=instance)
+		return render(request, self.template_name, {'form': form, 'instance': instance})
+
+	def post(self, request, pk=None):
+		instance = get_object_or_404(PageSEO, pk=pk) if pk else None
+		form = PageSEOForm(request.POST, request.FILES, instance=instance)
+		if form.is_valid():
+			form.save()
+			messages.success(request, 'Page SEO saved successfully.' if not instance else 'Page SEO updated successfully.')
+			return redirect('dashboard:page_seo_list')
+		messages.warning(request, 'Please correct the errors below.')
+		return render(request, self.template_name, {'form': form, 'instance': instance})
+
+
+class PageSEODeleteView(LoginRequiredMixin, View):
+	def post(self, request, pk):
+		instance = get_object_or_404(PageSEO, pk=pk)
+		instance.delete()
+		messages.success(request, 'Page SEO deleted successfully.')
+		return redirect('dashboard:page_seo_list')
 

@@ -111,72 +111,7 @@
                                     </div> <!-- end row -->
 
                                     <!-- SEO Settings (Collapsible) -->
-                                    <div class="row mt-3">
-                                        <div class="col-12">
-                                            <div class="accordion" id="seoAccordion">
-                                                <div class="accordion-item">
-                                                    <h2 class="accordion-header" id="seoHeading">
-                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#seoCollapse" aria-expanded="false" aria-controls="seoCollapse">
-                                                            <i class="mdi mdi-search-web me-2"></i> SEO Settings (Optional)
-                                                        </button>
-                                                    </h2>
-                                                    <div id="seoCollapse" class="accordion-collapse collapse" aria-labelledby="seoHeading" data-bs-parent="#seoAccordion">
-                                                        <div class="accordion-body">
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="mb-3">
-                                                                        <label for="{{ seo_form.meta_title.id_for_label }}" class="form-label">SEO Title (50-60 chars)</label>
-                                                                        {{ seo_form.meta_title }}
-                                                                        <small class="text-muted">If empty, will auto-generate from service name</small>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="mb-3">
-                                                                        <label for="{{ seo_form.focus_keyword.id_for_label }}" class="form-label">Focus Keyword</label>
-                                                                        {{ seo_form.focus_keyword }}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-12">
-                                                                    <div class="mb-3">
-                                                                        <label for="{{ seo_form.meta_description.id_for_label }}" class="form-label">Meta Description (150-160 chars)</label>
-                                                                        {{ seo_form.meta_description }}
-                                                                        <small class="text-muted">If empty, will use short description</small>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-12">
-                                                                    <div class="mb-3">
-                                                                        <label for="{{ seo_form.meta_keywords.id_for_label }}" class="form-label">Meta Keywords</label>
-                                                                        {{ seo_form.meta_keywords }}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            
-                                                            <h5 class="mt-3 mb-2">Open Graph (Facebook/LinkedIn)</h5>
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="mb-3">
-                                                                        <label for="{{ seo_form.og_image.id_for_label }}" class="form-label">OG Image (1200x630px)</label>
-                                                                        {{ seo_form.og_image }}
-                                                                        <small class="text-muted">Will use feature image if empty</small>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="mb-3">
-                                                                        <label for="{{ seo_form.schema_type.id_for_label }}" class="form-label">Schema Type</label>
-                                                                        {{ seo_form.schema_type }}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    {% include 'dashboard/_seo_accordion.html' with seo_form=seo_form %}
                                     <!-- End SEO Settings -->
 
                                         <div class="col-auto">

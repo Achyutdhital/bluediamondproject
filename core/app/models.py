@@ -10,11 +10,10 @@ from django.core.validators import FileExtensionValidator
 from django.utils import timezone as dj_timezone
 
 
-
-class SEO(models.Model):
+class BaseSEOMixin(models.Model):
     """
-    Modern SEO model with comprehensive meta tags support.
-    Supports Google, Facebook Open Graph, Twitter Cards, and Schema.org
+    Abstract base model for SEO fields to avoid duplication.
+    Use this for both article-based SEO and page-based SEO.
     """
     # Basic Meta Tags
     meta_title = models.CharField(
@@ -30,7 +29,7 @@ class SEO(models.Model):
     meta_keywords = models.CharField(
         max_length=255, 
         blank=True,
-        help_text='Comma-separated keywords (optional, less important for modern SEO)'
+        help_text='Comma-separated keywords'
     )
     
     # Open Graph (Facebook, LinkedIn, etc.)
@@ -50,11 +49,6 @@ class SEO(models.Model):
         null=True, 
         help_text='Open Graph image - 1200x630px recommended'
     )
-    og_type = models.CharField(
-        max_length=20,
-        default='website',
-        help_text='Open Graph type (website, article, etc.)'
-    )
     
     # Twitter Card
     twitter_card = models.CharField(
@@ -63,8 +57,6 @@ class SEO(models.Model):
         choices=[
             ('summary', 'Summary'),
             ('summary_large_image', 'Summary Large Image'),
-            ('app', 'App'),
-            ('player', 'Player'),
         ],
         help_text='Twitter card type'
     )
@@ -82,7 +74,7 @@ class SEO(models.Model):
         upload_to='seo/twitter_images/', 
         blank=True, 
         null=True,
-        help_text='Twitter image (defaults to og_image if empty) - 1200x628px'
+        help_text='Twitter image (defaults to og_image if empty)'
     )
     
     # Advanced SEO
@@ -93,23 +85,7 @@ class SEO(models.Model):
     robots = models.CharField(
         max_length=100,
         default='index, follow',
-        help_text='Robots meta tag (index, follow / noindex, nofollow)'
-    )
-    
-    # Schema.org (JSON-LD)
-    schema_type = models.CharField(
-        max_length=50,
-        blank=True,
-        choices=[
-            ('Article', 'Article'),
-            ('BlogPosting', 'Blog Posting'),
-            ('Service', 'Service'),
-            ('Course', 'Course'),
-            ('Organization', 'Organization'),
-            ('LocalBusiness', 'Local Business'),
-            ('WebPage', 'Web Page'),
-        ],
-        help_text='Schema.org type for structured data'
+        help_text='Robots meta tag'
     )
     
     # Focus Keyword
@@ -122,18 +98,14 @@ class SEO(models.Model):
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
     class Meta:
-        verbose_name = 'SEO'
-        verbose_name_plural = 'SEO'
-
-    def __str__(self):
-        return f"SEO: {self.meta_title}"
-
+        abstract = True
+    
     def get_og_title(self):
         """Return OG title or fallback to meta title"""
         return self.og_title or self.meta_title
-
+    
     def get_og_description(self):
         """Return OG description or fallback to meta description"""
         return self.og_description or self.meta_description
@@ -149,6 +121,42 @@ class SEO(models.Model):
     def get_twitter_image(self):
         """Return Twitter image or fallback to OG image"""
         return self.twitter_image or self.og_image
+
+
+class SEO(BaseSEOMixin):
+    """
+    SEO model for article-based content (Services, Blogs, Training Courses).
+    Uses BaseSEOMixin for common fields, adds article-specific fields.
+    """
+    # Article-specific fields
+    og_type = models.CharField(
+        max_length=20,
+        default='website',
+        help_text='Open Graph type (website, article, etc.)'
+    )
+    
+    # Schema.org (JSON-LD) - More options for articles
+    schema_type = models.CharField(
+        max_length=50,
+        blank=True,
+        choices=[
+            ('Article', 'Article'),
+            ('BlogPosting', 'Blog Posting'),
+            ('Service', 'Service'),
+            ('Course', 'Course'),
+            ('Organization', 'Organization'),
+            ('LocalBusiness', 'Local Business'),
+            ('WebPage', 'Web Page'),
+        ],
+        help_text='Schema.org type for structured data'
+    )
+
+    class Meta:
+        verbose_name = 'SEO'
+        verbose_name_plural = 'SEO'
+
+    def __str__(self):
+        return f"SEO: {self.meta_title}"
 
 
 class DefaultSeoSettings(models.Model):
@@ -204,6 +212,55 @@ class DefaultSeoSettings(models.Model):
         return "User-agent: *\nDisallow: /dashboard/\nSitemap: /sitemap.xml"
 
 
+class PageSEO(BaseSEOMixin):
+    """
+    SEO settings for static pages (Homepage, Contact, List pages, etc.).
+    Uses BaseSEOMixin for common fields, adds page-specific identifier.
+    """
+    PAGE_CHOICES = [
+        ('home', 'Homepage'),
+        ('about', 'About Us'),
+        ('contact', 'Contact Us'),
+        ('services_list', 'Services List Page'),
+        ('training_list', 'Training Courses List Page'),
+        ('blog_list', 'Blog List Page'),
+        ('gallery', 'Gallery Page'),
+    ]
+    
+    page = models.CharField(
+        max_length=50,
+        choices=PAGE_CHOICES,
+        unique=True,
+        help_text='Select the page for SEO settings'
+    )
+    
+    # Schema.org type - Simpler choices for static pages
+    schema_type = models.CharField(
+        max_length=50,
+        default='WebPage',
+        choices=[
+            ('WebPage', 'Web Page'),
+            ('AboutPage', 'About Page'),
+            ('ContactPage', 'Contact Page'),
+            ('CollectionPage', 'Collection Page'),
+        ],
+        help_text='Schema.org type for structured data'
+    )
+    
+    # Status
+    is_active = models.BooleanField(
+        default=True,
+        help_text='Enable/disable SEO for this page'
+    )
+    
+    class Meta:
+        verbose_name = 'Page SEO'
+        verbose_name_plural = 'Page SEO Settings'
+        ordering = ['page']
+    
+    def __str__(self):
+        return f"SEO: {self.get_page_display()}"
+
 
 
 
@@ -227,6 +284,18 @@ class Services(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        # Auto-generate SEO if it doesn't exist
+        if not self.seo_id:
+            seo = SEO.objects.create(
+                meta_title=f"{self.name} | Professional Appliance Repair Service",
+                meta_description=self.short_description[:160] if self.short_description else f"Expert {self.name} service in Nepal. Professional repairs with genuine parts.",
+                focus_keyword=self.name,
+                schema_type='Service'
+            )
+            self.seo = seo
+        super().save(*args, **kwargs)
 
     def get_seo_title(self):
         """Generate SEO-friendly title"""
@@ -327,6 +396,53 @@ class Video(models.Model):
     def __str__(self):
         return self.title
 
+    # Helper: normalized embed URL for YouTube/Vimeo links so regular share/watch links also work in iframes
+    def embed_src(self):
+        """Return an iframe-safe embed URL for known providers (YouTube/Vimeo) or the original URL otherwise."""
+        from urllib.parse import urlparse, parse_qs
+        url = (self.embed_url or '').strip()
+        if not url:
+            return ''
+
+        parsed = urlparse(url)
+        host = (parsed.netloc or '').lower()
+        path = parsed.path or ''
+        query = parse_qs(parsed.query or '')
+
+        # YouTube handling
+        if 'youtube.com' in host or 'youtu.be' in host:
+            video_id = ''
+            if 'youtu.be' in host:
+                # Short link: youtu.be/VIDEO_ID
+                video_id = path.strip('/').split('/')[0]
+            else:
+                # youtube.com variants
+                if path.startswith('/watch'):
+                    video_id = (query.get('v') or [''])[0]
+                elif path.startswith('/shorts/'):
+                    video_id = path.split('/shorts/')[1].split('/')[0]
+                elif path.startswith('/embed/'):
+                    video_id = path.split('/embed/')[1].split('/')[0]
+            if video_id:
+                # Privacy-enhanced mode + simple params
+                return f"https://www.youtube-nocookie.com/embed/{video_id}?rel=0&modestbranding=1"
+            # Fallback to original URL if parsing failed
+            return url
+
+        # Vimeo handling
+        if 'vimeo.com' in host:
+            # Support vimeo.com/VIDEO_ID and player.vimeo.com/video/VIDEO_ID
+            parts = [p for p in path.split('/') if p]
+            cand = parts[-1] if parts else ''
+            if cand.isdigit():
+                return f"https://player.vimeo.com/video/{cand}"
+            # If already a player URL, return as-is
+            if 'player.vimeo.com' in host:
+                return url
+
+        # Default: return the original URL
+        return url
+
 
 # New: Blog posts
 class BlogPost(models.Model):
@@ -348,6 +464,20 @@ class BlogPost(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        # Auto-generate SEO if it doesn't exist
+        if not self.seo_id:
+            from django.utils.html import strip_tags
+            content_text = strip_tags(self.content)[:160] if self.content else ""
+            seo = SEO.objects.create(
+                meta_title=f"{self.title} | Blue Diamond Blog",
+                meta_description=self.excerpt[:160] if self.excerpt else content_text,
+                focus_keyword=self.title.split()[0] if self.title else "",
+                schema_type='BlogPosting'
+            )
+            self.seo = seo
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         from django.urls import reverse
@@ -467,6 +597,20 @@ class TrainingCourse(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        # Auto-generate SEO if it doesn't exist
+        if not self.seo_id:
+            from django.utils.html import strip_tags
+            desc = self.short_description or strip_tags(self.description)[:160] if self.description else ""
+            seo = SEO.objects.create(
+                meta_title=f"{self.title} Training Course | Blue Diamond",
+                meta_description=desc[:160] if desc else f"Professional {self.title} training course at Blue Diamond Service Center.",
+                focus_keyword=self.title,
+                schema_type='Course'
+            )
+            self.seo = seo
+        super().save(*args, **kwargs)
 
     def get_seo_title(self):
         """Generate SEO-friendly title"""
@@ -630,6 +774,18 @@ class AboutUsPage(models.Model):
     def save(self, *args, **kwargs):
         if AboutUsPage.objects.exists() and not self.pk:
             raise ValidationError("Only one About Us page is allowed. Please edit the existing one.")
+        
+        # Auto-generate SEO if it doesn't exist
+        if not self.seo_id:
+            from django.utils.html import strip_tags
+            content_text = strip_tags(self.content)[:160] if self.content else ""
+            seo = SEO.objects.create(
+                meta_title=f"About Us | {self.page_title}",
+                meta_description=content_text or "Learn about Blue Diamond Service Center, your trusted appliance repair and training provider.",
+                focus_keyword="About Us",
+                schema_type='WebPage'
+            )
+            self.seo = seo
         super().save(*args, **kwargs)
     
     def __str__(self):

@@ -1,0 +1,116 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}Page SEO Settings{% endblock %}
+
+{% block body %}
+    <title>Page SEO Settings</title>
+
+    <div class="content-page">
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <h4 class="page-title">Page SEO Settings</h4>
+                        </div>
+                    </div>
+                </div>
+
+                {% if messages %}
+                    {% for msg in messages %}
+                        <div class="alert alert-{{ msg.tags }} alert-dismissible text-bg-{{ msg.tags }} border-0 fade show" role="alert">
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <strong>{% if msg.tags == 'success' %}Success{% elif msg.tags == 'warning' %}Warning{% endif %} - </strong>{{ msg.message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-sm-12">
+                                        <h5 class="mb-3">Configure SEO for Static Pages</h5>
+                                        <p class="text-muted">Manage SEO settings for static pages like Homepage, Contact, Services List, Blog List, etc.</p>
+                                    </div>
+                                </div>
+
+                                {% if missing_pages %}
+                                <div class="alert alert-info">
+                                    <strong>Pages without SEO:</strong>
+                                    <ul class="mb-0">
+                                        {% for page_code, page_name in missing_pages %}
+                                            <li>{{ page_name }} - <a href="{% url 'dashboard:page_seo_add' %}?page={{ page_code }}" class="alert-link">Add SEO</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% endif %}
+
+                                <div class="tab-content">
+                                    <table id="datatable-buttons" class="table table-striped dt-responsive nowrap w-100">
+                                        <thead>
+                                            <tr>
+                                                <th>Page</th>
+                                                <th>Meta Title</th>
+                                                <th>Meta Description</th>
+                                                <th>Status</th>
+                                                <th style="width: 120px;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for item in page_seos %}
+                                            <div id="delete-modal-{{ item.id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="delete-modalLabel-{{ item.id }}" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content modal-filled bg-primary">
+                                                        <div class="modal-header bg-info">
+                                                            <h4 class="modal-title" id="delete-modalLabel-{{ item.id }}">Confirm Delete?</h4>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                                                        </div>
+                                                        <div class="modal-body modal-filled bg-info">
+                                                            Are you sure you want to delete SEO settings for "{{ item.get_page_display }}"?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                            <form method="post" action="{% url 'dashboard:page_seo_delete' item.id %}">
+                                                                {% csrf_token %}
+                                                                <button type="submit" class="btn btn-primary">Delete</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                                <tr>
+                                                    <td><strong>{{ item.get_page_display }}</strong></td>
+                                                    <td>{{ item.meta_title|truncatewords:8|default:'-' }}</td>
+                                                    <td>{{ item.meta_description|truncatewords:10|default:'-' }}</td>
+                                                    <td>
+                                                        {% if item.is_active %}
+                                                            <span class="badge bg-success">Active</span>
+                                                        {% else %}
+                                                            <span class="badge bg-secondary">Inactive</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <a href="{% url 'dashboard:page_seo_edit' item.pk %}" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a>
+                                                        <a href="#" class="action-icon" data-bs-toggle="modal" data-bs-target="#delete-modal-{{ item.id }}"> <i class="mdi mdi-delete"></i></a>
+                                                    </td>
+                                                </tr>
+                                            {% empty %}
+                                                <tr>
+                                                    <td colspan="5" class="text-center text-muted">
+                                                        No page SEO settings configured yet. Click on links above to add SEO for missing pages.
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

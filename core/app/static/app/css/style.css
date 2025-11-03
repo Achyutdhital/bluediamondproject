@@ -1286,7 +1286,7 @@ i:before {
 .homefaq-section {
     width: 100%;
     float: left;
-    padding: 100px 0px;
+    padding: 50px 0px;
     background: #f6f6f6;
 }
 .homefaq-mainpanel {
@@ -1313,7 +1313,7 @@ i:before {
     color: #808080;
 }
 .faq_ques .panel.panel-default .panel-heading .panel-title a .fa-angle-up {
-    background: #EF2F25;
+    background: #184c84;
 }
 .homefaq-listmain .faq_ques .panel.panel-default .panel-heading .panel-title a {
     background-color:#fbfbfb;
@@ -1965,7 +1965,7 @@ float: left;
     margin-bottom: 30px;
 }
 .secptb70{
-    padding: 70px 0px 60px 0px;
+    padding: 50px 0px 60px 0px;
 }
 .themetextcolor{
     color: #004e85;

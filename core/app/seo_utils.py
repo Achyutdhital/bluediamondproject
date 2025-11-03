@@ -1,5 +1,5 @@
 from django.contrib.contenttypes.models import ContentType
-from .models import SEO, DefaultSeoSettings
+from .models import SEO, PageSEO, DefaultSeoSettings
 from django.utils.html import strip_tags
 import json
 
@@ -13,7 +13,7 @@ class SEOHelper:
         
         Args:
             obj: Model instance with SEO relationship (e.g., BlogPost, Service)
-            page_type: Type of page ('home', 'blog', 'services', etc.)
+            page_type: Type of page ('home', 'blog_list', 'services_list', 'contact', etc.)
             request: Django request object for building absolute URLs
             **kwargs: Override values
         
@@ -22,10 +22,30 @@ class SEOHelper:
         """
         default_seo = DefaultSeoSettings.objects.filter(is_active=True).first()
         
-        # Get SEO data from object if it has SEO relationship
-        if obj and hasattr(obj, 'seo') and obj.seo:
+        # Map page_type to PageSEO page choices
+        page_type_map = {
+            'home': 'home',
+            'about': 'about',
+            'contact': 'contact',
+            'services': 'services_list',
+            'services_list': 'services_list',
+            'training': 'training_list',
+            'training_list': 'training_list',
+            'blog': 'blog_list',
+            'blog_list': 'blog_list',
+            'gallery': 'gallery',
+        }
+        
+        # Try to get PageSEO for static pages
+        page_seo = None
+        if page_type in page_type_map:
+            page_identifier = page_type_map[page_type]
+            page_seo = PageSEO.objects.filter(page=page_identifier, is_active=True).first()
+        
+        # Get SEO data from object if it has SEO relationship (for article pages)
+        if not page_seo and obj and hasattr(obj, 'seo') and obj.seo:
             page_seo = obj.seo
-        elif obj:
+        elif not page_seo and obj:
             # Fallback: create mock SEO object from model's get_seo_* methods
             page_seo = type('SEO', (), {
                 'meta_title': getattr(obj, 'get_seo_title', lambda: str(obj))(),
@@ -42,8 +62,8 @@ class SEOHelper:
                 'schema_type': kwargs.get('schema_type', ''),
                 'focus_keyword': kwargs.get('focus_keyword', ''),
             })()
-        else:
-            # Use page-type defaults
+        elif not page_seo:
+            # Use hardcoded page-type defaults as last resort
             page_seo = SEOHelper._get_page_defaults(page_type, default_seo, **kwargs)
         
         # Generate schema markup

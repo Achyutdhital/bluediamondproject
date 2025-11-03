@@ -1,6 +1,7 @@
 from django.contrib import admin
 from . import models
 
+
 @admin.register(models.Video)
 class VideoAdmin(admin.ModelAdmin):
 	list_display = ('title', 'is_active', 'created_at')
@@ -37,15 +38,10 @@ class BlogPostAdmin(admin.ModelAdmin):
 	list_display = ('title', 'is_published', 'published_at')
 	list_filter = ('is_published', 'published_at')
 	search_fields = ('title', 'content')
-	prepopulated_fields = {"slug": ("title",)}
+	readonly_fields = ('slug',)
 	fieldsets = (
 		('Blog Information', {
 			'fields': ('title', 'slug', 'excerpt', 'content', 'cover_image', 'is_published', 'published_at')
-		}),
-		('SEO Settings', {
-			'fields': ('seo',),
-			'classes': ('collapse',),
-			'description': 'Create or select an SEO entry for this blog post'
 		}),
 	)
 
@@ -55,15 +51,10 @@ class ServicesAdmin(admin.ModelAdmin):
 	list_display = ("name", "is_active")
 	list_filter = ("is_active",)
 	search_fields = ("name", "short_description")
-	prepopulated_fields = {"slug": ("name",)}
+	readonly_fields = ('slug',)
 	fieldsets = (
 		('Service Information', {
 			'fields': ('name', 'slug', 'short_description', 'description', 'feature_image', 'is_active')
-		}),
-		('SEO Settings', {
-			'fields': ('seo',),
-			'classes': ('collapse',),
-			'description': 'Create or select an SEO entry for this service'
 		}),
 	)
 
@@ -72,16 +63,11 @@ class ServicesAdmin(admin.ModelAdmin):
 class TrainingCourseAdmin(admin.ModelAdmin):
 	list_display = ("title", "duration", "fee", "is_active")
 	list_filter = ("is_active",)
-	search_fields = ("title", "short_description")
-	prepopulated_fields = {"slug": ("title",)}
+	search_fields = ("title", "description")
+	readonly_fields = ('slug',)
 	fieldsets = (
 		('Course Information', {
 			'fields': ('title', 'slug', 'short_description', 'description', 'image', 'duration', 'fee', 'is_active')
-		}),
-		('SEO Settings', {
-			'fields': ('seo',),
-			'classes': ('collapse',),
-			'description': 'Create or select an SEO entry for this training course'
 		}),
 	)
 
@@ -180,11 +166,6 @@ class AboutUsPageAdmin(admin.ModelAdmin):
 			),
 			'classes': ('collapse',)
 		}),
-		('SEO Settings', {
-			'fields': ('seo',),
-			'classes': ('collapse',),
-			'description': 'Create or select an SEO entry for the about page'
-		}),
 		('Settings', {
 			'fields': ('is_active',)
 		}),
@@ -265,3 +246,45 @@ class DefaultSeoSettingsAdmin(admin.ModelAdmin):
 		if models.DefaultSeoSettings.objects.exists():
 			return False
 		return True
+
+
+@admin.register(models.PageSEO)
+class PageSEOAdmin(admin.ModelAdmin):
+	list_display = ('page', 'meta_title', 'is_active', 'updated_at')
+	list_filter = ('is_active', 'page', 'schema_type')
+	search_fields = ('meta_title', 'meta_description', 'focus_keyword')
+	readonly_fields = ('created_at', 'updated_at')
+	
+	fieldsets = (
+		('Page Selection', {
+			'fields': ('page',),
+			'description': 'Select the page you want to configure SEO for.'
+		}),
+		('Basic SEO', {
+			'fields': ('meta_title', 'meta_description', 'meta_keywords', 'focus_keyword'),
+			'description': 'Essential SEO fields for search engines.'
+		}),
+		('Open Graph (Facebook, LinkedIn)', {
+			'fields': ('og_title', 'og_description', 'og_image'),
+			'classes': ('collapse',),
+			'description': 'Social media preview settings. Leave blank to use meta title/description.'
+		}),
+		('Twitter Card', {
+			'fields': ('twitter_card', 'twitter_title', 'twitter_description', 'twitter_image'),
+			'classes': ('collapse',),
+			'description': 'Twitter-specific preview settings.'
+		}),
+		('Advanced SEO', {
+			'fields': ('canonical_url', 'robots', 'schema_type'),
+			'classes': ('collapse',),
+		}),
+		('Status', {
+			'fields': ('is_active', 'created_at', 'updated_at'),
+		}),
+	)
+	
+	def has_delete_permission(self, request, obj=None):
+		"""Allow deletion to recreate if needed"""
+		return True
+
+

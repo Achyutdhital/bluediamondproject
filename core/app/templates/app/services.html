@@ -12,7 +12,7 @@
 <!-- Services Section -->
 <section class="secptb70">
     <div class="container">
-        <div class="page-heading" style="text-align: center; margin-bottom: 50px;">
+        <div class="page-heading" style="text-align: center;">
             <h2 style="color: #1e3c72; font-size: 36px; font-weight: 700; margin-bottom: 15px;">Professional Appliance Services</h2>
             <p style="color: #666; font-size: 18px; max-width: 600px; margin: 0 auto;">We provide expert repair and maintenance services for all types of appliances with certified technicians and genuine parts.</p>
         </div>
@@ -36,10 +36,10 @@
                     </div>
                     <div class="service-content">
                         <h3>{{ service.name }}</h3>
-                        <p>{{ service.content|truncatewords:20 }}</p>
-                        <div class="service-description">
-                            {{ service.description|safe|truncatewords:30 }}
-                        </div>
+                        <p>{{ service.short_description|truncatewords:20 }}</p>
+                        <!--<div class="service-description">-->
+                        <!--    {{ service.description|safe|truncatewords:30 }}-->
+                        <!--</div>-->
                         <a href="{% url 'enquiry' %}?service={{ service.slug }}" class="service-btn">
                             <i class="fas fa-phone"></i>
                             Get Quote
@@ -85,7 +85,7 @@
 </section>
 
 <!-- CTA Section -->
-<section style="background: linear-gradient(135deg, #1e3c72, #2a5298); padding: 80px 0; color: white;">
+<section style="background: #f5f5f5; padding-bottom: 40px; color: white;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-8">

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rich Text Styling Test</title>
+    <link rel="stylesheet" href="../../app/static/app/css/richtext.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1e3c72;
+            border-bottom: 3px solid #1e3c72;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Rich Text Styling Test - CKEditor Output</h1>
+        
+        <div class="rich-text-content">
+            <h2>This is a Heading 2</h2>
+            <p>This is a paragraph with <strong>bold text</strong>, <em>italic text</em>, and <u>underlined text</u>.</p>
+            
+            <h3>Ordered List (Numbers)</h3>
+            <ol>
+                <li>First item with proper font size</li>
+                <li>Second item - notice the number size is now larger and bold</li>
+                <li>Third item with nested list:
+                    <ol>
+                        <li>Nested item 1 (should show as a, b, c)</li>
+                        <li>Nested item 2</li>
+                        <li>Third level nesting:
+                            <ol>
+                                <li>Deep nested item (should show as i, ii, iii)</li>
+                                <li>Another deep item</li>
+                            </ol>
+                        </li>
+                    </ol>
+                </li>
+                <li>Fourth main item</li>
+                <li>Fifth main item with more text to show line height and spacing</li>
+            </ol>
+            
+            <h3>Unordered List (Bullets)</h3>
+            <ul>
+                <li>Bullet point 1 - The bullet should be larger and in brand color</li>
+                <li>Bullet point 2 - Notice the improved spacing</li>
+                <li>Bullet point 3 with nested bullets:
+                    <ul>
+                        <li>Nested bullet (circle style)</li>
+                        <li>Another nested bullet</li>
+                        <li>Third level:
+                            <ul>
+                                <li>Deep nested (square style)</li>
+                                <li>Another deep bullet</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>Bullet point 4</li>
+            </ul>
+            
+            <h3>Mixed Content</h3>
+            <p>Here's a paragraph followed by a list:</p>
+            <ol>
+                <li><strong>Important item:</strong> This shows bold text in a list item</li>
+                <li><em>Emphasized item:</em> This shows italic text in a list item</li>
+                <li>Regular item with <code>inline code</code></li>
+            </ol>
+            
+            <blockquote>
+                <p>This is a blockquote. It should have a blue left border and light background.</p>
+            </blockquote>
+            
+            <h3>Table Example</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Header 1</th>
+                        <th>Header 2</th>
+                        <th>Header 3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Row 1, Cell 1</td>
+                        <td>Row 1, Cell 2</td>
+                        <td>Row 1, Cell 3</td>
+                    </tr>
+                    <tr>
+                        <td>Row 2, Cell 1</td>
+                        <td>Row 2, Cell 2</td>
+                        <td>Row 2, Cell 3</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <hr>
+            
+            <h4>Key Improvements:</h4>
+            <ul>
+                <li><strong>List markers are now 17-18px</strong> (was too small before)</li>
+                <li><strong>Markers are bold and colored</strong> (brand color #1e3c72)</li>
+                <li><strong>Better spacing</strong> between list items (12px margin-bottom)</li>
+                <li><strong>Proper padding-left</strong> (40px) for better marker visibility</li>
+                <li><strong>Enhanced nested list styling</strong> with different marker types</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

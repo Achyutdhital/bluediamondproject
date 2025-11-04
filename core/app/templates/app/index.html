@@ -7,9 +7,61 @@
 
 {% block meta_keywords %}appliance repair Nepal, AC repair Kathmandu, refrigerator repair, washing machine service, geyser installation, appliance training courses, {{ company.company_name }}{% endblock %}
 
+
+
+
 {% block content %}
+<style>
+/* Slider height adjustments for mobile */
+.slider_area .slide {
+    height: 500px; /* Default height for desktop */
+}
+
+.slider_area .slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Mobile responsive - bigger height */
+@media (max-width: 767px) {
+    .slider_area .slide {
+        height: 450px !important; /* Increased from very small to 450px */
+    }
+    
+    .slider_area .carousel-captions {
+        width: 90% !important;
+    }
+    
+    .slider_area .carousel-captions .heading {
+        font-size: 24px !important;
+        line-height: 32px !important;
+        margin-top: 15px !important;
+    }
+    
+    .slider_area .carousel-captions .sliderpara {
+        font-size: 16px !important;
+        line-height: 24px !important;
+    }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+    .slider_area .slide {
+        height: 450px;
+    }
+}
+
+/* Large screens */
+@media (min-width: 992px) {
+    .slider_area .slide {
+        height: 600px;
+    }
+}
+</style>
 <!--================Slider Area =================-->
-<section class="slider_area" style="margin-top: 0; padding-top: 0;">
+<section class="slider_area">
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
@@ -69,68 +121,35 @@
 
 <!--================Popular Brands Section Start=================-->
 {% if brands %}
-<section class="secptb70 bgcolor">
-    <div class="container">
-        <div class="page-heading">
-            <h2>Popular Brands We Service</h2>
-            <p>We repair all major brands with genuine parts and expert care</p>
-        </div>
-        <div class="row">
-            {% for brand in brands %}
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <div class="brand-item">
-                    {% if brand.logo %}
-                    <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" class="img-responsive">
-                    {% else %}
-                    <span>{{ brand.name }}</span>
-                    {% endif %}
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
-<!--================Popular Brands Section End=================-->
+<section class="brand-carousel-section">
+  <div class="container">
+    <div class="row">
+      <div class="heading-text text-center">
+        <h2 class="text-center"><span>Popular Brands We Service</span></h2>
+        <p class="subheading-text">
+          We repair all major brands with genuine parts and expert care
+        </p>
+      </div>
 
-<!--================Featured Video Section Start=================-->
-{% if featured_video %}
-<section class="secptb70">
-    <div class="container">
-        <div class="page-heading text-center" style="margin-bottom:25px;">
-            <h2>Watch Our Work</h2>
-            <p>Short clip from our recent service/training session</p>
+      <div class="owl-carousel owl-theme brand-carousel">
+        {% for brand in brands %}
+        <div class="item">
+          {% if brand.logo %}
+          <a href="#">
+            <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" class="img-responsive">
+          </a>
+          {% else %}
+          <span>{{ brand.name }}</span>
+          {% endif %}
         </div>
-        <div class="row" style="align-items:center;">
-            <div class="col-md-6 col-sm-12">
-                <h3 style="margin-top:0;">{{ featured_video.title }}</h3>
-                {% if featured_video.description %}
-                <p>{{ featured_video.description|linebreaks }}</p>
-                {% endif %}
-            </div>
-            <div class="col-md-6 col-sm-12">
-                <style>
-                    .video-wrapper{position:relative;padding-top:56.25%;height:0;overflow:hidden;border-radius:12px;background:#000;box-shadow:0 10px 30px rgba(0,0,0,.12)}
-                    @media (min-width: 992px){ .video-wrapper{ padding-top:62%; } }
-                    .video-wrapper iframe,.video-wrapper video{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
-                </style>
-                {% if featured_video.video_file %}
-                    <div class="video-wrapper">
-                        <video controls preload="metadata">
-                            <source src="{{ featured_video.video_file.url }}" type="video/mp4">
-                        </video>
-                    </div>
-                {% elif featured_video.embed_url %}
-                    <div class="video-wrapper">
-                        <iframe src="{{ featured_video.embed_url|safe }}" title="{{ featured_video.title }}" allowfullscreen loading="lazy"></iframe>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
+        {% endfor %}
+      </div>
     </div>
+  </div>
 </section>
 {% endif %}
-<!--================Featured Video Section End=================-->
+
+<!--================Popular Brands Section End=================-->
 
 <!--================our-services-section-Start=================-->
 {% if services %}
@@ -149,8 +168,8 @@
                         {% endif %}
                     </a>
                     <div class="service_text">
-                        <a href="/services/{{ svc.slug }}/"><h4>{{ svc.name }}</h4></a>
-                        <p>{{ svc.short_description|truncatewords:40 }}</p>
+                        <a href="/services/{{ svc.slug }}/"><h4>{{ svc.name }}</h4>
+                        <p>{{ svc.short_description|truncatewords:40 }}</p></a>
                         <a href="/services/{{ svc.slug }}/" class="theme-btn btn-lg">Read More</a>
                     </div>
                 </div>
@@ -159,7 +178,9 @@
                 <div class="clearfix visible-md-block visible-lg-block"></div>
             {% endif %}
             {% endfor %}
+            
         </div>
+        
     </div>
 </section>
 {% endif %}
@@ -280,8 +301,8 @@
                     </a>
                     <div class="service_text">
                         <div>
-                            <a href="{% url 'training_course_detail' course.slug %}"><h4>{{ course.title }}</h4></a>
-                            <p>{{ course.short_description|default:course.description|striptags|truncatewords:20 }}</p>
+                            <a href="{% url 'training_course_detail' course.slug %}"><h4>{{ course.title }}</h4>
+                            <p>{{ course.short_description|default:course.description|striptags|truncatewords:20 }}</p></a>
                             <div class="course-details">
                                 {% if course.duration %}
                                 <div class="course-detail">
@@ -309,11 +330,51 @@
 <!--================training-courses-section-End=================-->
 
 
+<!--================Featured Video Section Start=================-->
+{% if featured_video %}
+<section class="secptb70">
+    <div class="container">
+        <div class="page-heading text-center" style="margin-bottom:25px;">
+            <h2>Watch Our Work</h2>
+            <p>Short clip from our recent service/training session</p>
+        </div>
+        <div class="row" style="align-items:center;">
+            <div class="col-md-6 col-sm-12">
+                <h3 style="margin-top:0;">{{ featured_video.title }}</h3>
+                {% if featured_video.description %}
+                <p>{{ featured_video.description|linebreaks }}</p>
+                {% endif %}
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <style>
+                    .video-wrapper{position:relative;padding-top:56.25%;height:0;overflow:hidden;border-radius:12px;background:#000;box-shadow:0 10px 30px rgba(0,0,0,.12)}
+                    @media (min-width: 992px){ .video-wrapper{ padding-top:62%; } }
+                    .video-wrapper iframe,.video-wrapper video{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+                </style>
+                {% if featured_video.video_file %}
+                    <div class="video-wrapper">
+                        <video controls preload="metadata">
+                            <source src="{{ featured_video.video_file.url }}" type="video/mp4">
+                        </video>
+                    </div>
+                {% elif featured_video.embed_url %}
+                    <div class="video-wrapper">
+                        <iframe src="{{ featured_video.embed_url|safe }}" title="{{ featured_video.title }}" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+<!--================Featured Video Section End=================-->
+
 
 <!--================Testimonials Section Start=================-->
-<!--================Testimonials Section Start=================-->
 {% if testimonials %}
-<section class="secptb70">
+<section class="secptb70" style="
+    background-color: #f5f5f5;
+">
     <div class="container">
         <div class="page-heading">
             <h2>Customer Reviews</h2>
@@ -755,7 +816,7 @@
 <!--================Latest Blog Section Start=================-->
 {% if latest_blogs %}
 <section class="secptb70" style="
-    padding: 50px 0px 60px 0px;
+    padding: 50px 0px 30px 0px;
     display: inline-block;
     width:100%;">
     <div class="container">

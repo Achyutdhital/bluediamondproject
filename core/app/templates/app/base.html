@@ -43,15 +43,15 @@
         
         <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <script>
-$(document).ready(function() {
-    $('.mobile_menu').simpleMobileMenu({
-        onMenuLoad: function(menu) {
-            console.log('Mobile menu loaded');
-        }
-    });
-});
-</script>
+        <link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+        
     </head>
     
     <body>
@@ -131,7 +131,7 @@ $(document).ready(function() {
                                     <a href="/gallery/">Gallery</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'training_courses' %}">Training</a>
+                                    <a href="{% url 'training_courses' %}">Trainings</a>
                                 </li>
                                 <li>
                                     <a href="{% url 'blog_list' %}">Blog</a>
@@ -163,7 +163,18 @@ $(document).ready(function() {
         <ul class="mobile_menu">
             <li><a href="{% url 'home' %}">Home</a></li>
             <li><a href="{% url 'about' %}">About Us</a></li>
-            <li><a href="{% url 'services' %}">Our Services</a></li>
+            <li class="hasChild">
+                <a href="{% url 'services' %}">Our Services</a>
+                <ul class="submenu">
+                    <!-- Provide a direct link to the Services landing page inside submenu -->
+                    <li class="all-services"><a href="{% url 'services' %}">All Services</a></li>
+                    {% if nav_services %}
+                        {% for service in nav_services %}
+                        <li><a href="/services/{{ service.slug }}/">{{ service.name }}</a></li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </li>
             <li><a href="{% url 'gallery' %}">Gallery</a></li>
             <li><a href="{% url 'training_courses' %}">Training</a></li>
             <li><a href="{% url 'blog_list' %}">Blog</a></li>
@@ -319,6 +330,7 @@ $(document).ready(function() {
 <script src="{%static 'app/js/theme.js' %}"></script>
 <script src="{%static 'app/js/mobilemenu.js' %}"></script> 
 <script src="{%static 'app/dist/jquery-simple-mobilemenu.js' %}"></script>
+
 <script>
     $(document).ready(function(){
         // Testimonial Carousel (mobile-safe with autoHeight and responsive margins)

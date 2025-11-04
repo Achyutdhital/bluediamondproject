@@ -45,13 +45,17 @@
 							{% for rp in recent_posts %}
 							<li>
 								<a href="{% url 'blog_detail' rp.slug %}">
-									{% if rp.cover_image %}
-										<img src="{{ rp.cover_image.url }}" alt="{{ rp.title }}">
-									{% else %}
-										<img src="{% static 'app/bluediamondservicecenter/home/image3.jpg' %}" alt="{{ rp.title }}">
-									{% endif %}
-									<span class="title">{{ rp.title|truncatechars:60 }}</span>
-									<span class="date">{{ rp.published_at|date:'M d, Y' }}</span>
+									<div class="recent-post-image">
+										{% if rp.cover_image %}
+											<img src="{{ rp.cover_image.url }}" alt="{{ rp.title }}">
+										{% else %}
+											<img src="{% static 'app/bluediamondservicecenter/home/image3.jpg' %}" alt="{{ rp.title }}">
+										{% endif %}
+									</div>
+									<div class="recent-post-content">
+										<span class="title">{{ rp.title|truncatechars:60 }}</span>
+										<span class="date">{{ rp.published_at|date:'M d, Y' }}</span>
+									</div>
 								</a>
 							</li>
 							{% endfor %}
@@ -71,69 +75,25 @@
 .post-cover { margin: 20px 0 25px; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
 .post-cover img { width: 100%; height: auto; display: block; }
 .post-content { color: #374151; line-height: 1.8; font-size: 1.05rem; }
-/* Rich text content styling - Complete CKEditor support */
-.post-content p { margin-bottom: 18px; line-height: 1.7; }
-.post-content h1,
-.post-content h2, 
-.post-content h3,
-.post-content h4,
-.post-content h5,
-.post-content h6 { color: #1e293b; margin: 30px 0 15px; font-weight: 700; line-height: 1.3; }
-.post-content h1 { font-size: 2.2em; }
-.post-content h2 { font-size: 1.8em; }
-.post-content h3 { font-size: 1.5em; }
-.post-content h4 { font-size: 1.3em; }
-.post-content h5 { font-size: 1.1em; }
-.post-content h6 { font-size: 1em; }
-.post-content ul,
-.post-content ol { margin: 15px 0; padding-left: 30px; }
-.post-content ul { list-style-type: disc; }
-.post-content ol { list-style-type: decimal; }
-.post-content li { margin-bottom: 8px; line-height: 1.7; }
-.post-content ul ul,
-.post-content ol ul { list-style-type: circle; margin-top: 8px; }
-.post-content ul ul ul,
-.post-content ol ul ul { list-style-type: square; }
-.post-content strong,
-.post-content b { font-weight: 700; }
-.post-content em,
-.post-content i { font-style: italic; }
-.post-content u { text-decoration: underline; }
-.post-content s,
-.post-content strike,
-.post-content del { text-decoration: line-through; }
-.post-content mark { background-color: #ffeb3b; padding: 2px 4px; }
-.post-content code { background-color: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; font-size: 0.9em; }
-.post-content pre { background-color: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto; margin: 15px 0; }
-.post-content pre code { background: none; padding: 0; }
-.post-content a { color: #1e3c72; text-decoration: underline; }
-.post-content a:hover { color: #2a5298; }
-.post-content blockquote { border-left: 4px solid #1e3c72; padding: 15px 20px; margin: 20px 0; color: #666; font-style: italic; background-color: #f8f9fa; border-radius: 4px; }
-.post-content table { width: 100%; border-collapse: collapse; margin: 20px 0; background-color: #fff; }
-.post-content table th,
-.post-content table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-.post-content table th { background-color: #1e3c72; color: white; font-weight: 700; }
-.post-content table tr:nth-child(even) { background-color: #f8f9fa; }
-.post-content table tr:hover { background-color: #f0f0f0; }
-.post-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 15px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-.post-content figure { margin: 20px 0; }
-.post-content figcaption { text-align: center; font-style: italic; color: #666; margin-top: 8px; font-size: 0.9em; }
-.post-content hr { border: none; border-top: 2px solid #e5e7eb; margin: 30px 0; }
-.post-content sub { vertical-align: sub; font-size: 0.8em; }
-.post-content sup { vertical-align: super; font-size: 0.8em; }
 .post-footer { margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 20px; }
 .post-nav { display: flex; justify-content: space-between; }
 .post-nav a { color: #1e3c72; text-decoration: none; font-weight: 600; }
 .post-nav a:hover { color: #2a5298; }
 
 .sidebar .sidebar-widget { background: #fff; border-radius: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-.widget-title { font-size: 1.2rem; font-weight: 700; color: #1e293b; margin: 0 0 15px; }
+.widget-title { font-weight: 700; color: #1e293b; margin: 0 0 20px; }
 .recent-posts { list-style: none; padding: 0; margin: 0; }
-.recent-posts li { display: flex; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
-.recent-posts li:last-child { border-bottom: none; }
-.recent-posts img { width: 60px; height: 45px; object-fit: cover; border-radius: 8px; }
-.recent-posts .title { display: block; color: #1e293b; font-weight: 600; }
-.recent-posts .date { display: block; color: #64748b; font-size: 0.85rem; }
+.recent-posts li { padding: 15px 0; border-bottom: 1px solid #f1f5f9; }
+.recent-posts li:first-child { padding-top: 0; }
+.recent-posts li:last-child { border-bottom: none; padding-bottom: 0; }
+.recent-posts a { display: flex; align-items: flex-start; gap: 15px; text-decoration: none; transition: all 0.3s ease; }
+.recent-posts a:hover { transform: translateX(5px); }
+.recent-post-image { flex-shrink: 0; width: 80px; height: 60px; overflow: hidden; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.recent-post-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+.recent-posts a:hover .recent-post-image img { transform: scale(1.1); }
+.recent-post-content { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.recent-posts .title { display: block; color: #1e293b; font-weight: 600; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; }
+.recent-posts .date { display: block; color: #64748b;  }
 
 @media (max-width: 768px) {
 	.blog-detail { padding: 20px; }

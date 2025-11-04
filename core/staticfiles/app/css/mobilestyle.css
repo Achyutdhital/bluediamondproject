@@ -342,6 +342,10 @@ header .logo-port img {
     #sm_menu_ham {
         top: 30px !important;
     }
+    /* Use Simple Mobile Menu on mobile: hide Bootstrap toggle and collapsed nav */
+    .header_menu .navbar-header .navbar-toggle { display: none !important; }
+    .header_menu .navbar.navbar-default .navbar-collapse { display: none !important; }
+    .header_menu .navbar.navbar-default .nav.navbar-nav { display: none !important; }
 }
 @media (max-width:480px){
     header {

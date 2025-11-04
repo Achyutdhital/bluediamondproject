@@ -6,19 +6,19 @@
 })();
 
 
-    $(document).ready(function () {
-      $('.client-logo').owlCarousel({
-        loop: true,
-        margin: 0,
-        dots: false,
-        nav: false,
-        autoplay: true,
-        autoplayTimeout: 1500,
-        autoplayHoverPause: false,
-        responsive: {
-          0: { items: 3 },
-          600: { items: 4 },
-          1000: { items: 6 }
-        }
-      });
-    });
+$(document).ready(function () {
+  $('.brand-carousel').owlCarousel({
+    loop: true,
+    margin: 30,
+    dots: false,
+    nav: false,
+    autoplay: true,
+    autoplayTimeout: 1500,
+    autoplayHoverPause: false,
+    responsive: {
+      0: { items: 3 },
+      600: { items: 4 },
+      1000: { items: 6 }
+    }
+  });
+});

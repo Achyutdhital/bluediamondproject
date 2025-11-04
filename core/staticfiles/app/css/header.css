@@ -116,6 +116,20 @@
 .color_menu + section, .color_menu + div, .color_menu + .row {
     margin-top: 135px;
 }
+/* When there's an extra mobile header element between main header and first section */
+.main_header_area.color_menu + header + section,
+.main_header_area.color_menu + header + div,
+.main_header_area.color_menu + header + .row {
+    margin-top: 135px;
+}
+@media (max-width: 767px) {
+    .main_header_area.color_menu + header + section,
+    .main_header_area.color_menu + header + div,
+    .main_header_area.color_menu + header + .row {
+        /* slightly larger to account for stacked mobile bars/logo */
+        margin-top: 150px;
+    }
+}
 .header_top .header_top_inner {
 
     clear: both;
@@ -400,7 +414,6 @@ ul.menu-col > li:hover {
     .header_menu .navbar.navbar-default .nav.navbar-nav li.submenu ul {
         position: absolute;
         top: 100%;
-        left: -40px;
         min-width: 213px;
         background: #004f85;
         text-align: left;

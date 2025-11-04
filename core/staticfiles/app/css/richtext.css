@@ -10,7 +10,8 @@
 .content-body,
 .about-content,
 .privacy-content,
-.terms-content {
+.terms-content,
+.legal-content {
     overflow-wrap: break-word;
     word-wrap: break-word;
     font-size: 16px;
@@ -25,7 +26,8 @@
 .content-body p,
 .about-content p,
 .privacy-content p,
-.terms-content p {
+.terms-content p,
+.legal-content p {
     margin-bottom: 18px;
     line-height: 1.8;
     font-size: 16px;
@@ -120,7 +122,9 @@
 .privacy-content ul,
 .privacy-content ol,
 .terms-content ul,
-.terms-content ol {
+.terms-content ol,
+.legal-content ul,
+.legal-content ol {
     margin: 18px 0;
     padding-left: 40px !important; /* More space for markers */
     list-style-position: outside;
@@ -133,7 +137,8 @@
 .content-body ul,
 .about-content ul,
 .privacy-content ul,
-.terms-content ul {
+.terms-content ul,
+.legal-content ul {
     list-style-type: disc;
 }
 
@@ -144,7 +149,8 @@
 .content-body ol,
 .about-content ol,
 .privacy-content ol,
-.terms-content ol {
+.terms-content ol,
+.legal-content ol {
     list-style-type: decimal;
 }
 
@@ -155,7 +161,8 @@
 .content-body li,
 .about-content li,
 .privacy-content li,
-.terms-content li {
+.terms-content li,
+.legal-content li {
     margin-bottom: 12px;
     line-height: 1.8;
     font-size: 16px !important; /* Ensures list text is readable */
@@ -170,7 +177,8 @@
 .content-body li::marker,
 .about-content li::marker,
 .privacy-content li::marker,
-.terms-content li::marker {
+.terms-content li::marker,
+.legal-content li::marker {
     font-size: 18px !important; /* Make markers larger */
     font-weight: 600; /* Make markers bolder */
     color: #1e3c72; /* Brand color for markers */
@@ -183,7 +191,8 @@
 .content-body ol li::marker,
 .about-content ol li::marker,
 .privacy-content ol li::marker,
-.terms-content ol li::marker {
+.terms-content ol li::marker,
+.legal-content ol li::marker {
     font-size: 17px !important;
     font-weight: 700;
 }

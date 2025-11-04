@@ -414,7 +414,6 @@ ul.menu-col > li:hover {
     .header_menu .navbar.navbar-default .nav.navbar-nav li.submenu ul {
         position: absolute;
         top: 100%;
-        left: -13px;
         min-width: 213px;
         background: #004f85;
         text-align: left;

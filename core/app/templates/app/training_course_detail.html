@@ -46,8 +46,9 @@
       
       <!-- Sidebar -->
       <div class="col-lg-4 col-md-12">
-        <aside class="course-sidebar">
-          <div class="sidebar-widget">
+        <div style="position: relative;">
+          <aside class="course-sidebar sticky-sidebar">
+            <div class="sidebar-widget">
             <h3 class="widget-title">Course Details</h3>
             <div class="course-info">
               {% if course.duration %}
@@ -98,6 +99,7 @@
           </div>
           {% endif %}
         </aside>
+        </div>
       </div>
     </div>
   </div>
@@ -109,7 +111,7 @@
 /* Course Section */
 .course-section {
   padding: 80px 0;
-  background: #f8fafc;
+  background: #fff;
 }
 
 .course-content {
@@ -327,5 +329,141 @@
   }
 }
 </style>
+
+<script>
+// Sticky sidebar - intelligent behavior based on sidebar height
+$(document).ready(function(){
+    var $sidebar = $('.sticky-sidebar');
+    var $sidebarWrapper = $sidebar.parent();
+    var $contentColumn = $('.course-content').closest('.col-lg-8, .col-md-7');
+    var lastScrollTop = 0;
+    var isSticky = false;
+    var stickyTop = 0;
+    
+    if ($sidebar.length && $contentColumn.length) {
+        function updateSidebar() {
+            // Only apply sticky behavior on desktop (width > 991px)
+            if ($(window).width() <= 991) {
+                // Reset to static on mobile/tablet
+                $sidebar.css({
+                    'position': 'static',
+                    'width': 'auto',
+                    'top': 'auto',
+                    'bottom': 'auto'
+                });
+                return;
+            }
+            
+            var scrollTop = $(window).scrollTop();
+            var windowHeight = $(window).height();
+            var sidebarHeight = $sidebar.outerHeight();
+            var sidebarTop = $sidebarWrapper.offset().top;
+            var sidebarBottom = sidebarTop + sidebarHeight;
+            var contentBottom = $contentColumn.offset().top + $contentColumn.outerHeight();
+            var scrollDirection = scrollTop > lastScrollTop ? 'down' : 'up';
+            
+            var stopPoint = contentBottom - sidebarHeight - 20;
+            var headerOffset = 100; // Offset for fixed header
+            
+            // Check if sidebar is shorter than viewport
+            var isSidebarShort = sidebarHeight < windowHeight;
+            
+            if (isSidebarShort) {
+                // SHORT SIDEBAR: Always stick to top
+                var startPoint = sidebarTop - headerOffset;
+                
+                if (scrollTop >= startPoint && scrollTop < stopPoint) {
+                    // Fixed to viewport top
+                    $sidebar.css({
+                        'position': 'fixed',
+                        'top': headerOffset + 'px',
+                        'bottom': 'auto',
+                        'width': $sidebarWrapper.width() + 'px'
+                    });
+                } else if (scrollTop >= stopPoint) {
+                    // Absolute at bottom of content
+                    var absoluteTop = contentBottom - sidebarTop - sidebarHeight - 20;
+                    $sidebar.css({
+                        'position': 'absolute',
+                        'top': absoluteTop + 'px',
+                        'bottom': 'auto',
+                        'width': $sidebarWrapper.width() + 'px'
+                    });
+                } else {
+                    // Static at initial position
+                    $sidebar.css({
+                        'position': 'static',
+                        'width': 'auto',
+                        'top': 'auto',
+                        'bottom': 'auto'
+                    });
+                }
+            } else {
+                // TALL SIDEBAR: Stick to bottom when scrolling down
+                var startPoint = sidebarBottom - windowHeight;
+                
+                // If scrolling up and we're above the start point, reset to static
+                if (scrollDirection === 'up' && scrollTop < startPoint) {
+                    isSticky = false;
+                    $sidebar.css({
+                        'position': 'static',
+                        'width': 'auto',
+                        'top': 'auto',
+                        'bottom': 'auto'
+                    });
+                }
+                // If at or past stop point, lock at bottom of content
+                else if (scrollTop >= stopPoint) {
+                    isSticky = false;
+                    var absoluteTop = contentBottom - sidebarTop - sidebarHeight - 20;
+                    $sidebar.css({
+                        'position': 'absolute',
+                        'top': absoluteTop + 'px',
+                        'bottom': 'auto',
+                        'width': $sidebarWrapper.width() + 'px'
+                    });
+                }
+                // In sticky zone
+                else if (scrollTop >= startPoint) {
+                    if (scrollDirection === 'down') {
+                        // Fixed to viewport bottom when scrolling down
+                        isSticky = true;
+                        stickyTop = scrollTop;
+                        $sidebar.css({
+                            'position': 'fixed',
+                            'bottom': '0px',
+                            'top': 'auto',
+                            'width': $sidebarWrapper.width() + 'px'
+                        });
+                    } else if (scrollDirection === 'up' && isSticky) {
+                        // Keep sticky while scrolling up in sticky zone
+                        $sidebar.css({
+                            'position': 'fixed',
+                            'bottom': '0px',
+                            'top': 'auto',
+                            'width': $sidebarWrapper.width() + 'px'
+                        });
+                    }
+                }
+                // Below start point (initial area)
+                else {
+                    isSticky = false;
+                    $sidebar.css({
+                        'position': 'static',
+                        'width': 'auto',
+                        'top': 'auto',
+                        'bottom': 'auto'
+                    });
+                }
+            }
+            
+            lastScrollTop = scrollTop;
+        }
+        
+        $(window).on('scroll resize', updateSidebar);
+        updateSidebar(); // Initial call
+    }
+});
+</script>
 
 {% endblock %}

@@ -921,11 +921,13 @@
                 color: #1e3c72;
                 margin-bottom: 10px;
                 overflow: hidden;
-                text-overflow: ellipsis;
                 display: -webkit-box;
-                -webkit-line-clamp: 2;
+                -webkit-line-clamp: 3;
                 -webkit-box-orient: vertical;
-                height: 50px;
+                min-height: 70px;
+                line-height: 24px;
+                word-break: break-word;
+                hyphens: auto;
             }
             .blog-card p {
                 color: #444;

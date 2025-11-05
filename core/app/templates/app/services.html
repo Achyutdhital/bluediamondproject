@@ -1,63 +1,56 @@
 {% extends "app/base.html" %}
 {% load static %}
 
-{% block title %}Our Services - {{ company.company_name|default:'Blue Diamond Service Center' }}{% endblock %}
-
-{% block meta_description %}Professional appliance repair services by {{ company.company_name|default:'Blue Diamond Service Center' }}. Expert technicians for all your appliance needs.{% endblock %}
-
+{% block title %}Our Services | {{ company.company_name|default:'Blue Diamond Service Center' }}{% endblock %}
 {% block content %}
 
 {% include 'app/components/page_header.html' with title='Our Services' %}
 
-<!-- Services Section -->
-<section class="secptb70">
+<!-- Services Grid copied from Blog layout for consistent header spacing -->
+<section class="blog-section">
     <div class="container">
-        <div class="page-heading" style="text-align: center;">
-            <h2 style="color: #1e3c72; font-size: 36px; font-weight: 700; margin-bottom: 15px;">Professional Appliance Services</h2>
-            <p style="color: #666; font-size: 18px; max-width: 600px; margin: 0 auto;">We provide expert repair and maintenance services for all types of appliances with certified technicians and genuine parts.</p>
-        </div>
-        
-        {% if services %}
-        <div class="row">
+        <div class="blog-grid">
             {% for service in services %}
-            <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom: 30px;">
-                <div class="service-card">
-                    <div class="service-image">
-                        {% if service.feature_image %}
-                        <img src="{{ service.feature_image.url }}" alt="{{ service.name }}" loading="lazy">
-                        {% else %}
-                        <div class="no-image">
-                            <i class="fas fa-tools"></i>
-                        </div>
-                        {% endif %}
-                        <div class="service-overlay">
-                            <a href="/services/{{ service.slug }}/" class="view-btn">View Details</a>
-                        </div>
+            <article class="blog-card">
+                <div class="card-image">
+                    {% if service.feature_image %}
+                    <img src="{{ service.feature_image.url }}" alt="{{ service.name }}">
+                    {% else %}
+                    <img src="{% static 'app/bluediamondservicecenter/home/image3.jpg' %}" alt="{{ service.name }}">
+                    {% endif %}
+                    <div class="card-overlay">
+                        <a href="/services/{{ service.slug }}/" class="read-btn">View Details</a>
                     </div>
-                    <div class="service-content">
-                        <h3>{{ service.name }}</h3>
-                        <p>{{ service.short_description|truncatewords:20 }}</p>
-                        <!--<div class="service-description">-->
-                        <!--    {{ service.description|safe|truncatewords:30 }}-->
-                        <!--</div>-->
-                        <a href="{% url 'enquiry' %}?service={{ service.slug }}" class="service-btn">
-                            <i class="fas fa-phone"></i>
-                            Get Quote
-                        </a>
-                    </div>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">
+                        <a href="/services/{{ service.slug }}/">{{ service.name }}</a>
+                    </h3>
+                    <p class="card-excerpt">{{ service.short_description|default:service.description|striptags|truncatewords:25 }}</p>
+                    <a href="{% url 'enquiry' %}?service={{ service.slug }}" class="cta-btn">
+                        <i class="fa fa-phone"></i>
+                        Get Quote
+                    </a>
+                </div>
+            </article>
+            {% empty %}
+            <div class="no-posts">
+                <div class="no-posts-content">
+                    <h3>No Services Yet</h3>
+                    <p>We're adding services soon. Please check back!</p>
                 </div>
             </div>
             {% endfor %}
         </div>
-        
-        {# Pagination #}
+
+        <!-- Pagination -->
         {% if page_obj and page_obj.paginator.num_pages > 1 %}
         <div class="pagination-wrapper">
             <nav class="pagination">
                 {% if page_obj.has_previous %}
                     <a href="?page={{ page_obj.previous_page_number }}" class="page-btn prev">← Previous</a>
                 {% endif %}
-
+        
                 <div class="page-numbers">
                     {% for i in page_numbers %}
                         {% if page_obj.number == i %}
@@ -67,25 +60,19 @@
                         {% endif %}
                     {% endfor %}
                 </div>
-
+        
                 {% if page_obj.has_next %}
                     <a href="?page={{ page_obj.next_page_number }}" class="page-btn next">Next →</a>
                 {% endif %}
             </nav>
         </div>
         {% endif %}
-        {% else %}
-        <div class="no-services" style="text-align: center; padding: 60px 20px;">
-            <i class="fas fa-tools" style="font-size: 64px; color: #ddd; margin-bottom: 20px;"></i>
-            <h3 style="color: #666; margin-bottom: 10px;">No Services Available</h3>
-            <p style="color: #999;">Please check back later for our service offerings.</p>
-        </div>
-        {% endif %}
     </div>
+  
 </section>
 
-<!-- CTA Section -->
-<section style="background: #f5f5f5; padding-bottom: 40px; color: white;">
+<!-- CTA Section (Inline styles, as requested) -->
+<section style="background: #f5f5f5; padding: 40px; color: white;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-8">
@@ -93,7 +80,7 @@
                 <p style="font-size: 18px; margin: 0; opacity: 0.9;">Contact our certified technicians today for fast, reliable service with genuine parts and warranty.</p>
             </div>
             <div class="col-md-4" style="text-align: center;">
-                <a href="{% url 'contact' %}" style="background: white; color: #1e3c72; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 700; display: inline-block; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(255,255,255,0.3);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 20px rgba(255,255,255,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(255,255,255,0.3)'">
+                <a href="/contact/" style="background: white; color: #1e3c72; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 700; display: inline-block; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(255,255,255,0.3);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 20px rgba(255,255,255,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(255,255,255,0.3)';">
                     <i class="fas fa-phone" style="margin-right: 8px;"></i>
                     Contact Us Now
                 </a>
@@ -103,63 +90,58 @@
 </section>
 
 <style>
-/* Services Grid - Using Bootstrap Grid */
-.row {
-    margin-top: 40px;
+/* Use identical layout styles as blog list for consistent header behavior */
+.blog-section {
+    padding: 50px 0;
 }
 
-.service-card {
-    background: white;
-    border-radius: 15px;
+.blog-grid {
+    display: grid;
+    /* Exactly three cards per row on desktop */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+/* Cards */
+.blog-card {
+    background: #ffffff;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     transition: all 0.3s ease;
-    border: 1px solid #f0f0f0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+    position: relative;
 }
 
-.service-card:hover {
+.blog-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 15px 40px rgba(30,60,114,0.15);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
 }
 
-.service-image {
+.card-image {
     position: relative;
     height: 250px;
     overflow: hidden;
 }
 
-.service-image img {
+.card-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
 }
 
-.service-card:hover .service-image img {
-    transform: scale(1.1);
+.blog-card:hover .card-image img {
+    transform: scale(1.05);
 }
 
-.no-image {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 48px;
-}
-
-.service-overlay {
+.card-overlay {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(30,60,114,0.8);
+    background: linear-gradient(135deg, rgba(30,60,114,0.8), rgba(42,82,152,0.8));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -167,127 +149,110 @@
     transition: opacity 0.3s ease;
 }
 
-.service-card:hover .service-overlay {
+.blog-card:hover .card-overlay {
     opacity: 1;
 }
 
-.view-btn {
-    background: white;
+.read-btn {
+    background: #ffffff;
     color: #1e3c72;
-    padding: 12px 25px;
-    border-radius: 25px;
+    padding: 12px 24px;
+    border-radius: 50px;
     text-decoration: none;
     font-weight: 600;
-    transition: all 0.3s ease;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
 }
 
-.view-btn:hover {
-    background: #f8f9fa;
-    transform: scale(1.05);
+.blog-card:hover .read-btn {
+    transform: translateY(0);
 }
 
-.service-content {
-    padding: 25px;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
+.card-content {
+    padding: 30px;
 }
 
-.service-content h3 {
-    color: #1e3c72;
-    font-size: 24px;
+.card-title {
+    margin: 0 0 15px;
     font-weight: 700;
-    margin-bottom: 15px;
+    line-height: 1.3;
 }
 
-.service-content p {
-    color: #666;
-    font-size: 16px;
+.card-title a {
+    color: #1e293b;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.card-title a:hover {
+    color: #1e3c72;
+}
+
+.card-excerpt {
+    color: #64748b;
     line-height: 1.6;
-    margin-bottom: 15px;
+    margin: 0 0 20px;
 }
 
-.service-description {
-    color: #777;
-    font-size: 14px;
-    line-height: 1.5;
-    margin-bottom: 20px;
-    border-left: 3px solid #1e3c72;
-    padding-left: 15px;
-}
-
-.service-btn {
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
-    color: white;
-    padding: 12px 25px;
-    border-radius: 25px;
+.read-more {
+    color: #1e3c72;
     text-decoration: none;
     font-weight: 600;
-    display: inline-block;
-    transition: all 0.3s ease;
-    box-shadow: 0 3px 10px rgba(30,60,114,0.3);
-    margin-top: auto;
-    text-align: center;
+    transition: color 0.3s ease;
 }
 
-.service-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(30,60,114,0.4);
-    color: white;
+.read-more:hover {
+    color: #2a5298;
+}
+
+/* Primary CTA button */
+.cta-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: #ffffff !important;
     text-decoration: none;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(30,60,114,0.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
-.service-btn i {
-    margin-right: 8px;
+.cta-btn i {
+    font-size: 16px;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .row {
-        margin-top: 20px;
-    }
-    
-    .service-image {
-        height: 200px;
-    }
-    
-    .service-content {
-        padding: 20px;
-    }
-    
-    .service-content h3 {
-        font-size: 20px;
-    }
-    
-    .page-heading h2 {
-        font-size: 28px;
-    }
-    
-    .page-heading p {
-        font-size: 16px;
-    }
+.cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(30,60,114,0.35);
+    opacity: 0.95;
 }
 
-@media (max-width: 480px) {
-    .services-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-    
-    .service-content {
-        padding: 15px;
-    }
-    
-    .service-content h3 {
-        font-size: 18px;
-    }
+/* Empty state */
+.no-posts {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.no-posts-content h3 {
+    color: #1e293b;
+    margin: 0 0 15px;
+}
+
+.no-posts-content p {
+    color: #64748b;
 }
 
 /* Pagination */
 .pagination-wrapper {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 .pagination {
@@ -295,9 +260,9 @@
     align-items: center;
     gap: 10px;
     background: #ffffff;
-    padding: 12px 20px;
+    padding: 15px 25px;
     border-radius: 50px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
 }
 
 .page-numbers {
@@ -306,7 +271,7 @@
 }
 
 .page-btn {
-    padding: 8px 14px;
+    padding: 10px 15px;
     border-radius: 10px;
     text-decoration: none;
     color: #64748b;
@@ -330,6 +295,25 @@
 .page-btn.next {
     font-weight: 600;
     color: #1e3c72;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .blog-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    .blog-section { padding: 60px 0; }
+}
+
+/* 2 columns on tablets */
+@media (max-width: 992px) and (min-width: 769px) {
+    .blog-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* 1 column on small phones */
+@media (max-width: 576px) {
+    .blog-grid { grid-template-columns: 1fr; }
 }
 </style>
 

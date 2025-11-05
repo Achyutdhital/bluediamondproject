@@ -48,26 +48,28 @@ class BlogPostAdmin(admin.ModelAdmin):
 
 @admin.register(models.Services)
 class ServicesAdmin(admin.ModelAdmin):
-	list_display = ("name", "is_active")
+	list_display = ("name", "sort_order", "is_active")
+	list_editable = ("sort_order", "is_active")
 	list_filter = ("is_active",)
 	search_fields = ("name", "short_description")
 	readonly_fields = ('slug',)
 	fieldsets = (
 		('Service Information', {
-			'fields': ('name', 'slug', 'short_description', 'description', 'feature_image', 'is_active')
+			'fields': ('name', 'slug', 'short_description', 'description', 'feature_image', 'sort_order', 'is_active')
 		}),
 	)
 
 
 @admin.register(models.TrainingCourse)
 class TrainingCourseAdmin(admin.ModelAdmin):
-	list_display = ("title", "duration", "fee", "is_active")
+	list_display = ("title", "sort_order", "duration", "fee", "is_active")
+	list_editable = ("sort_order", "is_active")
 	list_filter = ("is_active",)
 	search_fields = ("title", "description")
 	readonly_fields = ('slug',)
 	fieldsets = (
 		('Course Information', {
-			'fields': ('title', 'slug', 'short_description', 'description', 'image', 'duration', 'fee', 'is_active')
+			'fields': ('title', 'slug', 'short_description', 'description', 'image', 'duration', 'fee', 'sort_order', 'is_active')
 		}),
 	)
 
@@ -132,12 +134,6 @@ class CompanyDetailsAdmin(admin.ModelAdmin):
 @admin.register(models.Carousel)
 class CarouselAdmin(admin.ModelAdmin):
 	list_display = ("title", "is_active")
-	list_filter = ("is_active",)
-
-
-@admin.register(models.Banner)
-class BannerAdmin(admin.ModelAdmin):
-	list_display = ("title", "page_path", "is_active")
 	list_filter = ("is_active",)
 
 

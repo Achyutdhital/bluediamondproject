@@ -21,6 +21,7 @@ class ServiceForm(forms.ModelForm):
             'short_description': Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Short description'}),
             'description': CKEditorWidget(),
             'feature_image': ClearableFileInput(attrs={'class': 'form-control'}),
+            'sort_order': TextInput(attrs={'class': 'form-control', 'placeholder': '0'}),
             'is_active': CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
@@ -36,6 +37,7 @@ class TrainingCourseForm(forms.ModelForm):
             'image': ClearableFileInput(attrs={'class': 'form-control'}),
             'duration': TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., 3 months'}),
             'fee': TextInput(attrs={'class': 'form-control', 'placeholder': 'Course fee'}),
+            'sort_order': TextInput(attrs={'class': 'form-control', 'placeholder': '0'}),
             'is_active': CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
@@ -73,12 +75,6 @@ class FeatureForm(forms.ModelForm):
 class CarouselForm(forms.ModelForm):
     class Meta:
         model = Carousel
-        fields = '__all__'
-
-
-class BannerForm(forms.ModelForm):
-    class Meta:
-        model = Banner
         fields = '__all__'
 
 

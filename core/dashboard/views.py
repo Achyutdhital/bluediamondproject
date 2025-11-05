@@ -19,7 +19,7 @@ from app.models import (
 	GalleryImage,
 	Feature,
 	Carousel,
-	Banner,
+
 	CompanyDetails,
 	homesection,
 	AboutUsPage,
@@ -43,7 +43,7 @@ from .forms import (
 	GalleryForm,
 	FeatureForm,
 	CarouselForm,
-	BannerForm,
+
 	CompanyDetailsForm,
 	HomeSectionForm,
 	AboutUsPageForm,
@@ -470,39 +470,6 @@ class CarouselDeleteView(LoginRequiredMixin, View):
 		instance.delete()
 		messages.success(request, 'Carousel deleted successfully.')
 		return redirect('dashboard:carousels_list')
-
-
-class BannerListView(LoginRequiredMixin, ListView):
-	model = Banner
-	template_name = 'dashboard/banner_list.html'
-	context_object_name = 'banners'
-
-
-class BannerAddEditView(LoginRequiredMixin, View):
-	template_name = 'dashboard/banner_add_edit.html'
-
-	def get(self, request, pk=None):
-		instance = get_object_or_404(Banner, pk=pk) if pk else None
-		form = BannerForm(instance=instance)
-		return render(request, self.template_name, {'form': form, 'instance': instance})
-
-	def post(self, request, pk=None):
-		instance = get_object_or_404(Banner, pk=pk) if pk else None
-		form = BannerForm(request.POST, request.FILES, instance=instance)
-		if form.is_valid():
-			form.save()
-			messages.success(request, 'Banner saved successfully.' if not instance else 'Banner updated successfully.')
-			return redirect('dashboard:banners_list')
-		messages.warning(request, 'Please correct the errors below.')
-		return render(request, self.template_name, {'form': form, 'instance': instance})
-
-
-class BannerDeleteView(LoginRequiredMixin, View):
-	def post(self, request, pk):
-		instance = get_object_or_404(Banner, pk=pk)
-		instance.delete()
-		messages.success(request, 'Banner deleted successfully.')
-		return redirect('dashboard:banners_list')
 
 
 # Singleton-like editors

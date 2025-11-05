@@ -270,6 +270,7 @@ class Services(models.Model):
     short_description = models.TextField('short_description', max_length=900)
     description = RichTextField('description')
     feature_image = models.ImageField(upload_to='Services/')  # Feature Image
+    sort_order = models.PositiveIntegerField(default=0, help_text='Lower numbers appear first')
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -280,7 +281,7 @@ class Services(models.Model):
     class Meta:
         verbose_name = 'Service'
         verbose_name_plural = 'Services'
-        ordering = ['name']
+        ordering = ['sort_order', 'name']
 
     def __str__(self):
         return self.name
@@ -511,72 +512,6 @@ class Carousel(models.Model):
 
 
 
-class Banner(models.Model):
-    TYPE_GRADIENT = 'gradient'
-    TYPE_SOLID = 'solid'
-    TYPE_IMAGE = 'image'
-    BANNER_TYPE_CHOICES = [
-        (TYPE_GRADIENT, 'Gradient'),
-        (TYPE_SOLID, 'Solid Color'),
-        (TYPE_IMAGE, 'Background Image (Legacy)')
-    ]
-
-    title = models.CharField(
-        max_length=255,
-        help_text='Default title (can be overridden by page content)'
-    )
-    subtitle = models.CharField(
-        max_length=500,
-        blank=True,
-        help_text='Optional subtitle or description'
-    )
-    page_path = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        help_text='e.g., /services/, /blog/, /about/'
-    )
-    banner_type = models.CharField(
-        max_length=20,
-        choices=BANNER_TYPE_CHOICES,
-        default=TYPE_GRADIENT
-    )
-    # For gradient/solid banners
-    primary_color = models.CharField(
-        max_length=7,
-        default='#1e3c72',
-        help_text='Hex color code (e.g., #1e3c72)'
-    )
-    secondary_color = models.CharField(
-        max_length=7,
-        default='#2a5298',
-        help_text='For gradients - end color'
-    )
-    text_color = models.CharField(
-        max_length=7,
-        default='#ffffff',
-        help_text='Title and breadcrumb text color'
-    )
-    height = models.IntegerField(
-        default=280,
-        help_text='Banner height in pixels'
-    )
-    # Legacy/background image option
-    image = models.ImageField(
-        upload_to='carousel_images',
-        blank=True,
-        null=True,
-        help_text="Only for 'image' type banners"
-    )
-    is_active = models.BooleanField(default=True)
-
-    class Meta:
-        ordering = ['page_path']
-
-    def __str__(self):
-        return self.title
-
-
 class TrainingCourse(models.Model):
     title = models.CharField(max_length=200, unique=True)
     slug = AutoSlugField(populate_from='title', unique=True, blank=True, null=True)
@@ -585,6 +520,7 @@ class TrainingCourse(models.Model):
     image = models.ImageField(upload_to='training_courses/', blank=True, null=True)
     duration = models.CharField(max_length=100, blank=True)
     fee = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    sort_order = models.PositiveIntegerField(default=0, help_text='Lower numbers appear first')
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -593,7 +529,7 @@ class TrainingCourse(models.Model):
     seo = models.OneToOneField('SEO', on_delete=models.CASCADE, blank=True, null=True, related_name='training_course')
 
     class Meta:
-        ordering = ['title']
+        ordering = ['sort_order', 'title']
 
     def __str__(self):
         return self.title

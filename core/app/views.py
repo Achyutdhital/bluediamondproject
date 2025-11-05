@@ -12,7 +12,6 @@ from .models import (
     homesection,
     AboutUsPage,
     GalleryImage,
-    Banner,
     CompanyDetails,
     PrivacyPolicy,
     TermsAndConditions,
@@ -26,7 +25,7 @@ from .seo_utils import SEOHelper
 def get_common_context():
     """Get common context data for all views"""
     return {
-        'nav_services': Services.objects.filter(is_active=True).order_by('name')[:6],
+        'nav_services': Services.objects.filter(is_active=True).order_by('sort_order', 'name')[:6],
         'company': CompanyDetails.objects.first(),
     }
 
@@ -52,8 +51,8 @@ def index(request):
 
     context = {
         'carousels': Carousel.objects.filter(is_active=True)[:10],
-        'services': Services.objects.filter(is_active=True).order_by('name')[:6],
-        'training_courses': TrainingCourse.objects.filter(is_active=True).order_by('title')[:4],
+        'services': Services.objects.filter(is_active=True).order_by('sort_order', 'name')[:6],
+        'training_courses': TrainingCourse.objects.filter(is_active=True).order_by('sort_order', 'title')[:4],
         'brands': Brand.objects.filter(is_active=True).order_by('sort_order', 'name')[:12],
         'testimonials': Testimonial.objects.filter(is_active=True)[:12],
         'faqs': FAQ.objects.filter(is_active=True).order_by('sort_order', 'id')[:12],
@@ -86,7 +85,7 @@ def blog_list(request):
     show_first = 1 not in page_numbers
     show_last = total not in page_numbers
 
-    banner = Banner.objects.filter(page_path='/blog/', is_active=True).first()
+
     recent_posts = posts_qs[:5]
     
     # SEO data
@@ -95,7 +94,6 @@ def blog_list(request):
     context = {
         'posts': page_obj.object_list,
         'page_obj': page_obj,
-        'banner': banner,
         'recent_posts': recent_posts,
         'page_numbers': page_numbers,
         'show_first': show_first,
@@ -144,14 +142,11 @@ def blog_detail(request, slug):
 def about(request):
     """About Us page"""
     aboutus = AboutUsPage.objects.filter(is_active=True).first()
-    banner = Banner.objects.filter(page_path='/about/', is_active=True).first()
-    
     # SEO data - use about page's SEO if available
     seo_data = SEOHelper.get_page_seo_data(obj=aboutus, page_type='about', request=request)
     
     context = {
         'aboutus': aboutus,
-        'banner': banner,
         **get_common_context(),
         **seo_data,
     }
@@ -175,9 +170,7 @@ def gallery(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    services = Services.objects.filter(is_active=True).order_by('name')
-    banner = Banner.objects.filter(page_path='/gallery/', is_active=True).first()
-
+    services = Services.objects.filter(is_active=True).order_by('sort_order', 'name')
     # SEO data
     seo_data = SEOHelper.get_page_seo_data(page_type='gallery', request=request)
 
@@ -186,7 +179,6 @@ def gallery(request):
         'images': page_obj.object_list,
         'page_obj': page_obj,
         'selected_service': selected_service,
-        'banner': banner,
         **get_common_context(),
         **seo_data,
     }
@@ -206,8 +198,6 @@ def enquiry(request):
     else:
         form = EnquiryForm()
 
-    banner = Banner.objects.filter(page_path='/enquiry/', is_active=True).first()
-    
     # SEO data
     seo_data = SEOHelper.get_page_seo_data(
         page_type='default',
@@ -219,7 +209,6 @@ def enquiry(request):
     
     context = {
         'form': form,
-        'banner': banner,
         **get_common_context(),
         **seo_data,
     }
@@ -248,13 +237,10 @@ def contact(request):
         else:
             messages.error(request, 'Please fill in all required fields.')
     
-    banner = Banner.objects.filter(page_path='/contact/', is_active=True).first()
-    
     # SEO data
     seo_data = SEOHelper.get_page_seo_data(page_type='contact', request=request)
     
     context = {
-        'banner': banner,
         **get_common_context(),
         **seo_data,
     }
@@ -263,15 +249,13 @@ def contact(request):
 
 def services(request):
     """Services page displaying all active services"""
-    services_qs = Services.objects.filter(is_active=True).order_by('name')
+    services_qs = Services.objects.filter(is_active=True).order_by('sort_order', 'name')
     # Pagination
     from django.core.paginator import Paginator
     paginator = Paginator(services_qs, 30)  # ~10 rows per page on desktop (≈3 columns)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    banner = Banner.objects.filter(page_path='/services/', is_active=True).first()
-    
     # SEO data
     seo_data = SEOHelper.get_page_seo_data(page_type='services', request=request)
     
@@ -291,7 +275,6 @@ def services(request):
         'show_first': show_first,
         'show_last': show_last,
         'total_pages': total,
-        'banner': banner,
         **get_common_context(),
         **seo_data,
     }
@@ -303,7 +286,7 @@ def service_detail(request, slug):
     from django.shortcuts import get_object_or_404
     
     service = get_object_or_404(Services, slug=slug, is_active=True)
-    other_services = Services.objects.filter(is_active=True).exclude(id=service.id).order_by('name')[:5]
+    other_services = Services.objects.filter(is_active=True).exclude(id=service.id).order_by('sort_order', 'name')[:5]
     related_services = Services.objects.filter(is_active=True).exclude(id=service.id).order_by('?')[:3]
     
     # SEO data for service
@@ -325,8 +308,6 @@ def service_detail(request, slug):
 def privacy_policy(request):
     """Privacy Policy page"""
     privacy = PrivacyPolicy.objects.filter(is_active=True).first()
-    banner = Banner.objects.filter(page_path='/privacy-policy/', is_active=True).first()
-    
     # SEO data
     seo_data = SEOHelper.get_page_seo_data(
         page_type='default',
@@ -338,7 +319,6 @@ def privacy_policy(request):
     
     context = {
         'privacy': privacy,
-        'banner': banner,
         **get_common_context(),
         **seo_data,
     }
@@ -348,8 +328,6 @@ def privacy_policy(request):
 def terms_and_conditions(request):
     """Terms and Conditions page"""
     terms = TermsAndConditions.objects.filter(is_active=True).first()
-    banner = Banner.objects.filter(page_path='/terms-and-conditions/', is_active=True).first()
-    
     # SEO data
     seo_data = SEOHelper.get_page_seo_data(
         page_type='default',
@@ -361,7 +339,6 @@ def terms_and_conditions(request):
     
     context = {
         'terms': terms,
-        'banner': banner,
         **get_common_context(),
         **seo_data,
     }
@@ -370,14 +347,12 @@ def terms_and_conditions(request):
 
 def training_courses(request):
     """Training courses page displaying all active courses"""
-    courses_qs = TrainingCourse.objects.filter(is_active=True).order_by('title')
+    courses_qs = TrainingCourse.objects.filter(is_active=True).order_by('sort_order', 'title')
     # Pagination
     from django.core.paginator import Paginator
     paginator = Paginator(courses_qs, 30)  # ~10 rows per page on desktop (≈3 columns)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    banner = Banner.objects.filter(page_path='/training-courses/', is_active=True).first()
-    
     # SEO data
     seo_data = SEOHelper.get_page_seo_data(page_type='training', request=request)
     
@@ -389,7 +364,6 @@ def training_courses(request):
         'show_first': 1 not in list(range(max(1, page_obj.number - 2), min(page_obj.paginator.num_pages, page_obj.number + 2) + 1)),
         'show_last': page_obj.paginator.num_pages not in list(range(max(1, page_obj.number - 2), min(page_obj.paginator.num_pages, page_obj.number + 2) + 1)),
         'total_pages': page_obj.paginator.num_pages,
-        'banner': banner,
         **get_common_context(),
         **seo_data,
     }
@@ -401,7 +375,7 @@ def training_course_detail(request, slug):
     from django.shortcuts import get_object_or_404
     
     course = get_object_or_404(TrainingCourse, slug=slug, is_active=True)
-    other_courses = TrainingCourse.objects.filter(is_active=True).exclude(id=course.id).order_by('title')[:3]
+    other_courses = TrainingCourse.objects.filter(is_active=True).exclude(id=course.id).order_by('sort_order', 'title')[:3]
     
     # SEO data for training course
     seo_data = SEOHelper.get_page_seo_data(

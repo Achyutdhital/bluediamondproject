@@ -60,12 +60,6 @@ urlpatterns = [
 	path('carousels/<int:pk>/edit/', views.CarouselAddEditView.as_view(), name='carousel_edit'),
 	path('carousels/<int:pk>/delete/', views.CarouselDeleteView.as_view(), name='carousel_delete'),
 
-	# Banners
-	path('banners/', views.BannerListView.as_view(), name='banners_list'),
-	path('banners/add/', views.BannerAddEditView.as_view(), name='banner_add'),
-	path('banners/<int:pk>/edit/', views.BannerAddEditView.as_view(), name='banner_edit'),
-	path('banners/<int:pk>/delete/', views.BannerDeleteView.as_view(), name='banner_delete'),
-
 	# Company / Home / About
 	path('company-details/', views.CompanyDetailsEditView.as_view(), name='company_details_edit'),
 	path('home-section/', views.HomeSectionEditView.as_view(), name='home_section_edit'),

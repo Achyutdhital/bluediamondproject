@@ -27,9 +27,11 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-8#kqme2cg^hcjg
 # Default to True locally; set DJANGO_DEBUG=False in production (cPanel env vars)
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
-# Configure allowed hosts from environment variable (comma-separated)
+# Allow Django to serve custom error pages
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS if host.strip()]
+
+
 
 
 # Application definition
@@ -64,7 +66,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'app' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -165,8 +167,7 @@ STATICFILES_FINDERS = [
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (uploads)
-MEDIA_URL = os.environ.get('DJANGO_MEDIA_URL', '/media/')
-# Allow overriding MEDIA_ROOT via environment variable so we can point to public_html/media on cPanel
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.environ.get('DJANGO_MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
 
 # Default primary key field type

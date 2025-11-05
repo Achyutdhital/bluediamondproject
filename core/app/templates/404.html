@@ -1,0 +1,117 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="error_page_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="error_page_content text-center">
+                    <div class="error_code">
+                        <h1>404</h1>
+                    </div>
+                    <div class="error_message">
+                        <h2>Oops! Page Not Found</h2>
+                        <p>The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
+                    </div>
+                    <div class="error_actions">
+                        <a href="{% url 'home' %}" class="btn btn-primary">Go to Homepage</a>
+                        <a href="{% url 'contact' %}" class="btn btn-outline">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.error_page_area {
+    padding: 100px 0;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+}
+
+.error_page_content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.error_code h1 {
+    font-size: 150px;
+    font-weight: bold;
+    color: #667eea;
+    margin: 0;
+    line-height: 1;
+}
+
+.error_message h2 {
+    font-size: 36px;
+    color: #333;
+    margin: 30px 0 20px;
+}
+
+.error_message p {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 40px;
+}
+
+.error_actions {
+    margin-top: 30px;
+}
+
+.error_actions .btn {
+    margin: 0 10px;
+    padding: 12px 30px;
+    font-size: 16px;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-outline {
+    background: transparent;
+    color: #667eea;
+    border: 2px solid #667eea;
+}
+
+.btn-outline:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .error_code h1 {
+        font-size: 100px;
+    }
+    
+    .error_message h2 {
+        font-size: 28px;
+    }
+    
+    .error_message p {
+        font-size: 16px;
+    }
+    
+    .error_actions .btn {
+        display: block;
+        margin: 10px auto;
+        width: 200px;
+    }
+}
+</style>
+{% endblock %}

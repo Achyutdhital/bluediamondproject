@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.http import Http404
 from .models import (
     Carousel,
     Services,
@@ -415,3 +416,11 @@ def training_course_detail(request, slug):
         **seo_data,
     }
     return render(request, 'app/training_course_detail.html', context)
+
+
+def custom_404_view(request, exception):
+    """Custom 404 error page"""
+    context = {
+        **get_common_context(),
+    }
+    return render(request, '404.html', context, status=404)

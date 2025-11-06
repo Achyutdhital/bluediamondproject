@@ -21,9 +21,16 @@ class ServiceForm(forms.ModelForm):
             'short_description': Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Short description'}),
             'description': CKEditorWidget(),
             'feature_image': ClearableFileInput(attrs={'class': 'form-control'}),
-            'sort_order': TextInput(attrs={'class': 'form-control', 'placeholder': '0'}),
+            'sort_order': TextInput(attrs={'class': 'form-control', 'placeholder': 'Auto-assigned'}),
             'is_active': CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # If adding new service (no instance), make sort_order read-only
+        if not self.instance.pk:
+            self.fields['sort_order'].widget.attrs['readonly'] = True
+            self.fields['sort_order'].help_text = 'Will be automatically assigned as next number'
 
 
 class TrainingCourseForm(forms.ModelForm):
@@ -37,9 +44,16 @@ class TrainingCourseForm(forms.ModelForm):
             'image': ClearableFileInput(attrs={'class': 'form-control'}),
             'duration': TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., 3 months'}),
             'fee': TextInput(attrs={'class': 'form-control', 'placeholder': 'Course fee'}),
-            'sort_order': TextInput(attrs={'class': 'form-control', 'placeholder': '0'}),
+            'sort_order': TextInput(attrs={'class': 'form-control', 'placeholder': 'Auto-assigned'}),
             'is_active': CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # If adding new course (no instance), make sort_order read-only
+        if not self.instance.pk:
+            self.fields['sort_order'].widget.attrs['readonly'] = True
+            self.fields['sort_order'].help_text = 'Will be automatically assigned as next number'
 
 
 class BrandForm(forms.ModelForm):

@@ -58,6 +58,12 @@ class ServicesAdmin(admin.ModelAdmin):
 			'fields': ('name', 'slug', 'short_description', 'description', 'feature_image', 'sort_order', 'is_active')
 		}),
 	)
+	
+	def get_readonly_fields(self, request, obj=None):
+		"""Make sort_order read-only when adding new service (will auto-assign)"""
+		if obj is None:  # Adding new object
+			return self.readonly_fields + ('sort_order',)
+		return self.readonly_fields
 
 
 @admin.register(models.TrainingCourse)
@@ -72,6 +78,12 @@ class TrainingCourseAdmin(admin.ModelAdmin):
 			'fields': ('title', 'slug', 'short_description', 'description', 'image', 'duration', 'fee', 'sort_order', 'is_active')
 		}),
 	)
+	
+	def get_readonly_fields(self, request, obj=None):
+		"""Make sort_order read-only when adding new course (will auto-assign)"""
+		if obj is None:  # Adding new object
+			return self.readonly_fields + ('sort_order',)
+		return self.readonly_fields
 
 
 @admin.register(models.Brand)

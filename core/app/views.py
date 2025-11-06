@@ -188,16 +188,35 @@ def gallery(request):
 
 def enquiry(request):
     """Enquiry page for services and training courses"""
+    # Get service or training slug from URL parameter
+    service_slug = request.GET.get('service')
+    training_slug = request.GET.get('training')
+    
     if request.method == 'POST':
         form = EnquiryForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Thank you for your enquiry! We will contact you shortly.')
-            return redirect('enquiry')
+            # Redirect to thank you page with success message
+            request.session['thank_you_message'] = 'Thank you for your enquiry! We will contact you shortly.'
+            return redirect('thank_you')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
-        form = EnquiryForm()
+        # Pre-fill form if service or training is specified in URL
+        initial = {}
+        if service_slug:
+            try:
+                service = Services.objects.get(slug=service_slug, is_active=True)
+                initial['service'] = service
+            except Services.DoesNotExist:
+                pass
+        elif training_slug:
+            try:
+                training = TrainingCourse.objects.get(slug=training_slug, is_active=True)
+                initial['training_course'] = training
+            except TrainingCourse.DoesNotExist:
+                pass
+        form = EnquiryForm(initial=initial)
 
     # SEO data
     seo_data = SEOHelper.get_page_seo_data(
@@ -233,8 +252,9 @@ def contact(request):
                 phone_number=phone_number,
                 message=message or ''
             )
-            messages.success(request, 'Thank you for contacting us! We will get back to you soon.')
-            return redirect('contact')
+            # Redirect to thank you page with success message
+            request.session['thank_you_message'] = 'Thank you for contacting us! We will get back to you soon.'
+            return redirect('thank_you')
         else:
             messages.error(request, 'Please fill in all required fields.')
     
@@ -391,6 +411,28 @@ def training_course_detail(request, slug):
         **seo_data,
     }
     return render(request, 'app/training_course_detail.html', context)
+
+
+def thank_you(request):
+    """Thank you page after form submission"""
+    # Get custom message from session or use default
+    message = request.session.pop('thank_you_message', None)
+    
+    # SEO data
+    seo_data = SEOHelper.get_page_seo_data(
+        page_type='default',
+        request=request,
+        meta_title='Thank You - Blue Diamond Service Center',
+        meta_description='Thank you for contacting Blue Diamond Service Center. We will get back to you soon.',
+        meta_keywords='thank you, confirmation'
+    )
+    
+    context = {
+        'message': message,
+        **get_common_context(),
+        **seo_data,
+    }
+    return render(request, 'app/thankyou.html', context)
 
 
 def custom_404_view(request, exception):

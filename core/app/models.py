@@ -287,6 +287,17 @@ class Services(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
+        # Auto-assign sort_order for new services
+        if not self.pk and self.sort_order == 0:
+            max_order = Services.objects.aggregate(models.Max('sort_order'))['sort_order__max']
+            self.sort_order = (max_order or 0) + 1
+        else:
+            # If editing and changing sort_order, adjust other services
+            if self.pk:
+                old_instance = Services.objects.filter(pk=self.pk).first()
+                if old_instance and old_instance.sort_order != self.sort_order:
+                    self._reorder_services(old_instance.sort_order, self.sort_order)
+        
         # Auto-generate SEO if it doesn't exist
         if not self.seo_id:
             seo = SEO.objects.create(
@@ -297,6 +308,21 @@ class Services(models.Model):
             )
             self.seo = seo
         super().save(*args, **kwargs)
+    
+    def _reorder_services(self, old_order, new_order):
+        """Reorder other services when sort_order changes"""
+        if new_order < old_order:
+            # Moving up: shift items between new_order and old_order down by 1
+            Services.objects.filter(
+                sort_order__gte=new_order,
+                sort_order__lt=old_order
+            ).exclude(pk=self.pk).update(sort_order=models.F('sort_order') + 1)
+        elif new_order > old_order:
+            # Moving down: shift items between old_order and new_order up by 1
+            Services.objects.filter(
+                sort_order__gt=old_order,
+                sort_order__lte=new_order
+            ).exclude(pk=self.pk).update(sort_order=models.F('sort_order') - 1)
 
     def get_seo_title(self):
         """Generate SEO-friendly title"""
@@ -535,6 +561,17 @@ class TrainingCourse(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
+        # Auto-assign sort_order for new courses
+        if not self.pk and self.sort_order == 0:
+            max_order = TrainingCourse.objects.aggregate(models.Max('sort_order'))['sort_order__max']
+            self.sort_order = (max_order or 0) + 1
+        else:
+            # If editing and changing sort_order, adjust other courses
+            if self.pk:
+                old_instance = TrainingCourse.objects.filter(pk=self.pk).first()
+                if old_instance and old_instance.sort_order != self.sort_order:
+                    self._reorder_courses(old_instance.sort_order, self.sort_order)
+        
         # Auto-generate SEO if it doesn't exist
         if not self.seo_id:
             from django.utils.html import strip_tags
@@ -547,6 +584,21 @@ class TrainingCourse(models.Model):
             )
             self.seo = seo
         super().save(*args, **kwargs)
+    
+    def _reorder_courses(self, old_order, new_order):
+        """Reorder other courses when sort_order changes"""
+        if new_order < old_order:
+            # Moving up: shift items between new_order and old_order down by 1
+            TrainingCourse.objects.filter(
+                sort_order__gte=new_order,
+                sort_order__lt=old_order
+            ).exclude(pk=self.pk).update(sort_order=models.F('sort_order') + 1)
+        elif new_order > old_order:
+            # Moving down: shift items between old_order and new_order up by 1
+            TrainingCourse.objects.filter(
+                sort_order__gt=old_order,
+                sort_order__lte=new_order
+            ).exclude(pk=self.pk).update(sort_order=models.F('sort_order') - 1)
 
     def get_seo_title(self):
         """Generate SEO-friendly title"""

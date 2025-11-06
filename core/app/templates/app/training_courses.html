@@ -42,7 +42,7 @@
           
           <div class="card-actions">
             <a href="{% url 'training_course_detail' course.slug %}" class="btn-primary">Learn More</a>
-            <a href="{% url 'enquiry' %}" class="btn-secondary">Enquire Now</a>
+            <a href="{% url 'enquiry' %}?training={{ course.slug }}" class="btn-secondary">Enquire Now</a>
           </div>
         </div>
       </article>

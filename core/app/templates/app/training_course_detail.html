@@ -28,7 +28,7 @@
           <div class="enquiry-section">
             <h3>Interested in this course?</h3>
             <p>Contact us to learn more about enrollment, schedule, and requirements.</p>
-            <a href="{% url 'enquiry' %}" class="enquiry-btn">
+            <a href="{% url 'enquiry' %}?training={{ course.slug }}" class="enquiry-btn">
               <i class="fa fa-envelope"></i>
               Enquire Now
             </a>
@@ -48,6 +48,16 @@
       <div class="col-lg-4 col-md-12">
         <div style="position: relative;">
           <aside class="course-sidebar sticky-sidebar">
+            <!-- Enquire Now Widget - Top Priority -->
+            <div class="sidebar-widget enquire-widget">
+              <h3 class="widget-title">Interested?</h3>
+              <p class="enquire-widget-text">Get in touch to learn more about enrollment, schedule, and requirements.</p>
+              <a href="{% url 'enquiry' %}?training={{ course.slug }}" class="enquiry-btn-full">
+                <i class="fa fa-envelope"></i>
+                Enquire Now
+              </a>
+            </div>
+            
             <div class="sidebar-widget">
             <h3 class="widget-title">Course Details</h3>
             <div class="course-info">
@@ -179,6 +189,45 @@
   background: #2a5298;
   color: white;
   transform: translateY(-2px);
+}
+
+/* Enquire Widget in Sidebar */
+.enquire-widget {
+  background: white;
+  color: #333 !important;
+}
+
+.enquire-widget .widget-title {
+  color: #1e3c72 !important;
+  border-bottom-color: #e5e7eb;
+}
+
+.enquire-widget-text {
+  color: #64748b !important;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.enquiry-btn-full {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: white;
+  padding: 15px 30px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.enquiry-btn-full:hover {
+  background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
 }
 
 /* Back to Courses */

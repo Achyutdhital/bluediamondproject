@@ -29,6 +29,7 @@ urlpatterns = [
     path('training-courses/<slug:slug>/', views.training_course_detail, name='training_course_detail'),
     path('enquiry/', views.enquiry, name='enquiry'),
     path('contact/', views.contact, name='contact'),
+    path('thank-you/', views.thank_you, name='thank_you'),
     path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
     path('terms-and-conditions/', views.terms_and_conditions, name='terms_and_conditions'),
 ]

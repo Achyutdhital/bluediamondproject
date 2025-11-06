@@ -38,6 +38,14 @@ class EnquiryForm(forms.ModelForm):
             choices.extend(course_choices)
         
         self.fields['enquiry_type'].choices = choices
+        
+        # Pre-select based on initial values if provided
+        if self.initial.get('service'):
+            service = self.initial['service']
+            self.fields['enquiry_type'].initial = f'service_{service.id}'
+        elif self.initial.get('training_course'):
+            course = self.initial['training_course']
+            self.fields['enquiry_type'].initial = f'course_{course.id}'
 
     def clean_phone_number(self):
         phone = self.cleaned_data.get("phone_number", "").strip()

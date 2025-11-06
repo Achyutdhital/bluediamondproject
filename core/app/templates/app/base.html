@@ -175,8 +175,18 @@
                     {% endif %}
                 </ul>
             </li>
+            <li class="hasChild">
+                <a href="{% url 'training_courses' %}">Trainings</a>
+                <ul class="submenu">
+                    <li class="all-trainings"><a href="{% url 'training_courses' %}">All Trainings</a></li>
+                    {% if nav_training_courses %}
+                        {% for course in nav_training_courses %}
+                        <li><a href="{% url 'training_course_detail' course.slug %}">{{ course.title }}</a></li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </li>
             <li><a href="{% url 'gallery' %}">Gallery</a></li>
-            <li><a href="{% url 'training_courses' %}">Training</a></li>
             <li><a href="{% url 'blog_list' %}">Blog</a></li>
             <li><a href="{% url 'enquiry' %}">Enquiry Now</a></li>
             <li><a href="{% url 'contact' %}">Contact Us</a></li>

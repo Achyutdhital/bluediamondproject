@@ -25,7 +25,8 @@ from .seo_utils import SEOHelper
 def get_common_context():
     """Get common context data for all views"""
     return {
-        'nav_services': Services.objects.filter(is_active=True).order_by('sort_order', 'name')[:6],
+        'nav_services': Services.objects.filter(is_active=True).order_by('sort_order', 'name'),
+        'nav_training_courses': TrainingCourse.objects.filter(is_active=True).order_by('sort_order', 'title'),
         'company': CompanyDetails.objects.first(),
     }
 

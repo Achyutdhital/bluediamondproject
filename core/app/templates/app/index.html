@@ -435,8 +435,50 @@
         </div>
         <style>
             @media (max-width: 767px) {
-                .testimonial-carousel { display: block !important; min-height: 220px; background: #fff; }
-                .testimonial-carousel .owl-item, .testimonial-item { display: block !important; opacity: 1 !important; visibility: visible !important; }
+                .testimonial-item { 
+                    height: 350px !important; 
+                    padding: 20px 15px !important;
+                }
+                .testimonial-author { 
+                    min-height: 130px !important;
+                }
+                .testimonial-author h4 {
+                    font-size: 16px !important;
+                    margin: 0 0 3px !important;
+                    word-break: break-word !important;
+                }
+                .author-location {
+                    font-size: 13px !important;
+                    margin-bottom: 10px !important;
+                    word-break: break-word !important;
+                }
+                .testimonial-content p { 
+                    font-size: 14px !important;
+                    line-height: 20px !important;
+                    word-break: break-word !important;
+                    overflow-wrap: break-word !important;
+                    display: -webkit-box !important;
+                    -webkit-line-clamp: 5 !important;
+                    -webkit-box-orient: vertical !important;
+                    overflow: hidden !important;
+                    text-overflow: ellipsis !important;
+                }
+                .testimonial-carousel .owl-dots {
+                    text-align: center;
+                    margin-top: 15px;
+                }
+                .testimonial-carousel .owl-dot {
+                    display: inline-block;
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    background: #ddd;
+                    margin: 0 4px;
+                    cursor: pointer;
+                }
+                .testimonial-carousel .owl-dot.active {
+                    background: #1e3c72;
+                }
             }
             .testimonial-item {
                 background: #fff;
@@ -867,27 +909,21 @@
 
 <script>
 $(document).ready(function(){
-    if ($(window).width() > 767) {
-        $('.testimonial-carousel').owlCarousel({
-            items: 3,
-            loop: true,
-            autoplay: true,
-            autoplayTimeout: 4000,
-            autoplayHoverPause: true,
-            nav: false,
-            dots: false,
-            responsive: {
-                768: { items: 2 },
-                992: { items: 3 }
-            }
-        });
-    } else {
-        $('.testimonial-carousel').removeClass('owl-carousel owl-theme');
-        $('.testimonial-item').css({
-            'display': 'block',
-            'margin-bottom': '20px'
-        });
-    }
+    $('.testimonial-carousel').owlCarousel({
+        items: 1,
+        loop: true,
+        autoplay: true,
+        autoplayTimeout: 4000,
+        autoplayHoverPause: true,
+        nav: false,
+        dots: true,
+        margin: 15,
+        responsive: {
+            576: { items: 1, dots: true },
+            768: { items: 2, dots: false },
+            992: { items: 3, dots: false }
+        }
+    });
 });
 </script>
 {% endblock %}

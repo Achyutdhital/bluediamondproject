@@ -104,9 +104,12 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="{{ form.sort_order.id_for_label }}" class="form-label">Sort Order</label>
-                                            <input type="number" name="{{ form.sort_order.name }}" id="{{ form.sort_order.id_for_label }}" class="form-control {% if form.sort_order.errors %}is-invalid{% endif %}" 
-                                                   value="{% if instance %}{{ instance.sort_order }}{% else %}0{% endif %}" placeholder="0">
-                                            <small class="form-text text-muted">Lower numbers appear first (0, 1, 2, etc.)</small>
+                                            {{ form.sort_order }}
+                                            {% if form.sort_order.help_text %}
+                                                <small class="form-text text-muted">{{ form.sort_order.help_text }}</small>
+                                            {% else %}
+                                                <small class="form-text text-muted">Lower numbers appear first. You can change this to reorder.</small>
+                                            {% endif %}
                                             {% if form.sort_order.errors %}
                                                 <div class="invalid-feedback">
                                                     {{ form.sort_order.errors }}

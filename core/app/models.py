@@ -287,16 +287,17 @@ class Services(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
+        # Store old sort_order before any changes
+        old_sort_order = None
+        if self.pk:
+            old_instance = Services.objects.filter(pk=self.pk).first()
+            if old_instance:
+                old_sort_order = old_instance.sort_order
+        
         # Auto-assign sort_order for new services
         if not self.pk and self.sort_order == 0:
             max_order = Services.objects.aggregate(models.Max('sort_order'))['sort_order__max']
             self.sort_order = (max_order or 0) + 1
-        else:
-            # If editing and changing sort_order, adjust other services
-            if self.pk:
-                old_instance = Services.objects.filter(pk=self.pk).first()
-                if old_instance and old_instance.sort_order != self.sort_order:
-                    self._reorder_services(old_instance.sort_order, self.sort_order)
         
         # Auto-generate SEO if it doesn't exist
         if not self.seo_id:
@@ -307,7 +308,13 @@ class Services(models.Model):
                 schema_type='Service'
             )
             self.seo = seo
+        
+        # Save first to commit the new sort_order
         super().save(*args, **kwargs)
+        
+        # Now reorder other services if sort_order changed
+        if old_sort_order is not None and old_sort_order != self.sort_order:
+            self._reorder_services(old_sort_order, self.sort_order)
     
     def _reorder_services(self, old_order, new_order):
         """Reorder other services when sort_order changes"""
@@ -561,16 +568,17 @@ class TrainingCourse(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
+        # Store old sort_order before any changes
+        old_sort_order = None
+        if self.pk:
+            old_instance = TrainingCourse.objects.filter(pk=self.pk).first()
+            if old_instance:
+                old_sort_order = old_instance.sort_order
+        
         # Auto-assign sort_order for new courses
         if not self.pk and self.sort_order == 0:
             max_order = TrainingCourse.objects.aggregate(models.Max('sort_order'))['sort_order__max']
             self.sort_order = (max_order or 0) + 1
-        else:
-            # If editing and changing sort_order, adjust other courses
-            if self.pk:
-                old_instance = TrainingCourse.objects.filter(pk=self.pk).first()
-                if old_instance and old_instance.sort_order != self.sort_order:
-                    self._reorder_courses(old_instance.sort_order, self.sort_order)
         
         # Auto-generate SEO if it doesn't exist
         if not self.seo_id:
@@ -583,7 +591,13 @@ class TrainingCourse(models.Model):
                 schema_type='Course'
             )
             self.seo = seo
+        
+        # Save first to commit the new sort_order
         super().save(*args, **kwargs)
+        
+        # Now reorder other courses if sort_order changed
+        if old_sort_order is not None and old_sort_order != self.sort_order:
+            self._reorder_courses(old_sort_order, self.sort_order)
     
     def _reorder_courses(self, old_order, new_order):
         """Reorder other courses when sort_order changes"""

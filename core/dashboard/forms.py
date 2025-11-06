@@ -27,10 +27,15 @@ class ServiceForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # If adding new service (no instance), make sort_order read-only
+        # If adding new service (no instance), show next number but allow editing
         if not self.instance.pk:
-            self.fields['sort_order'].widget.attrs['readonly'] = True
-            self.fields['sort_order'].help_text = 'Will be automatically assigned as next number'
+            from django.db.models import Max
+            max_order = Services.objects.aggregate(Max('sort_order'))['sort_order__max']
+            next_order = (max_order or 0) + 1
+            self.fields['sort_order'].initial = next_order
+            self.fields['sort_order'].help_text = f'Suggested: {next_order} (next available number). You can change this to any position.'
+        else:
+            self.fields['sort_order'].help_text = 'Change this number to reorder. Other items will shift automatically.'
 
 
 class TrainingCourseForm(forms.ModelForm):
@@ -50,10 +55,15 @@ class TrainingCourseForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # If adding new course (no instance), make sort_order read-only
+        # If adding new course (no instance), show next number but allow editing
         if not self.instance.pk:
-            self.fields['sort_order'].widget.attrs['readonly'] = True
-            self.fields['sort_order'].help_text = 'Will be automatically assigned as next number'
+            from django.db.models import Max
+            max_order = TrainingCourse.objects.aggregate(Max('sort_order'))['sort_order__max']
+            next_order = (max_order or 0) + 1
+            self.fields['sort_order'].initial = next_order
+            self.fields['sort_order'].help_text = f'Suggested: {next_order} (next available number). You can change this to any position.'
+        else:
+            self.fields['sort_order'].help_text = 'Change this number to reorder. Other items will shift automatically.'
 
 
 class BrandForm(forms.ModelForm):
